@@ -1008,7 +1008,7 @@ export class Master extends Contract.extend(Ownable, Pausable, Recoverable) {
     }
 
     /**
-     * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by Immersve.
+     * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
      * @param cardFund - The address of the card.
      * @param asset - The ID of the asset to be withdrawn.
      * @param amount - The amount of the withdrawal.

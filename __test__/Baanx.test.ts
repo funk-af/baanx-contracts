@@ -13,11 +13,11 @@ const fixture = algorandFixture({ testAccountFunding: AlgoAmount.MicroAlgos(0) }
 let placeholderClient: PlaceholderClient;
 let appClient: MasterClient;
 
-describe('Immersve', () => {
+describe('Baanx', () => {
     beforeEach(fixture.beforeEach);
 
     let circle: algosdk.Account;
-    let immersve: algosdk.Account;
+    let baanx: algosdk.Account;
     let user: algosdk.Account;
     let user2: algosdk.Account;
     let withdrawalAcc: algosdk.Account;
@@ -31,7 +31,7 @@ describe('Immersve', () => {
         await fixture.beforeEach();
         const { algod, generateAccount } = fixture.context;
 
-        [immersve, user, user2, circle, withdrawalAcc] = await Promise.all([
+        [baanx, user, user2, circle, withdrawalAcc] = await Promise.all([
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
@@ -66,13 +66,13 @@ describe('Immersve', () => {
             sendTransaction(
                 {
                     transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                        from: immersve.addr,
-                        to: immersve.addr,
+                        from: baanx.addr,
+                        to: baanx.addr,
                         assetIndex: fakeUSDC,
                         amount: 0,
                         suggestedParams: await algod.getTransactionParams().do(),
                     }),
-                    from: immersve,
+                    from: baanx,
                 },
                 algod
             ),
@@ -121,13 +121,13 @@ describe('Immersve', () => {
             {
                 id: 0,
                 resolveBy: 'id',
-                sender: immersve,
+                sender: baanx,
             },
             algod
         );
 
         await placeholderClient.create.deploy(
-            { owner: immersve.addr },
+            { owner: baanx.addr },
             {
                 schema: {
                     extraPages: 3,
@@ -151,14 +151,14 @@ describe('Immersve', () => {
             {
                 id: appId,
                 resolveBy: 'id',
-                sender: immersve,
+                sender: baanx,
             },
             algod
         );
 
         const result = await appClient.update.update(
             {
-                master: immersve.addr,
+                master: baanx.addr,
             },
             {
                 sendParams: {
@@ -201,7 +201,7 @@ describe('Immersve', () => {
         const { algod } = fixture.context;
 
         const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: immersve.addr,
+            from: baanx.addr,
             to: appAddress,
             amount: 100_000 + (2_500 + 400 * (2 + 8 + 32)), // Asset MBR + Box Cost
             suggestedParams: await algod.getTransactionParams().do(),
@@ -211,7 +211,7 @@ describe('Immersve', () => {
             {
                 mbr,
                 asset: fakeUSDC,
-                settlementAddress: immersve.addr,
+                settlementAddress: baanx.addr,
             },
             {
                 sendParams: {
@@ -231,12 +231,12 @@ describe('Immersve', () => {
         await sendTransaction(
             {
                 transaction: algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-                    from: immersve.addr,
+                    from: baanx.addr,
                     to: appAddress,
                     amount: 1_000_000,
                     suggestedParams: await algod.getTransactionParams().do(),
                 }),
-                from: immersve,
+                from: baanx,
             },
             algod
         );
@@ -245,7 +245,7 @@ describe('Immersve', () => {
             {
                 amount: 1_000_000,
                 asset: 0,
-                recipient: immersve.addr,
+                recipient: baanx.addr,
             },
             {
                 sendParams: {
@@ -280,7 +280,7 @@ describe('Immersve', () => {
             {
                 amount: 10_000_000_000,
                 asset: fakeUSDC,
-                recipient: immersve.addr,
+                recipient: baanx.addr,
             },
             {
                 sendParams: {
@@ -312,7 +312,7 @@ describe('Immersve', () => {
         );
 
         const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: immersve.addr,
+            from: baanx.addr,
             to: appAddress,
             amount: getMbr.return!,
             suggestedParams: await algod.getTransactionParams().do(),
@@ -502,7 +502,7 @@ describe('Immersve', () => {
         expect(result.confirmation!.poolError).toBeDefined();
     });
 
-    test('User spends, Immersve debits', async () => {
+    test('User spends, Baanx debits', async () => {
         const nextNonce = await appClient.getNextCardFundNonce(
             {
                 cardFund: newCardAddress,

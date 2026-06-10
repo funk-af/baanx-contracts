@@ -28,7 +28,7 @@ switch *call_NoOp *NOT_IMPLEMENTED *NOT_IMPLEMENTED *NOT_IMPLEMENTED *call_Updat
 onlyOwner:
 	proto 0 0
 
-	// src/roles/Ownable.algo.ts:53
+	// src\roles\Ownable.algo.ts:53
 	// assert(this.txn.sender === this._owner.value, 'SENDER_NOT_ALLOWED')
 	txn Sender
 	byte 0x5f6f776e6572 // "_owner"
@@ -46,7 +46,7 @@ onlyOwner:
 isOwner:
 	proto 0 1
 
-	// src/roles/Ownable.algo.ts:61
+	// src\roles\Ownable.algo.ts:61
 	// return this.txn.sender === this._owner.value;
 	txn Sender
 	byte 0x5f6f776e6572 // "_owner"
@@ -70,7 +70,7 @@ isOwner:
 owner:
 	proto 0 1
 
-	// src/roles/Ownable.algo.ts:67
+	// src\roles\Ownable.algo.ts:67
 	// return this._owner.value;
 	byte 0x5f6f776e6572 // "_owner"
 	app_global_get
@@ -86,7 +86,7 @@ _transferOwnership:
 	// Push empty bytes after the frame pointer to reserve space for local variables
 	byte 0x
 
-	// src/roles/Ownable.algo.ts:76
+	// src\roles\Ownable.algo.ts:76
 	// previousOwner = this._owner.exists ? this._owner.value : globals.zeroAddress
 	txna Applications 0
 	byte 0x5f6f776e6572 // "_owner"
@@ -104,13 +104,13 @@ _transferOwnership:
 *ternary1_end:
 	frame_bury 0 // previousOwner: address
 
-	// src/roles/Ownable.algo.ts:77
+	// src\roles\Ownable.algo.ts:77
 	// this._owner.value = newOwner
 	byte 0x5f6f776e6572 // "_owner"
 	frame_dig -1 // newOwner: Address
 	app_global_put
 
-	// src/roles/Ownable.algo.ts:79
+	// src\roles\Ownable.algo.ts:79
 	// this.OwnershipTransferred.log({
 	//             previousOwner: previousOwner,
 	//             newOwner: newOwner,
@@ -149,11 +149,11 @@ _transferOwnership:
 transferOwnership:
 	proto 1 0
 
-	// src/roles/Ownable.algo.ts:93
+	// src\roles\Ownable.algo.ts:93
 	// this.onlyOwner()
 	callsub onlyOwner
 
-	// src/roles/Ownable.algo.ts:95
+	// src\roles\Ownable.algo.ts:95
 	// this._transferOwnership(newOwner)
 	frame_dig -1 // newOwner: Address
 	callsub _transferOwnership
@@ -165,7 +165,7 @@ transferOwnership:
 whenNotPaused:
 	proto 0 0
 
-	// src/roles/Pausable.algo.ts:49
+	// src\roles\Pausable.algo.ts:49
 	// assert(!this.paused.value)
 	byte 0x706175736564 // "paused"
 	app_global_get
@@ -181,7 +181,7 @@ whenNotPaused:
 onlyPauser:
 	proto 0 0
 
-	// src/roles/Pausable.algo.ts:56
+	// src\roles\Pausable.algo.ts:56
 	// assert(this.txn.sender === this._pauser.value)
 	txn Sender
 	byte 0x5f706175736572 // "_pauser"
@@ -209,7 +209,7 @@ onlyPauser:
 pauser:
 	proto 0 1
 
-	// src/roles/Pausable.algo.ts:65
+	// src\roles\Pausable.algo.ts:65
 	// return this._pauser.value;
 	byte 0x5f706175736572 // "_pauser"
 	app_global_get
@@ -228,11 +228,11 @@ pauser:
 pause:
 	proto 0 0
 
-	// src/roles/Pausable.algo.ts:73
+	// src\roles\Pausable.algo.ts:73
 	// this.onlyPauser()
 	callsub onlyPauser
 
-	// src/roles/Pausable.algo.ts:75
+	// src\roles\Pausable.algo.ts:75
 	// this.paused.value = true
 	byte 0x706175736564 // "paused"
 	int 1
@@ -242,7 +242,7 @@ pause:
 	setbit
 	app_global_put
 
-	// src/roles/Pausable.algo.ts:76
+	// src\roles\Pausable.algo.ts:76
 	// this.Pause.log({})
 	byte 0xcf23a30f // Pause()
 	concat
@@ -262,11 +262,11 @@ pause:
 unpause:
 	proto 0 0
 
-	// src/roles/Pausable.algo.ts:83
+	// src\roles\Pausable.algo.ts:83
 	// this.onlyPauser()
 	callsub onlyPauser
 
-	// src/roles/Pausable.algo.ts:85
+	// src\roles\Pausable.algo.ts:85
 	// this.paused.value = false
 	byte 0x706175736564 // "paused"
 	int 0
@@ -276,7 +276,7 @@ unpause:
 	setbit
 	app_global_put
 
-	// src/roles/Pausable.algo.ts:86
+	// src\roles\Pausable.algo.ts:86
 	// this.Unpause.log({})
 	byte 0xb163ee0b // Unpause()
 	concat
@@ -306,24 +306,24 @@ unpause:
 updatePauser:
 	proto 1 0
 
-	// src/roles/Pausable.algo.ts:93
+	// src\roles\Pausable.algo.ts:93
 	// this.onlyPauser()
 	callsub onlyPauser
 
-	// src/roles/Pausable.algo.ts:95
+	// src\roles\Pausable.algo.ts:95
 	// assert(_newPauser !== globals.zeroAddress)
 	frame_dig -1 // _newPauser: Address
 	global ZeroAddress
 	!=
 	assert
 
-	// src/roles/Pausable.algo.ts:96
+	// src\roles\Pausable.algo.ts:96
 	// this._pauser.value = _newPauser
 	byte 0x5f706175736572 // "_pauser"
 	frame_dig -1 // _newPauser: Address
 	app_global_put
 
-	// src/roles/Pausable.algo.ts:97
+	// src\roles\Pausable.algo.ts:97
 	// this.PauserChanged.log({ newAddress: this._pauser.value })
 	byte 0xcc40923c // PauserChanged(address)
 	byte 0x5f706175736572 // "_pauser"
@@ -343,12 +343,12 @@ updatePauser:
 deploy:
 	proto 0 0
 
-	// src/Immersve.algo.ts:54
+	// src\Baanx.algo.ts:68
 	// this._transferOwnership(this.txn.sender)
 	txn Sender
 	callsub _transferOwnership
 
-	// src/Immersve.algo.ts:55
+	// src\Baanx.algo.ts:69
 	// this._pauser.value = this.txn.sender
 	byte 0x5f706175736572 // "_pauser"
 	txn Sender
@@ -366,7 +366,7 @@ deploy:
 update:
 	proto 0 0
 
-	// src/Immersve.algo.ts:60
+	// src\Baanx.algo.ts:74
 	// assert(this.txn.sender === this.app.creator, 'SENDER_NOT_ALLOWED')
 	txn Sender
 	txna Applications 0
@@ -389,7 +389,7 @@ update:
 destroy:
 	proto 0 0
 
-	// src/Immersve.algo.ts:65
+	// src\Baanx.algo.ts:79
 	// assert(this.txn.sender === this.app.creator, 'SENDER_NOT_ALLOWED')
 	txn Sender
 	txna Applications 0

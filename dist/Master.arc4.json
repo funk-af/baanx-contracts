@@ -573,6 +573,22 @@
       }
     },
     {
+      "name": "getCardFundWithdrawalNonce",
+      "desc": "Retrieves the next available nonce for the card fund.",
+      "readonly": true,
+      "args": [
+        {
+          "name": "cardFund",
+          "type": "address",
+          "desc": "The card fund address."
+        }
+      ],
+      "returns": {
+        "type": "uint64",
+        "desc": "The nonce for the card fund."
+      }
+    },
+    {
       "name": "getCardFundData",
       "desc": "Retrieves the card fund data for a given card fund address.",
       "readonly": true,
@@ -584,7 +600,7 @@
         }
       ],
       "returns": {
-        "type": "(address,address,address,uint64)",
+        "type": "(address,address,address,uint64,uint64)",
         "desc": "The card fund data."
       }
     },
@@ -727,17 +743,13 @@
       }
     },
     {
-      "name": "cardFundWithdrawalRequest",
+      "name": "cardFundInitPermissionlessWithdrawal",
       "desc": "Allows the Card Holder (or contract owner) to send an amount of assets from the account",
       "args": [
         {
           "name": "cardFund",
           "type": "address",
           "desc": "Address to withdraw from"
-        },
-        {
-          "name": "recipient",
-          "type": "address"
         },
         {
           "name": "asset",
@@ -751,8 +763,7 @@
         }
       ],
       "returns": {
-        "type": "byte[32]",
-        "desc": "Withdrawal hash used for completing or cancelling the withdrawal"
+        "type": "(address,address,uint64,uint64,uint64,uint64)"
       },
       "events": [
         {
@@ -779,9 +790,9 @@
               "desc": "Amount to withdraw"
             },
             {
-              "name": "timestamp",
+              "name": "createdAt",
               "type": "uint64",
-              "desc": "Timestamp that must be reached before withdrawal can be completed"
+              "desc": "Withdrawal Creation Timestamp"
             },
             {
               "name": "nonce",
@@ -801,19 +812,52 @@
           "name": "cardFund",
           "type": "address",
           "desc": "Address to withdraw from"
-        },
-        {
-          "name": "withdrawal_hash",
-          "type": "byte[32]",
-          "desc": "Hash of the withdrawal request"
         }
       ],
       "returns": {
         "type": "void"
-      }
+      },
+      "events": [
+        {
+          "name": "WithdrawalRequestCancelled",
+          "args": [
+            {
+              "name": "cardFund",
+              "type": "address",
+              "desc": "Funding Source to withdraw from"
+            },
+            {
+              "name": "recipient",
+              "type": "address",
+              "desc": "Recipient address to withdraw to"
+            },
+            {
+              "name": "asset",
+              "type": "uint64",
+              "desc": "Asset to withdraw"
+            },
+            {
+              "name": "amount",
+              "type": "uint64",
+              "desc": "Amount to withdraw"
+            },
+            {
+              "name": "createdAt",
+              "type": "uint64",
+              "desc": "Withdrawal Creation Timestamp"
+            },
+            {
+              "name": "nonce",
+              "type": "uint64",
+              "desc": "Withdrawal nonce"
+            }
+          ],
+          "desc": "Withdrawal Request Cancelled event"
+        }
+      ]
     },
     {
-      "name": "cardFundWithdraw",
+      "name": "cardFundExecutePermissionlessWithdrawal",
       "desc": "Allows the Card Holder to send an amount of assets from the account",
       "args": [
         {
@@ -822,9 +866,8 @@
           "desc": "Address to withdraw from"
         },
         {
-          "name": "withdrawal_hash",
-          "type": "byte[32]",
-          "desc": "Hash of the withdrawal request"
+          "name": "amount",
+          "type": "uint64"
         }
       ],
       "returns": {
@@ -832,8 +875,8 @@
       }
     },
     {
-      "name": "cardFundWithdrawEarly",
-      "desc": "Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by Immersve.",
+      "name": "cardFundExecuteApprovedWithdrawal",
+      "desc": "Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.",
       "args": [
         {
           "name": "cardFund",
@@ -841,12 +884,26 @@
           "desc": "The address of the card."
         },
         {
-          "name": "withdrawal_hash",
-          "type": "byte[32]",
-          "desc": "The hash of the withdrawal."
+          "name": "asset",
+          "type": "uint64",
+          "desc": "The ID of the asset to be withdrawn."
         },
         {
-          "name": "early_withdrawal_sig",
+          "name": "amount",
+          "type": "uint64",
+          "desc": "The amount of the withdrawal."
+        },
+        {
+          "name": "expiresAt",
+          "type": "uint64",
+          "desc": "The expiry of the withdrawal signature."
+        },
+        {
+          "name": "nonce",
+          "type": "uint64"
+        },
+        {
+          "name": "signature",
           "type": "byte[64]",
           "desc": "The signature for early withdrawal."
         }
@@ -1107,9 +1164,9 @@
           "desc": "Amount to withdraw"
         },
         {
-          "name": "timestamp",
+          "name": "createdAt",
           "type": "uint64",
-          "desc": "Timestamp that must be reached before withdrawal can be completed"
+          "desc": "Withdrawal Creation Timestamp"
         },
         {
           "name": "nonce",
@@ -1118,6 +1175,42 @@
         }
       ],
       "desc": "Withdrawal Request event"
+    },
+    {
+      "name": "WithdrawalRequestCancelled",
+      "args": [
+        {
+          "name": "cardFund",
+          "type": "address",
+          "desc": "Funding Source to withdraw from"
+        },
+        {
+          "name": "recipient",
+          "type": "address",
+          "desc": "Recipient address to withdraw to"
+        },
+        {
+          "name": "asset",
+          "type": "uint64",
+          "desc": "Asset to withdraw"
+        },
+        {
+          "name": "amount",
+          "type": "uint64",
+          "desc": "Amount to withdraw"
+        },
+        {
+          "name": "createdAt",
+          "type": "uint64",
+          "desc": "Withdrawal Creation Timestamp"
+        },
+        {
+          "name": "nonce",
+          "type": "uint64",
+          "desc": "Withdrawal nonce"
+        }
+      ],
+      "desc": "Withdrawal Request Cancelled event"
     },
     {
       "name": "Withdrawal",
@@ -1143,9 +1236,24 @@
           "desc": "Amount withdrawn"
         },
         {
+          "name": "createdAt",
+          "type": "uint64",
+          "desc": "Permissionless withdrawal creation time"
+        },
+        {
+          "name": "expiresAt",
+          "type": "uint64",
+          "desc": "Approved withdrawal expiration time"
+        },
+        {
           "name": "nonce",
           "type": "uint64",
           "desc": "Withdrawal nonce"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "desc": "Withdrawal type"
         }
       ],
       "desc": "Withdrawal event"

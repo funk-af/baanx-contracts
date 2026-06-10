@@ -18,7 +18,7 @@ function isCardFundsAddress(address: string) {
 }
 
 /**
- * Check if this is an asset supported by Immersve
+ * Check if this is an asset supported by Baanx
  */
 function isSupportedAsset(assetId: number) {
     return !!assetId;
