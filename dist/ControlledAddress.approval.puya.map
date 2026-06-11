@@ -1,0 +1,237 @@
+{
+  "version": 3,
+  "sources": [
+    "../src/Baanx.algo.ts"
+  ],
+  "mappings": ";;;;;AAqLA;;;;;;AAAA;;;AAAA;;;;AAAA;AAKK;;AAAA;;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;;;AAEG;AACc;;AAED;;;;AADD;;;;;AAFZ;;;AAAA;;;AAAA;AAFH;;;;;;AAQU;;AARV;AAAA;AAAA;AAAA",
+  "op_pc_offset": 0,
+  "pc_events": {
+    "1": {
+      "subroutine": "@algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram",
+      "params": {},
+      "block": "main",
+      "stack_in": [],
+      "op": "intcblock 0 1"
+    },
+    "5": {
+      "op": "pushbytes 0x561d2fea // method \"new()address\"",
+      "defined_out": [
+        "Method(new()address)"
+      ],
+      "stack_out": [
+        "Method(new()address)"
+      ]
+    },
+    "11": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(new()address)",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "Method(new()address)",
+        "tmp%0#1"
+      ]
+    },
+    "14": {
+      "op": "match main_new_route@2",
+      "stack_out": []
+    },
+    "18": {
+      "op": "err"
+    },
+    "19": {
+      "block": "main_new_route@2",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "21": {
+      "op": "pushint 5 // DeleteApplication",
+      "defined_out": [
+        "DeleteApplication",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0",
+        "DeleteApplication"
+      ]
+    },
+    "23": {
+      "op": "==",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "24": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%2#0",
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "tmp%2#0",
+        "tmp%3#0"
+      ]
+    },
+    "26": {
+      "op": "!",
+      "defined_out": [
+        "tmp%2#0",
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "tmp%2#0",
+        "tmp%4#0"
+      ]
+    },
+    "27": {
+      "op": "&&",
+      "defined_out": [
+        "tmp%5#0"
+      ],
+      "stack_out": [
+        "tmp%5#0"
+      ]
+    },
+    "28": {
+      "error": "OnCompletion must be DeleteApplication && can only call when creating",
+      "op": "assert // OnCompletion must be DeleteApplication && can only call when creating",
+      "stack_out": []
+    },
+    "29": {
+      "op": "b new"
+    },
+    "32": {
+      "subroutine": "src/Baanx.algo.ts::ControlledAddress.new[routing]",
+      "params": {},
+      "block": "new",
+      "stack_in": [],
+      "op": "itxn_begin"
+    },
+    "33": {
+      "op": "global CurrentApplicationAddress",
+      "defined_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0"
+      ],
+      "stack_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0"
+      ]
+    },
+    "35": {
+      "op": "global CallerApplicationAddress",
+      "defined_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0",
+        "inner_txn_params%0%%param_RekeyTo_idx_0#0"
+      ],
+      "stack_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0",
+        "inner_txn_params%0%%param_RekeyTo_idx_0#0"
+      ]
+    },
+    "37": {
+      "op": "itxn_field RekeyTo",
+      "stack_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0"
+      ]
+    },
+    "39": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0",
+        "inner_txn_params%0%%param_Receiver_idx_0#0"
+      ],
+      "stack_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0",
+        "0"
+      ]
+    },
+    "40": {
+      "op": "itxn_field Amount",
+      "stack_out": [
+        "inner_txn_params%0%%param_Receiver_idx_0#0"
+      ]
+    },
+    "42": {
+      "op": "itxn_field Receiver",
+      "stack_out": []
+    },
+    "44": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "45": {
+      "op": "itxn_field TypeEnum",
+      "stack_out": []
+    },
+    "47": {
+      "op": "intc_0 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "48": {
+      "op": "itxn_field Fee",
+      "stack_out": []
+    },
+    "50": {
+      "op": "itxn_submit"
+    },
+    "51": {
+      "op": "pushbytes 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75"
+      ],
+      "stack_out": [
+        "0x151f7c75"
+      ]
+    },
+    "57": {
+      "op": "global CurrentApplicationAddress",
+      "defined_out": [
+        "0x151f7c75",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "0x151f7c75",
+        "tmp%0#1"
+      ]
+    },
+    "59": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "60": {
+      "op": "log",
+      "stack_out": []
+    },
+    "61": {
+      "op": "intc_1 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "62": {
+      "op": "return",
+      "stack_out": []
+    }
+  }
+}

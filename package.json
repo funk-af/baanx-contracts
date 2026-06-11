@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "clean": "rm -rf {dist,client}/*",
-        "compile-contracts": "pnpm exec puya-ts src/**/*.algo.ts --out-dir dist/",
+        "compile-contracts": "pnpm exec puya-ts src/*.algo.ts --out-dir ../dist/",
         "generate-clients": "algokit generate client dist/ --language typescript --output client/{contract_name}Client.ts",
         "build": "pnpm compile-contracts && pnpm generate-clients",
         "test": "pnpm build && bun test __test__/Baanx.test.ts --timeout 60000"

@@ -1,0 +1,1320 @@
+{
+  "version": 3,
+  "sources": [
+    "../src/Baanx.algo.ts",
+    "../src/roles/Ownable.algo.ts",
+    "../src/roles/Pausable.algo.ts"
+  ],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAkKA;;;;;;;;;;;;AAAA;;;AAAA;;;;;;AAAA;;AAAA;AAAA;AAAA;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;;;AAAA;;;;;;;;;;;;;;AAAA;AAAA;;;;;;AAAA;;;AAAA;;;;AAAA;AAaK;;AAAA;;AAAA;AAAA;;AAAA;AAAA;AAAA;;;AALA;;AAAA;;AAAA;AAAA;;AAAA;AAAA;AAAA;;;AAJ2B;;AAAxB;;;AErIJ;AFsIyB;;AAArB;AAHH;AAAA;AAQU;;AAAe;;AAAf;AAAP;AAFH;AAAA;AAOU;;AAAe;;AAAf;AAAP;AAFH;AAAA;AErHU;AAzBX;AAyBW;AAAA;AADX;AAAA;AAAA;AAAA;AAAA;AAAA;AASI;;;AA/BJ;AAiCwB;AAApB;AACA;;;;;;AAAA;AAJJ;AAAA;AAWI;;;AAzCJ;AA2CwB;AAApB;AACA;;;;;;AAAA;AAJJ;AAAA;AAUA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AAEO;AAAe;;AAAf;AAAP;AAvDJ;AAwDI;;AAAA;AACA;;;;;;AAAA;AAAA;AAAA;AALJ;AAAA;ADnBW;AArBX;AAqBW;AAAA;AAFV;AAAA;AAAA;AAAA;AAAA;AAAA;AA2BD;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAvCW;;AAAe;AAP1B;AAO0B;AAAA;AAAf;AAAP;AA0CA;;;AAHJ;AAAA;AC1CW;;AAAe;AAhB1B;AAgB0B;AAAA;AAAf;AAAP;;ADyBJ;;;AAC0B;AA9B1B;AA8B0B;AAAA;;AAAA;;;AAAuB;AA9BjD;AA8BiD;AAAA;AA9BjD;AA+BI;;AAAA;AAE2B;;AAAA;AAA3B;;;;;;AAAA;AAAA;AAAA;;AAHiE;;",
+  "op_pc_offset": 0,
+  "pc_events": {
+    "1": {
+      "subroutine": "@algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram",
+      "params": {},
+      "block": "main",
+      "stack_in": [],
+      "op": "intcblock 1 0 32"
+    },
+    "6": {
+      "op": "bytecblock \"_owner\" \"_pauser\" 0x151f7c75 \"paused\""
+    },
+    "35": {
+      "op": "pushbytess 0xa0e81872 0x9c86a185 // method \"update()void\", method \"destroy()void\"",
+      "defined_out": [
+        "Method(destroy()void)",
+        "Method(update()void)"
+      ],
+      "stack_out": [
+        "Method(update()void)",
+        "Method(destroy()void)"
+      ]
+    },
+    "47": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(destroy()void)",
+        "Method(update()void)",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "Method(update()void)",
+        "Method(destroy()void)",
+        "tmp%0#1"
+      ]
+    },
+    "50": {
+      "op": "match main_update_route@2 main_destroy_route@3",
+      "stack_out": []
+    },
+    "56": {
+      "block": "main_switch_case_next@4",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%11#0"
+      ],
+      "stack_out": [
+        "tmp%11#0"
+      ]
+    },
+    "58": {
+      "op": "!",
+      "defined_out": [
+        "tmp%12#0"
+      ],
+      "stack_out": [
+        "tmp%12#0"
+      ]
+    },
+    "59": {
+      "error": "OnCompletion must be NoOp",
+      "op": "assert // OnCompletion must be NoOp",
+      "stack_out": []
+    },
+    "60": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%13#0"
+      ],
+      "stack_out": [
+        "tmp%13#0"
+      ]
+    },
+    "62": {
+      "op": "bz main_create_NoOp@13",
+      "stack_out": []
+    },
+    "65": {
+      "op": "pushbytess 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method \"pauser()address\", method \"pause()void\", method \"unpause()void\", method \"updatePauser(address)void\", method \"owner()address\", method \"transferOwnership(address)void\"",
+      "defined_out": [
+        "Method(owner()address)",
+        "Method(pause()void)",
+        "Method(pauser()address)",
+        "Method(transferOwnership(address)void)",
+        "Method(unpause()void)",
+        "Method(updatePauser(address)void)"
+      ],
+      "stack_out": [
+        "Method(pauser()address)",
+        "Method(pause()void)",
+        "Method(unpause()void)",
+        "Method(updatePauser(address)void)",
+        "Method(owner()address)",
+        "Method(transferOwnership(address)void)"
+      ]
+    },
+    "97": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(owner()address)",
+        "Method(pause()void)",
+        "Method(pauser()address)",
+        "Method(transferOwnership(address)void)",
+        "Method(unpause()void)",
+        "Method(updatePauser(address)void)",
+        "tmp%15#0"
+      ],
+      "stack_out": [
+        "Method(pauser()address)",
+        "Method(pause()void)",
+        "Method(unpause()void)",
+        "Method(updatePauser(address)void)",
+        "Method(owner()address)",
+        "Method(transferOwnership(address)void)",
+        "tmp%15#0"
+      ]
+    },
+    "100": {
+      "op": "match pauser pause unpause updatePauser owner transferOwnership",
+      "stack_out": []
+    },
+    "114": {
+      "op": "err"
+    },
+    "115": {
+      "block": "main_create_NoOp@13",
+      "stack_in": [],
+      "op": "pushbytes 0x739b0889 // method \"deploy()void\"",
+      "defined_out": [
+        "Method(deploy()void)"
+      ],
+      "stack_out": [
+        "Method(deploy()void)"
+      ]
+    },
+    "121": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(deploy()void)",
+        "tmp%16#0"
+      ],
+      "stack_out": [
+        "Method(deploy()void)",
+        "tmp%16#0"
+      ]
+    },
+    "124": {
+      "op": "match deploy",
+      "stack_out": []
+    },
+    "128": {
+      "op": "err"
+    },
+    "129": {
+      "block": "main_destroy_route@3",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%6#0"
+      ],
+      "stack_out": [
+        "tmp%6#0"
+      ]
+    },
+    "131": {
+      "op": "pushint 5 // DeleteApplication",
+      "defined_out": [
+        "DeleteApplication",
+        "tmp%6#0"
+      ],
+      "stack_out": [
+        "tmp%6#0",
+        "DeleteApplication"
+      ]
+    },
+    "133": {
+      "op": "==",
+      "defined_out": [
+        "tmp%7#0"
+      ],
+      "stack_out": [
+        "tmp%7#0"
+      ]
+    },
+    "134": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%7#0",
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "tmp%7#0",
+        "tmp%8#0"
+      ]
+    },
+    "136": {
+      "op": "&&",
+      "defined_out": [
+        "tmp%10#0"
+      ],
+      "stack_out": [
+        "tmp%10#0"
+      ]
+    },
+    "137": {
+      "error": "OnCompletion must be DeleteApplication && can only call when not creating",
+      "op": "assert // OnCompletion must be DeleteApplication && can only call when not creating",
+      "stack_out": []
+    },
+    "138": {
+      "op": "b destroy"
+    },
+    "141": {
+      "block": "main_update_route@2",
+      "stack_in": [],
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "143": {
+      "op": "pushint 4 // UpdateApplication",
+      "defined_out": [
+        "UpdateApplication",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0",
+        "UpdateApplication"
+      ]
+    },
+    "145": {
+      "op": "==",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "146": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%2#0",
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "tmp%2#0",
+        "tmp%3#0"
+      ]
+    },
+    "148": {
+      "op": "&&",
+      "defined_out": [
+        "tmp%5#0"
+      ],
+      "stack_out": [
+        "tmp%5#0"
+      ]
+    },
+    "149": {
+      "error": "OnCompletion must be UpdateApplication && can only call when not creating",
+      "op": "assert // OnCompletion must be UpdateApplication && can only call when not creating",
+      "stack_out": []
+    },
+    "150": {
+      "op": "b update"
+    },
+    "153": {
+      "subroutine": "src/Baanx.algo.ts::Placeholder.deploy[routing]",
+      "params": {},
+      "block": "deploy",
+      "stack_in": [],
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "155": {
+      "callsub": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
+      "op": "callsub _transferOwnership",
+      "stack_out": []
+    },
+    "158": {
+      "op": "bytec_1 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\""
+      ],
+      "stack_out": [
+        "\"_pauser\""
+      ]
+    },
+    "159": {
+      "op": "txn Sender",
+      "defined_out": [
+        "\"_pauser\"",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "\"_pauser\"",
+        "tmp%1#0"
+      ]
+    },
+    "161": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "162": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "163": {
+      "op": "return",
+      "stack_out": []
+    },
+    "164": {
+      "subroutine": "src/Baanx.algo.ts::Placeholder.update[routing]",
+      "params": {},
+      "block": "update",
+      "stack_in": [],
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "166": {
+      "op": "global CreatorAddress",
+      "defined_out": [
+        "tmp%0#0",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "tmp%1#0"
+      ]
+    },
+    "168": {
+      "op": "==",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "169": {
+      "error": "SENDER_NOT_ALLOWED",
+      "op": "assert // SENDER_NOT_ALLOWED",
+      "stack_out": []
+    },
+    "170": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "171": {
+      "op": "return",
+      "stack_out": []
+    },
+    "172": {
+      "subroutine": "src/Baanx.algo.ts::Placeholder.destroy[routing]",
+      "params": {},
+      "block": "destroy",
+      "stack_in": [],
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "174": {
+      "op": "global CreatorAddress",
+      "defined_out": [
+        "tmp%0#0",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "tmp%1#0"
+      ]
+    },
+    "176": {
+      "op": "==",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "177": {
+      "error": "SENDER_NOT_ALLOWED",
+      "op": "assert // SENDER_NOT_ALLOWED",
+      "stack_out": []
+    },
+    "178": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "179": {
+      "op": "return",
+      "stack_out": []
+    },
+    "180": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.pauser[routing]",
+      "params": {},
+      "block": "pauser",
+      "stack_in": [],
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "181": {
+      "op": "bytec_1 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"_pauser\""
+      ]
+    },
+    "182": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "183": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "184": {
+      "op": "bytec_2 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "0x151f7c75"
+      ]
+    },
+    "185": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ]
+    },
+    "186": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "187": {
+      "op": "log",
+      "stack_out": []
+    },
+    "188": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "189": {
+      "op": "return",
+      "stack_out": []
+    },
+    "190": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.pause[routing]",
+      "params": {},
+      "block": "pause",
+      "stack_in": [],
+      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "op": "callsub onlyPauser"
+    },
+    "193": {
+      "op": "bytec_3 // \"paused\"",
+      "defined_out": [
+        "\"paused\""
+      ],
+      "stack_out": [
+        "\"paused\""
+      ]
+    },
+    "194": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "\"paused\"",
+        "1"
+      ],
+      "stack_out": [
+        "\"paused\"",
+        "1"
+      ]
+    },
+    "195": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "196": {
+      "op": "pushbytes 0xcf23a30f",
+      "defined_out": [
+        "0xcf23a30f"
+      ],
+      "stack_out": [
+        "0xcf23a30f"
+      ]
+    },
+    "202": {
+      "op": "log",
+      "stack_out": []
+    },
+    "203": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "204": {
+      "op": "return",
+      "stack_out": []
+    },
+    "205": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.unpause[routing]",
+      "params": {},
+      "block": "unpause",
+      "stack_in": [],
+      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "op": "callsub onlyPauser"
+    },
+    "208": {
+      "op": "bytec_3 // \"paused\"",
+      "defined_out": [
+        "\"paused\""
+      ],
+      "stack_out": [
+        "\"paused\""
+      ]
+    },
+    "209": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "\"paused\"",
+        "0"
+      ],
+      "stack_out": [
+        "\"paused\"",
+        "0"
+      ]
+    },
+    "210": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "211": {
+      "op": "pushbytes 0xb163ee0b",
+      "defined_out": [
+        "0xb163ee0b"
+      ],
+      "stack_out": [
+        "0xb163ee0b"
+      ]
+    },
+    "217": {
+      "op": "log",
+      "stack_out": []
+    },
+    "218": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "219": {
+      "op": "return",
+      "stack_out": []
+    },
+    "220": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]",
+      "params": {},
+      "block": "updatePauser",
+      "stack_in": [],
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
+        "_newPauser#0"
+      ],
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "223": {
+      "op": "dup",
+      "defined_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)"
+      ]
+    },
+    "224": {
+      "op": "len",
+      "defined_out": [
+        "_newPauser#0",
+        "len%0#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "len%0#0"
+      ]
+    },
+    "225": {
+      "op": "intc_2 // 32",
+      "defined_out": [
+        "32",
+        "_newPauser#0",
+        "len%0#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "len%0#0",
+        "32"
+      ]
+    },
+    "226": {
+      "op": "==",
+      "defined_out": [
+        "_newPauser#0",
+        "eq%0#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "eq%0#0"
+      ]
+    },
+    "227": {
+      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "228": {
+      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "op": "callsub onlyPauser"
+    },
+    "231": {
+      "op": "dup"
+    },
+    "232": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)",
+        "tmp%0#1"
+      ]
+    },
+    "234": {
+      "op": "!=",
+      "defined_out": [
+        "_newPauser#0",
+        "tmp%1#1"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "tmp%1#1"
+      ]
+    },
+    "235": {
+      "op": "assert",
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "236": {
+      "op": "bytec_1 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\"",
+        "_newPauser#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "\"_pauser\""
+      ]
+    },
+    "237": {
+      "op": "dig 1",
+      "stack_out": [
+        "_newPauser#0",
+        "\"_pauser\"",
+        "_newPauser#0 (copy)"
+      ]
+    },
+    "239": {
+      "op": "app_global_put",
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "240": {
+      "op": "pushbytes 0xcc40923c // method \"PauserChanged(address)\"",
+      "defined_out": [
+        "Method(PauserChanged(address))",
+        "_newPauser#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "Method(PauserChanged(address))"
+      ]
+    },
+    "246": {
+      "op": "swap",
+      "stack_out": [
+        "Method(PauserChanged(address))",
+        "_newPauser#0"
+      ]
+    },
+    "247": {
+      "op": "concat",
+      "defined_out": [
+        "event%0#0"
+      ],
+      "stack_out": [
+        "event%0#0"
+      ]
+    },
+    "248": {
+      "op": "log",
+      "stack_out": []
+    },
+    "249": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "250": {
+      "op": "return",
+      "stack_out": []
+    },
+    "251": {
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable.owner[routing]",
+      "params": {},
+      "block": "owner",
+      "stack_in": [],
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "252": {
+      "op": "bytec_0 // \"_owner\"",
+      "defined_out": [
+        "\"_owner\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"_owner\""
+      ]
+    },
+    "253": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "254": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "255": {
+      "op": "bytec_2 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "0x151f7c75"
+      ]
+    },
+    "256": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ]
+    },
+    "257": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "258": {
+      "op": "log",
+      "stack_out": []
+    },
+    "259": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "260": {
+      "op": "return",
+      "stack_out": []
+    },
+    "261": {
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]",
+      "params": {},
+      "block": "transferOwnership",
+      "stack_in": [],
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0"
+      ]
+    },
+    "264": {
+      "op": "dup",
+      "defined_out": [
+        "newOwner#0",
+        "newOwner#0 (copy)"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "newOwner#0 (copy)"
+      ]
+    },
+    "265": {
+      "op": "len",
+      "defined_out": [
+        "len%0#0",
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "len%0#0"
+      ]
+    },
+    "266": {
+      "op": "intc_2 // 32",
+      "defined_out": [
+        "32",
+        "len%0#0",
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "len%0#0",
+        "32"
+      ]
+    },
+    "267": {
+      "op": "==",
+      "defined_out": [
+        "eq%0#0",
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "eq%0#0"
+      ]
+    },
+    "268": {
+      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "stack_out": [
+        "newOwner#0"
+      ]
+    },
+    "269": {
+      "op": "txn Sender",
+      "defined_out": [
+        "newOwner#0",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "tmp%0#1"
+      ]
+    },
+    "271": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "newOwner#0",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "tmp%0#1",
+        "0"
+      ]
+    },
+    "272": {
+      "op": "bytec_0 // \"_owner\"",
+      "defined_out": [
+        "\"_owner\"",
+        "0",
+        "newOwner#0",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "tmp%0#1",
+        "0",
+        "\"_owner\""
+      ]
+    },
+    "273": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "newOwner#0",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "tmp%0#1",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "274": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "newOwner#0",
+        "tmp%0#1",
+        "maybe_value%0#0"
+      ]
+    },
+    "275": {
+      "op": "==",
+      "defined_out": [
+        "newOwner#0",
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "tmp%1#0"
+      ]
+    },
+    "276": {
+      "error": "SENDER_NOT_ALLOWED",
+      "op": "assert // SENDER_NOT_ALLOWED",
+      "stack_out": [
+        "newOwner#0"
+      ]
+    },
+    "277": {
+      "callsub": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
+      "op": "callsub _transferOwnership",
+      "stack_out": []
+    },
+    "280": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "281": {
+      "op": "return",
+      "stack_out": []
+    },
+    "282": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "params": {},
+      "block": "onlyPauser",
+      "stack_in": [],
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "284": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0"
+      ]
+    },
+    "285": {
+      "op": "bytec_1 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\"",
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0",
+        "\"_pauser\""
+      ]
+    },
+    "286": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "287": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "288": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "289": {
+      "op": "assert",
+      "stack_out": []
+    },
+    "290": {
+      "retsub": true,
+      "op": "retsub"
+    },
+    "291": {
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
+      "params": {
+        "newOwner#0": "bytes"
+      },
+      "block": "_transferOwnership",
+      "stack_in": [],
+      "op": "proto 1 0"
+    },
+    "294": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "295": {
+      "op": "bytec_0 // \"_owner\"",
+      "defined_out": [
+        "\"_owner\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"_owner\""
+      ]
+    },
+    "296": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "_%0#0",
+        "maybe_exists%0#0"
+      ],
+      "stack_out": [
+        "_%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "297": {
+      "op": "bury 1",
+      "stack_out": [
+        "maybe_exists%0#0"
+      ]
+    },
+    "299": {
+      "op": "bz _transferOwnership_ternary_false@2",
+      "stack_out": []
+    },
+    "302": {
+      "op": "intc_1 // 0",
+      "stack_out": [
+        "0"
+      ]
+    },
+    "303": {
+      "op": "bytec_0 // \"_owner\"",
+      "stack_out": [
+        "0",
+        "\"_owner\""
+      ]
+    },
+    "304": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%1#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%1#0"
+      ]
+    },
+    "305": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "defined_out": [
+        "previousOwner#0"
+      ],
+      "stack_out": [
+        "previousOwner#0"
+      ]
+    },
+    "306": {
+      "block": "_transferOwnership_ternary_merge@3",
+      "stack_in": [
+        "previousOwner#0"
+      ],
+      "op": "bytec_0 // \"_owner\"",
+      "defined_out": [
+        "\"_owner\""
+      ],
+      "stack_out": [
+        "previousOwner#0",
+        "\"_owner\""
+      ]
+    },
+    "307": {
+      "op": "frame_dig -1",
+      "defined_out": [
+        "\"_owner\"",
+        "newOwner#0 (copy)"
+      ],
+      "stack_out": [
+        "previousOwner#0",
+        "\"_owner\"",
+        "newOwner#0 (copy)"
+      ]
+    },
+    "309": {
+      "op": "app_global_put",
+      "defined_out": [
+        "previousOwner#0"
+      ],
+      "stack_out": [
+        "previousOwner#0"
+      ]
+    },
+    "310": {
+      "op": "frame_dig -1",
+      "stack_out": [
+        "previousOwner#0",
+        "newOwner#0 (copy)"
+      ]
+    },
+    "312": {
+      "op": "concat",
+      "defined_out": [
+        "aggregate%head%1#0"
+      ],
+      "stack_out": [
+        "aggregate%head%1#0"
+      ]
+    },
+    "313": {
+      "op": "pushbytes 0x9a223efb // method \"OwnershipTransferred(address,address)\"",
+      "defined_out": [
+        "Method(OwnershipTransferred(address,address))",
+        "aggregate%head%1#0"
+      ],
+      "stack_out": [
+        "aggregate%head%1#0",
+        "Method(OwnershipTransferred(address,address))"
+      ]
+    },
+    "319": {
+      "op": "swap",
+      "stack_out": [
+        "Method(OwnershipTransferred(address,address))",
+        "aggregate%head%1#0"
+      ]
+    },
+    "320": {
+      "op": "concat",
+      "defined_out": [
+        "event%0#0"
+      ],
+      "stack_out": [
+        "event%0#0"
+      ]
+    },
+    "321": {
+      "op": "log",
+      "stack_out": []
+    },
+    "322": {
+      "retsub": true,
+      "op": "retsub"
+    },
+    "323": {
+      "block": "_transferOwnership_ternary_false@2",
+      "stack_in": [],
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "previousOwner#0"
+      ],
+      "stack_out": [
+        "previousOwner#0"
+      ]
+    },
+    "325": {
+      "op": "b _transferOwnership_ternary_merge@3"
+    }
+  }
+}
