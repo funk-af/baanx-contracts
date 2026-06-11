@@ -435,7 +435,7 @@
                     "type": "address",
                     "desc": "The address of the newly created partner channel account."
                 },
-                "desc": "Creates a partner channel account and associates it with the provided partner channel name.\r\nOnly the owner of the contract can call this function."
+                "desc": "Creates a partner channel account and associates it with the provided partner channel name.\nOnly the owner of the contract can call this function."
             },
             {
                 "name": "partnerChannelClose",
@@ -525,7 +525,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Recovers funds from an old card and transfers them to a new card.\r\nOnly the owner of the contract can perform this operation."
+                "desc": "Recovers funds from an old card and transfers them to a new card.\nOnly the owner of the contract can perform this operation."
             },
             {
                 "name": "getAssetAllowlistMbr",
@@ -607,7 +607,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Debits the specified amount of the given asset from the card account.\r\nOnly the owner of the contract can perform this operation."
+                "desc": "Debits the specified amount of the given asset from the card account.\nOnly the owner of the contract can perform this operation."
             },
             {
                 "name": "getRefundAddress",
@@ -632,7 +632,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Sets the refund address.\r\nOnly the owner of the contract can call this method."
+                "desc": "Sets the refund address.\nOnly the owner of the contract can call this method."
             },
             {
                 "name": "cardFundRefund",
@@ -661,7 +661,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Refunds a specified amount of an asset to a card account.\r\nOnly the owner of the contract can perform this operation."
+                "desc": "Refunds a specified amount of an asset to a card account.\nOnly the owner of the contract can perform this operation."
             },
             {
                 "name": "getNextSettlementNonce",
@@ -755,7 +755,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Sets the settlement address for a given settlement asset.\r\nOnly the owner of the contract can call this method."
+                "desc": "Sets the settlement address for a given settlement asset.\nOnly the owner of the contract can call this method."
             },
             {
                 "name": "settle",
@@ -780,7 +780,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Settles a payment by transferring an asset to the specified recipient.\r\nOnly the owner of the contract can call this function."
+                "desc": "Settles a payment by transferring an asset to the specified recipient.\nOnly the owner of the contract can call this function."
             },
             {
                 "name": "getCardFundAssetMbr",
@@ -1018,7 +1018,7 @@
                 "returns": {
                     "type": "void"
                 },
-                "desc": "Transfers the ownership of the contract to a new owner.\r\nRequires the caller to be the current owner."
+                "desc": "Transfers the ownership of the contract to a new owner.\nRequires the caller to be the current owner."
             }
         ],
         "networks": {}

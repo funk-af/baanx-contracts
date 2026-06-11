@@ -189,7 +189,7 @@
                 ]
             },
             "readonly": false,
-            "desc": "Transfers the ownership of the contract to a new owner.\r\nRequires the caller to be the current owner.",
+            "desc": "Transfers the ownership of the contract to a new owner.\nRequires the caller to be the current owner.",
             "events": [
                 {
                     "name": "OwnershipTransferred",
