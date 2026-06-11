@@ -8,7 +8,7 @@
         "compile-contracts": "pnpm exec tealscript src/*.algo.ts dist/",
         "generate-clients": "algokit generate client dist/ --language typescript --output client/{contract_name}Client.ts",
         "build": "pnpm compile-contracts && pnpm generate-clients",
-        "test": "pnpm build && bun test __test__/Immersive.test.ts --timeout 60000"
+        "test": "pnpm build && bun test __test__/Baanx.test.ts --timeout 60000"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^7.0.1",
