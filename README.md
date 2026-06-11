@@ -7,13 +7,13 @@ This concept uses a single contract that "generates" new addresses for each part
 To install dependencies:
 
 ```bash
-bun install
+pnpm install
 ```
 
 To run a full test:
 
 ```bash
-bun test
+pnpm test
 ```
 
 ## Methods
