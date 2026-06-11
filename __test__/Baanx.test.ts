@@ -25,7 +25,7 @@ describe('Baanx', () => {
     let fakeUSDC: number;
     let newPartnerChannel: string;
     let newCardAddress: string;
-    let withdrawalRequest: Uint8Array;
+    let withdrawalRequest: [string, string, bigint, bigint, bigint, bigint];
 
     beforeAll(async () => {
         await fixture.beforeEach();
@@ -585,10 +585,9 @@ describe('Baanx', () => {
     });
 
     test('User creates withdrawal request', async () => {
-        const result = await appClient.optIn.cardFundWithdrawalRequest(
+        const result = await appClient.optIn.cardFundInitPermissionlessWithdrawal(
             {
                 cardFund: newCardAddress,
-                recipient: user2.addr,
                 asset: fakeUSDC,
                 amount: 3_000_000,
             },
@@ -634,10 +633,10 @@ describe('Baanx', () => {
     });
 
     test('Complete withdrawal request', async () => {
-        const result = await appClient.closeOut.cardFundWithdraw(
+        const result = await appClient.closeOut.cardFundExecutePermissionlessWithdrawal(
             {
                 cardFund: newCardAddress,
-                withdrawalHash: withdrawalRequest,
+                amount: withdrawalRequest[3],
             },
             {
                 sender: user2,
@@ -662,10 +661,9 @@ describe('Baanx', () => {
 
     // TODO: cardWithdrawEarly test
     test('User creates another withdrawal request', async () => {
-        const result = await appClient.optIn.cardFundWithdrawalRequest(
+        const result = await appClient.optIn.cardFundInitPermissionlessWithdrawal(
             {
                 cardFund: newCardAddress,
-                recipient: user2.addr,
                 asset: fakeUSDC,
                 amount: 2_000_000,
             },
@@ -684,18 +682,42 @@ describe('Baanx', () => {
 
     // Early Withdrawal Test
     test('Request early withdrawal', async () => {
-        // Generate the early withdrawal signature using the withdrawalAcc secret key
-        const sig = nacl.sign.detached(Buffer.from(withdrawalRequest), withdrawalAcc.sk);
-        const result = await appClient.cardFundWithdrawEarly(
+        const { algod } = fixture.context;
+        const genesis = await algod.genesis().do();
+        const genesisHash = Buffer.from(genesis.genesisHash as string, 'base64');
+
+        const [cardFundAddr, _recipient, withdrawalAsset, amount, _createdAt, nonce] = withdrawalRequest;
+        const expiresAt = BigInt(Math.floor(Date.now() / 1000)) + BigInt(3600);
+
+        // Build withdrawal bytes matching the contract: cardFund(32) + recipient(32) + asset(8) + amount(8) + expiresAt(8) + nonce(8) + genesisHash(32)
+        const withdrawalBytes = Buffer.concat([
+            algosdk.decodeAddress(cardFundAddr).publicKey,
+            algosdk.decodeAddress(user2.addr).publicKey,
+            algosdk.encodeUint64(withdrawalAsset),
+            algosdk.encodeUint64(amount),
+            algosdk.encodeUint64(expiresAt),
+            algosdk.encodeUint64(nonce),
+            genesisHash,
+        ]);
+
+        // SHA256 hash the bytes, then sign with ed25519
+        const { createHash } = await import('crypto');
+        const withdrawalHash = createHash('sha256').update(withdrawalBytes).digest();
+        const sig = nacl.sign.detached(withdrawalHash, withdrawalAcc.sk);
+
+        const result = await appClient.cardFundExecuteApprovedWithdrawal(
             {
                 cardFund: newCardAddress,
-                withdrawalHash: withdrawalRequest,
-                earlyWithdrawalSig: sig,
+                asset: fakeUSDC,
+                amount: amount,
+                expiresAt: expiresAt,
+                nonce: nonce,
+                signature: sig,
             },
             {
                 sender: user2,
                 sendParams: {
-                    fee: microAlgos(2_000 + 3_000), // 3x OpUp
+                    fee: microAlgos(2_000 + 3_000),
                     populateAppCallResources: true,
                 },
             }

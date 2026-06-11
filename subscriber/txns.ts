@@ -24,7 +24,7 @@ async function main() {
         suggestedParams: await algod.getTransactionParams().do(),
     });
 
-    const dispenserSigner = algosdk.makeBasicAccountTransactionSigner(dispenser);
+    const dispenserSigner = dispenser.signer;
 
     const aliceFundAtc = new algosdk.AtomicTransactionComposer();
 

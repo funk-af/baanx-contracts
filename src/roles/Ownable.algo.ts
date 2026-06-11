@@ -22,35 +22,35 @@
  * SOFTWARE.
  */
 /* eslint-disable no-underscore-dangle */
-import { Contract } from '@algorandfoundation/tealscript';
+import {
+    Contract,
+    GlobalState,
+    Account,
+    emit,
+    abimethod,
+    Txn,
+    Global,
+    assert,
+} from '@algorandfoundation/algorand-typescript';
+
+type OwnershipTransferred = {
+    previousOwner: Account;
+    newOwner: Account;
+};
 
 export class Ownable extends Contract {
     // ========== State Variables ==========
     /**
      * Owner of the contract
      */
-    _owner = GlobalStateKey<Address>();
-
-    // ========== Events ==========
-    /**
-     * Event emitted when ownership of the contract is transferred.
-     * @event OwnershipTransferred
-     * @property {Address} previousOwner - The previous owner address.
-     * @property {Address} newOwner - The new owner address.
-     */
-    OwnershipTransferred = new EventLogger<{
-        /** Previous owner address */
-        previousOwner: Address;
-        /** New owner address */
-        newOwner: Address;
-    }>();
+    _owner = GlobalState<Account>();
 
     // ========== Access Checks ==========
     /**
      * Assert the transaction sender is the owner of the contract.
      */
     protected onlyOwner(): void {
-        assert(this.txn.sender === this._owner.value, 'SENDER_NOT_ALLOWED');
+        assert(Txn.sender === this._owner.value, 'SENDER_NOT_ALLOWED');
     }
 
     /**
@@ -58,12 +58,12 @@ export class Ownable extends Contract {
      * @returns boolean True if the sender is the owner, false otherwise.
      */
     protected isOwner(): boolean {
-        return this.txn.sender === this._owner.value;
+        return Txn.sender === this._owner.value;
     }
 
     // ========== Read Only ==========
-    @abi.readonly
-    owner(): Address {
+    @abimethod({ readonly: true })
+    owner(): Account {
         return this._owner.value;
     }
 
@@ -72,11 +72,11 @@ export class Ownable extends Contract {
      * Transfers the ownership of the contract to a new owner.
      * @param newOwner The address of the new owner.
      */
-    protected _transferOwnership(newOwner: Address): void {
-        const previousOwner = this._owner.exists ? this._owner.value : globals.zeroAddress;
+    protected _transferOwnership(newOwner: Account): void {
+        const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
         this._owner.value = newOwner;
 
-        this.OwnershipTransferred.log({
+        emit<OwnershipTransferred>({
             previousOwner: previousOwner,
             newOwner: newOwner,
         });
@@ -89,7 +89,7 @@ export class Ownable extends Contract {
      *
      * @param newOwner The address of the new owner.
      */
-    transferOwnership(newOwner: Address): void {
+    transferOwnership(newOwner: Account): void {
         this.onlyOwner();
 
         this._transferOwnership(newOwner);

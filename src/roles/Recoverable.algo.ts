@@ -21,34 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Contract } from '@algorandfoundation/tealscript';
-import { Ownable } from './Ownable.algo';
+import { Asset, uint64, Account, itxn } from '@algorandfoundation/algorand-typescript';
+import { Pausable } from './Pausable.algo';
 
 /**
  * Recoverable class, with the ability to recover assets sent to the contract by mistake.
  */
-export class Recoverable extends Contract.extend(Ownable) {
+export class Recoverable extends Pausable {
     /**
      * Recover an asset sent to the contract by mistake. Only the owner can call this function.
      * @param asset Asset ID of the asset to recover. If 0, Algo will be recovered.
      * @param amount Amount of the asset to recover. If Algos, remember the minimum balance requirement.
      * @param recipient Address to send the recovered asset to.
      */
-    recoverAsset(asset: AssetID, amount: uint64, recipient: Address): void {
+    recoverAsset(asset: Asset, amount: uint64, recipient: Account): void {
         this.onlyOwner();
 
         // Send Algo or ASAs held by the master contract. These were likely sent by mistake and may only be recoverable by the owner.
-        if (asset) {
-            sendAssetTransfer({
+        if (asset.id) {
+            itxn.assetTransfer({
                 assetAmount: amount,
                 assetReceiver: recipient,
                 xferAsset: asset,
-            });
+            }).submit();
         } else {
-            sendPayment({
+            itxn.payment({
                 amount: amount,
                 receiver: recipient,
-            });
+            }).submit();
         }
     }
 }

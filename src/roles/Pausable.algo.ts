@@ -22,24 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Contract } from '@algorandfoundation/tealscript';
+import { GlobalState, Account, emit, Txn, Global, assert } from '@algorandfoundation/algorand-typescript';
+import { Ownable } from './Ownable.algo';
 
-export class Pausable extends Contract {
-    programVersion = 10;
+type Pause = {};
+type Unpause = {};
+type PauserChanged = { newAddress: Account };
 
+export class Pausable extends Ownable {
     // ============ State Variables ============
-    _pauser = GlobalStateKey<Address>();
+    _pauser = GlobalState<Account>();
 
-    paused = GlobalStateKey<boolean>();
-
-    // ============ Events ============
-    Pause = new EventLogger<{}>();
-
-    Unpause = new EventLogger<{}>();
-
-    PauserChanged = new EventLogger<{
-        newAddress: Address;
-    }>();
+    paused = GlobalState<boolean>();
 
     // ============ Access Checks ============
     /**
@@ -53,7 +47,7 @@ export class Pausable extends Contract {
      * @dev throws if called by any account other than the pauser
      */
     protected onlyPauser(): void {
-        assert(this.txn.sender === this._pauser.value);
+        assert(Txn.sender === this._pauser.value);
     }
 
     // ============ Read Only ============
@@ -61,7 +55,7 @@ export class Pausable extends Contract {
      * @notice Returns current pauser
      * @return Pauser's address
      */
-    pauser(): Address {
+    pauser(): Account {
         return this._pauser.value;
     }
 
@@ -73,7 +67,7 @@ export class Pausable extends Contract {
         this.onlyPauser();
 
         this.paused.value = true;
-        this.Pause.log({});
+        emit<Pause>({});
     }
 
     /**
@@ -83,17 +77,17 @@ export class Pausable extends Contract {
         this.onlyPauser();
 
         this.paused.value = false;
-        this.Unpause.log({});
+        emit<Unpause>({});
     }
 
     /**
      * @dev update the pauser role
      */
-    updatePauser(_newPauser: Address): void {
+    updatePauser(_newPauser: Account): void {
         this.onlyPauser();
 
-        assert(_newPauser !== globals.zeroAddress);
+        assert(_newPauser !== Global.zeroAddress);
         this._pauser.value = _newPauser;
-        this.PauserChanged.log({ newAddress: this._pauser.value });
+        emit<PauserChanged>({ newAddress: this._pauser.value });
     }
 }

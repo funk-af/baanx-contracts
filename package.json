@@ -5,12 +5,13 @@
     "type": "module",
     "scripts": {
         "clean": "rm -rf {dist,client}/*",
-        "compile-contracts": "pnpm exec tealscript src/*.algo.ts dist/",
+        "compile-contracts": "pnpm exec puya-ts src/**/*.algo.ts --out-dir dist/",
         "generate-clients": "algokit generate client dist/ --language typescript --output client/{contract_name}Client.ts",
         "build": "pnpm compile-contracts && pnpm generate-clients",
-        "test": "pnpm build && bun test __test__/Immersive.test.ts --timeout 60000"
+        "test": "pnpm build && bun test __test__/Baanx.test.ts --timeout 60000"
     },
     "devDependencies": {
+        "@jest/globals": "^30.4.1",
         "@typescript-eslint/eslint-plugin": "^7.0.1",
         "@typescript-eslint/parser": "^7.0.1",
         "eslint": "^8.56.0",
@@ -27,7 +28,8 @@
         "@algorandfoundation/algokit-client-generator": "^3.0.3",
         "@algorandfoundation/algokit-subscriber": "^1.2.0",
         "@algorandfoundation/algokit-utils": "^6.0.2",
-        "@algorandfoundation/tealscript": "^0.92.0",
+        "@algorandfoundation/algorand-typescript": "^1.0.0",
+        "@algorandfoundation/puya-ts": "^1.1.0",
         "@types/websocket": "^1.0.10",
         "algo-msgpack-with-bigint": "^2.1.1",
         "algosdk": "^2.7.0",
