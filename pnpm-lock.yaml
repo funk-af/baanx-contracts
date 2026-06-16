@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@algorandfoundation/algokit-utils':
-        specifier: ^6.0.2
-        version: 6.2.1(algosdk@2.11.0)
+        specifier: ^9.2.0
+        version: 9.2.0(algosdk@3.6.0)
       '@algorandfoundation/algorand-typescript':
         specifier: ^1.0.0
         version: 1.1.0(tslib@2.8.1)
@@ -24,8 +24,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       algosdk:
-        specifier: ^2.7.0
-        version: 2.11.0
+        specifier: ^3.6.0
+        version: 3.6.0
       ts-jest:
         specifier: ^29.1.2
         version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@29.7.0(@babel/core@7.29.7))(jest-util@30.4.1)(jest@29.7.0(@types/node@25.9.2))(typescript@5.9.3)
@@ -39,6 +39,9 @@ importers:
         specifier: ^1.0.34
         version: 1.0.35
     devDependencies:
+      '@algorandfoundation/algokit-client-generator':
+        specifier: ^6.0.1
+        version: 6.0.1(@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0))(algosdk@3.6.0)
       '@jest/globals':
         specifier: ^30.4.1
         version: 30.4.1
@@ -69,11 +72,19 @@ importers:
 
 packages:
 
-  '@algorandfoundation/algokit-utils@6.2.1':
-    resolution: {integrity: sha512-oJbqT91KJp34OasYID2guWHysCLdgZ/4GVb06sdgXxORWKKMhZa/Uj12UiACo4VzZJBOUZEJCh/QrSuHmu/m2g==}
-    engines: {node: '>=18.0'}
+  '@algorandfoundation/algokit-client-generator@6.0.1':
+    resolution: {integrity: sha512-9IMblhFK7BX8vC5R9txb9wWwQTW1ThzraBWwzhk4niE0kZMzYIh5ZD+WVUxg+zTtwK66ziQVU1NO/v9Q8pEyzw==}
+    engines: {node: '>=20.0'}
+    hasBin: true
     peerDependencies:
-      algosdk: ^2.7.0
+      '@algorandfoundation/algokit-utils': ^9.0.0
+      algosdk: ^3.2.0
+
+  '@algorandfoundation/algokit-utils@9.2.0':
+    resolution: {integrity: sha512-jILpK3PlSJ55crS8+Dl7iIiADEj/VowokTGSVEEneDG41XM3jMmogGVpCNipBil/YAGC2eh2yc4l9iHnfQdT/g==}
+    engines: {node: '>=20.0'}
+    peerDependencies:
+      algosdk: ^3.5.2
 
   '@algorandfoundation/algorand-typescript@1.1.0':
     resolution: {integrity: sha512-nH2aH3gH2mtW3ow6pjAgPVNjmYxIoYwP7Xh5SUQ2kKsQaP3QUs6I3c+EAAo+Hc5jqS8bF1T23MxpLeWbh+BbKQ==}
@@ -584,8 +595,12 @@ packages:
     resolution: {integrity: sha512-F1tGh056XczEaEAqu7s+hlZUDWwOBT70Eq0lfMpBP2YguSQVyxRbprLq5rELXKQOyOaixTWYhMeMQMzP0U5FoQ==}
     engines: {node: '>= 10'}
 
-  algosdk@2.11.0:
-    resolution: {integrity: sha512-MJ9xrjBKqG6ItCAR0Z974DG7nvifXsQxlj7HbWkBat4+h/IygwKPEH/v0dQPOYWdTcf5/5lfu+OyEVOsjxvyRQ==}
+  algorand-msgpack@1.1.0:
+    resolution: {integrity: sha512-08k7pBQnkaUB5p+jL7f1TRaUIlTSDE0cesFu1mD7llLao+1cAhtvvZmGE3OnisTd0xOn118QMw74SRqddqaYvw==}
+    engines: {node: '>= 14'}
+
+  algosdk@3.6.0:
+    resolution: {integrity: sha512-pdM0neCgR3DasvpSPfgQKc5/hlhkSYmXjcUChePLGegA0kqA0AoLmcfMDyeREcsvHcu7rrv3Wa+RZnGa5kINwQ==}
     engines: {node: '>=18.0.0'}
 
   ansi-escapes@4.3.2:
@@ -810,6 +825,10 @@ packages:
 
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+
+  commander@14.0.3:
+    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
+    engines: {node: '>=20'}
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -1697,6 +1716,9 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  jsonschema@1.5.0:
+    resolution: {integrity: sha512-K+A9hhqbn0f3pJX17Q/7H6yQfD/5OXgdrR5UE12gMXCiN9D5Xq2o5mddV2QEcX/bjla99ASsAAQUyMCCRWAEhw==}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -2415,9 +2437,18 @@ packages:
 
 snapshots:
 
-  '@algorandfoundation/algokit-utils@6.2.1(algosdk@2.11.0)':
+  '@algorandfoundation/algokit-client-generator@6.0.1(@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0))(algosdk@3.6.0)':
     dependencies:
-      algosdk: 2.11.0
+      '@algorandfoundation/algokit-utils': 9.2.0(algosdk@3.6.0)
+      algosdk: 3.6.0
+      chalk: 5.6.2
+      change-case: 5.4.4
+      commander: 14.0.3
+      jsonschema: 1.5.0
+
+  '@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0)':
+    dependencies:
+      algosdk: 3.6.0
       buffer: 6.0.3
 
   '@algorandfoundation/algorand-typescript@1.1.0(tslib@2.8.1)':
@@ -3132,10 +3163,11 @@ snapshots:
 
   algo-msgpack-with-bigint@2.1.1: {}
 
-  algosdk@2.11.0:
+  algorand-msgpack@1.1.0: {}
+
+  algosdk@3.6.0:
     dependencies:
-      algo-msgpack-with-bigint: 2.1.1
-      buffer: 6.0.3
+      algorand-msgpack: 1.1.0
       hi-base32: 0.5.1
       js-sha256: 0.9.0
       js-sha3: 0.8.0
@@ -3405,6 +3437,8 @@ snapshots:
       color-name: 1.1.4
 
   color-name@1.1.4: {}
+
+  commander@14.0.3: {}
 
   concat-map@0.0.1: {}
 
@@ -4645,6 +4679,8 @@ snapshots:
       minimist: 1.2.8
 
   json5@2.2.3: {}
+
+  jsonschema@1.5.0: {}
 
   keyv@4.5.4:
     dependencies:

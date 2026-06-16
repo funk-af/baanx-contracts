@@ -6,11 +6,12 @@
     "scripts": {
         "clean": "rm -rf {dist,client}/*",
         "compile-contracts": "pnpm exec puya-ts src/*.algo.ts --out-dir ../dist",
-        "generate-clients": "algokit generate client dist --language typescript --output client/{contract_name}Client.ts",
+        "generate-clients": "for f in dist/*.arc56.json; do name=$(basename \"$f\" .arc56.json); pnpm exec algokitgen generate -a \"$f\" -o \"client/${name}Client.ts\"; done",
         "build": "pnpm compile-contracts && pnpm generate-clients",
-        "test": "pnpm build && bun test __test__/Baanx.test.ts --timeout 60000"
+        "test": "pnpm build && jest __test__/Baanx.test.ts"
     },
     "devDependencies": {
+        "@algorandfoundation/algokit-client-generator": "^6.0.1",
         "@jest/globals": "^30.4.1",
         "@typescript-eslint/eslint-plugin": "^7.0.1",
         "@typescript-eslint/parser": "^7.0.1",
@@ -25,12 +26,12 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@algorandfoundation/algokit-utils": "^6.0.2",
+        "@algorandfoundation/algokit-utils": "^9.2.0",
         "@algorandfoundation/algorand-typescript": "^1.0.0",
         "@algorandfoundation/puya-ts": "^1.1.0",
         "@types/websocket": "^1.0.10",
         "algo-msgpack-with-bigint": "^2.1.1",
-        "algosdk": "^2.7.0",
+        "algosdk": "^3.6.0",
         "ts-jest": "^29.1.2",
         "tweetnacl": "^1.0.3",
         "websocket": "^1.0.34"

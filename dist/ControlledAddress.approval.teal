@@ -4,7 +4,7 @@
 // @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
 main:
     intcblock 0 1
-    // src/Baanx.algo.ts:182
+    // src/Baanx.algo.ts:181
     // class ControlledAddress extends Contract {
     pushbytes 0x561d2fea // method "new()address"
     txna ApplicationArgs 0
@@ -12,7 +12,7 @@ main:
     err
 
 main_new_route@2:
-    // src/Baanx.algo.ts:187
+    // src/Baanx.algo.ts:186
     // @abimethod({ allowActions: ['DeleteApplication'], onCreate: 'require' })
     txn OnCompletion
     pushint 5 // DeleteApplication
@@ -26,26 +26,26 @@ main_new_route@2:
 
 // src/Baanx.algo.ts::ControlledAddress.new[routing]() -> void:
 new:
-    // src/Baanx.algo.ts:189-193
+    // src/Baanx.algo.ts:188-192
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
     //     rekeyTo: Global.callerApplicationAddress,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:190
+    // src/Baanx.algo.ts:189
     // receiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:192
+    // src/Baanx.algo.ts:191
     // rekeyTo: Global.callerApplicationAddress,
     global CallerApplicationAddress
     itxn_field RekeyTo
-    // src/Baanx.algo.ts:191
+    // src/Baanx.algo.ts:190
     // amount: 0,
     intc_0 // 0
     itxn_field Amount
     itxn_field Receiver
-    // src/Baanx.algo.ts:189-193
+    // src/Baanx.algo.ts:188-192
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
@@ -56,13 +56,13 @@ new:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:187
+    // src/Baanx.algo.ts:186
     // @abimethod({ allowActions: ['DeleteApplication'], onCreate: 'require' })
     pushbytes 0x151f7c75
-    // src/Baanx.algo.ts:195
+    // src/Baanx.algo.ts:194
     // return Global.currentApplicationAddress;
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:187
+    // src/Baanx.algo.ts:186
     // @abimethod({ allowActions: ['DeleteApplication'], onCreate: 'require' })
     concat
     log

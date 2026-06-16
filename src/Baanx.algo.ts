@@ -26,7 +26,6 @@
 import {
     Contract,
     GlobalState,
-    LocalState,
     BoxMap,
     Account,
     Asset,
@@ -215,8 +214,8 @@ export class Master extends Recoverable {
     early_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'ewpk' });
 
     // Withdrawal requests
-    // Only one allowed at any given point
-    withdrawals = LocalState<PermissionlessWithdrawalRequest>({ key: 'wr' });
+    // Only one allowed at any given point. MBR is sponsored by the contract owner (app account).
+    withdrawals = BoxMap<Account, PermissionlessWithdrawalRequest>({ keyPrefix: 'wr' });
 
     // Settlement nonce
     settlement_nonce = GlobalState<uint64>({ key: 'sn' });
@@ -345,6 +344,21 @@ export class Master extends Recoverable {
     @abimethod({ allowActions: ['UpdateApplication'] })
     update(): void {
         this.onlyOwner();
+
+        // Initialize global counters on first upgrade from the placeholder contract.
+        // puya-ts does not auto-zero-init GlobalState, so set them explicitly if unset.
+        if (!this.card_funds_active_count.hasValue) {
+            this.card_funds_active_count.value = 0;
+        }
+        if (!this.partner_channels_active_count.hasValue) {
+            this.partner_channels_active_count.value = 0;
+        }
+        if (!this.settlement_nonce.hasValue) {
+            this.settlement_nonce.value = 0;
+        }
+        if (!this.paused.hasValue) {
+            this.paused.value = false;
+        }
     }
 
     /**
@@ -890,7 +904,7 @@ export class Master extends Recoverable {
      * @param asset Asset to withdraw
      * @param amount Amount to withdraw
      */
-    @abimethod({ allowActions: ['NoOp', 'OptIn'] })
+    @abimethod({ allowActions: ['NoOp'] })
     cardFundInitPermissionlessWithdrawal(
         cardFund: Account,
         asset: Asset,
@@ -923,7 +937,7 @@ export class Master extends Recoverable {
      */
     cardFundWithdrawalCancel(cardFund: Account): void {
         assert(this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
-        assert(this.withdrawals(Txn.sender).hasValue, 'WITHDRAWAL_REQUEST_NOT_FOUND');
+        assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
         const withdrawal = clone(this.withdrawals(Txn.sender).value);
         this.withdrawals(Txn.sender).delete();
         emit<WithdrawalRequestCancelled>(withdrawal);
@@ -933,10 +947,10 @@ export class Master extends Recoverable {
      * Allows the Card Holder to send an amount of assets from the account
      * @param cardFund Address to withdraw from
      */
-    @abimethod({ allowActions: ['NoOp', 'CloseOut'] })
+    @abimethod({ allowActions: ['NoOp'] })
     cardFundExecutePermissionlessWithdrawal(cardFund: Account, amount: uint64): void {
         assert(this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
-        assert(this.withdrawals(Txn.sender).hasValue, 'WITHDRAWAL_REQUEST_NOT_FOUND');
+        assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
         const cardFundData = clone(this.card_funds(cardFund).value);
         const withdrawal = clone(this.withdrawals(Txn.sender).value);
         assert(amount <= withdrawal.amount, 'AMOUNT_INVALID');
@@ -1000,5 +1014,12 @@ export class Master extends Recoverable {
 
         // Issue the withdrawal
         this.withdrawFunds(cardFund, asset, amount, expiresAt, cardFundData.withdrawalNonce, WithdrawalTypeApproved);
+
+        // An approved (early) withdrawal supersedes any pending permissionless request for
+        // the sender. Clean it up to release its box MBR and avoid orphaning the box, since
+        // issuing the withdrawal increments the nonce and makes the request un-executable.
+        if (this.withdrawals(Txn.sender).exists) {
+            this.withdrawals(Txn.sender).delete();
+        }
     }
 }

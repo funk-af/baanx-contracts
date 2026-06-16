@@ -1,12 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { describe, test, expect, beforeAll, beforeEach } from '@jest/globals';
+import { describe, test, expect, beforeAll } from '@jest/globals';
 import algosdk from 'algosdk';
 import nacl from 'tweetnacl';
+import { Config } from '@algorandfoundation/algokit-utils';
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount';
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing';
-import { sendTransaction, microAlgos } from '@algorandfoundation/algokit-utils';
 import { MasterClient } from '../client/MasterClient';
-import { PlaceholderClient } from '../client/PlaceholderClient';
+import type { PermissionlessWithdrawalRequest } from '../client/MasterClient';
+import { PlaceholderFactory, PlaceholderClient } from '../client/PlaceholderClient';
 
 const fixture = algorandFixture({ testAccountFunding: AlgoAmount.MicroAlgos(0) });
 
@@ -14,22 +15,21 @@ let placeholderClient: PlaceholderClient;
 let appClient: MasterClient;
 
 describe('Baanx', () => {
-    beforeEach(fixture.beforeEach);
+    let circle: algosdk.Account & algosdk.Address;
+    let baanx: algosdk.Account & algosdk.Address;
+    let user: algosdk.Account & algosdk.Address;
+    let user2: algosdk.Account & algosdk.Address;
+    let withdrawalAcc: algosdk.Account & algosdk.Address;
 
-    let circle: algosdk.Account;
-    let baanx: algosdk.Account;
-    let user: algosdk.Account;
-    let user2: algosdk.Account;
-    let withdrawalAcc: algosdk.Account;
-
-    let fakeUSDC: number;
+    let fakeUSDC: bigint;
     let newPartnerChannel: string;
     let newCardAddress: string;
-    let withdrawalRequest: [string, string, bigint, bigint, bigint, bigint];
+    let withdrawalRequest: PermissionlessWithdrawalRequest;
 
     beforeAll(async () => {
         await fixture.beforeEach();
-        const { algod, generateAccount } = fixture.context;
+        Config.configure({ populateAppCallResources: true });
+        const { algorand, generateAccount } = fixture.context;
 
         [baanx, user, user2, circle, withdrawalAcc] = await Promise.all([
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
@@ -39,565 +39,366 @@ describe('Baanx', () => {
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
         ]);
 
-        // Crete FakeUSDC
-        fakeUSDC = (
-            await sendTransaction(
-                {
-                    transaction: algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
-                        from: circle.addr,
-                        assetName: 'FakeUSDC',
-                        unitName: 'FUSDC',
-                        total: BigInt(2) ** BigInt(64) - BigInt(1),
-                        decimals: 6,
-                        defaultFrozen: false,
-                        manager: circle.addr,
-                        reserve: circle.addr,
-                        freeze: circle.addr,
-                        suggestedParams: await algod.getTransactionParams().do(),
-                    }),
-                    from: circle,
-                },
-                algod
-            )
-        ).confirmation!.assetIndex as number;
+        // Create FakeUSDC
+        const created = await algorand.send.assetCreate({
+            sender: circle.addr,
+            assetName: 'FakeUSDC',
+            unitName: 'FUSDC',
+            total: BigInt(2) ** BigInt(64) - BigInt(1),
+            decimals: 6,
+            defaultFrozen: false,
+            manager: circle.addr,
+            reserve: circle.addr,
+            freeze: circle.addr,
+        });
+        fakeUSDC = created.assetId;
 
         // OptIn and Send FUSDC
         await Promise.all([
-            sendTransaction(
-                {
-                    transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                        from: baanx.addr,
-                        to: baanx.addr,
-                        assetIndex: fakeUSDC,
-                        amount: 0,
-                        suggestedParams: await algod.getTransactionParams().do(),
-                    }),
-                    from: baanx,
-                },
-                algod
-            ),
-            sendTransaction(
-                {
-                    transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                        from: user.addr,
-                        to: user.addr,
-                        assetIndex: fakeUSDC,
-                        amount: 0,
-                        suggestedParams: await algod.getTransactionParams().do(),
-                    }),
-                    from: user,
-                },
-                algod
-            ),
-            sendTransaction(
-                {
-                    transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                        from: user2.addr,
-                        to: user2.addr,
-                        assetIndex: fakeUSDC,
-                        amount: 0,
-                        suggestedParams: await algod.getTransactionParams().do(),
-                    }),
-                    from: user2,
-                },
-                algod
-            ),
+            algorand.send.assetOptIn({ sender: baanx.addr, assetId: fakeUSDC }),
+            algorand.send.assetOptIn({ sender: user.addr, assetId: fakeUSDC }),
+            algorand.send.assetOptIn({ sender: user2.addr, assetId: fakeUSDC }),
         ]);
-        await sendTransaction(
-            {
-                transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                    from: circle.addr,
-                    to: user.addr,
-                    assetIndex: fakeUSDC,
-                    amount: 100_000_000,
-                    suggestedParams: await algod.getTransactionParams().do(),
-                }),
-                from: circle,
-            },
-            algod
-        );
+        await algorand.send.assetTransfer({
+            sender: circle.addr,
+            receiver: user.addr,
+            assetId: fakeUSDC,
+            amount: 100_000_000n,
+        });
 
-        placeholderClient = new PlaceholderClient(
-            {
-                id: 0,
-                resolveBy: 'id',
-                sender: baanx,
-            },
-            algod
-        );
+        // Deploy the Placeholder contract
+        const factory = algorand.client.getTypedAppFactory(PlaceholderFactory, {
+            defaultSender: baanx.addr,
+        });
 
-        await placeholderClient.create.deploy(
-            { owner: baanx.addr },
-            {
-                schema: {
-                    extraPages: 3,
-                    globalInts: 32,
-                    globalByteSlices: 32,
-                    localInts: 8,
-                    localByteSlices: 8,
-                },
-            }
-        );
+        const deployment = await factory.send.create.deploy({
+            args: [],
+            extraProgramPages: 3,
+            schema: {
+                globalInts: 32,
+                globalByteSlices: 32,
+                localInts: 8,
+                localByteSlices: 8,
+            },
+        });
+        placeholderClient = deployment.appClient;
 
         // FIX: Do I need to fund the app account?
-        await placeholderClient.appClient.fundAppAccount({ amount: microAlgos(100_000) });
+        await placeholderClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(100_000) });
     });
 
     test('Upgrade Placeholder with Master', async () => {
-        const { appId } = await placeholderClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        appClient = new MasterClient(
-            {
-                id: appId,
-                resolveBy: 'id',
-                sender: baanx,
-            },
-            algod
-        );
+        appClient = algorand.client.getTypedAppClientById(MasterClient, {
+            appId: placeholderClient.appId,
+            defaultSender: baanx.addr,
+        });
 
-        const result = await appClient.update.update(
-            {
-                master: baanx.addr,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.update.update({
+            args: [],
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('Initialize Master state', async () => {
+        // The first upgrade is authorized by the Placeholder's `update`, so the Master's
+        // `update` (which zero-inits the global counters) does not run until the next
+        // update call. Run it once now to initialize state before using the contract.
+        const result = await appClient.send.update.update({
+            args: [],
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
+
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Set withdrawal rounds to 0', async () => {
         // A real value would be:
         // 60 * 60 * 24 * 5 = 432_000 seconds = 5 days
         // We're using 0 seconds to allow for instant withdrawals
-        const result = await appClient.setWithdrawalTimeout({ seconds: 0 });
+        const result = await appClient.send.setWithdrawalTimeout({ args: { seconds: 0 } });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Set early withdrawal public key', async () => {
-        const result = await appClient.setEarlyWithdrawalPubkey(
-            {
-                pubkey: algosdk.decodeAddress(withdrawalAcc.addr).publicKey,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.setEarlyWithdrawalPubkey({
+            args: { pubkey: withdrawalAcc.addr.publicKey },
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Allowlist Add FakeUSDC', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: baanx.addr,
-            to: appAddress,
-            amount: 100_000 + (2_500 + 400 * (2 + 8 + 32)), // Asset MBR + Box Cost
-            suggestedParams: await algod.getTransactionParams().do(),
+        const mbr = await algorand.createTransaction.payment({
+            sender: baanx.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(100_000 + (2_500 + 400 * (2 + 8 + 32))), // Asset MBR + Box Cost
         });
 
-        const result = await appClient.assetAllowlistAdd(
-            {
+        const result = await appClient.send.assetAllowlistAdd({
+            args: {
                 mbr,
                 asset: fakeUSDC,
-                settlementAddress: baanx.addr,
+                settlementAddress: baanx.addr.toString(),
             },
-            {
-                sendParams: {
-                    fee: microAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Recover Algo from Master', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        await sendTransaction(
-            {
-                transaction: algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-                    from: baanx.addr,
-                    to: appAddress,
-                    amount: 1_000_000,
-                    suggestedParams: await algod.getTransactionParams().do(),
-                }),
-                from: baanx,
-            },
-            algod
-        );
+        await algorand.send.payment({
+            sender: baanx.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(1_000_000),
+        });
 
-        const recover = await appClient.recoverAsset(
-            {
+        const recover = await appClient.send.recoverAsset({
+            args: {
                 amount: 1_000_000,
                 asset: 0,
-                recipient: baanx.addr,
+                recipient: baanx.addr.toString(),
             },
-            {
-                sendParams: {
-                    fee: microAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(recover.confirmation!.poolError).toBe('');
+        expect(recover.confirmation.poolError).toBe('');
     });
 
     test('Recover ASA from Master', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        await sendTransaction(
-            {
-                transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                    from: circle.addr,
-                    to: appAddress,
-                    assetIndex: fakeUSDC,
-                    amount: 10_000_000_000,
-                    suggestedParams: await algod.getTransactionParams().do(),
-                }),
-                from: circle,
-            },
-            algod
-        );
+        await algorand.send.assetTransfer({
+            sender: circle.addr,
+            receiver: appClient.appAddress,
+            assetId: fakeUSDC,
+            amount: 10_000_000_000n,
+        });
 
-        const recover = await appClient.recoverAsset(
-            {
+        const recover = await appClient.send.recoverAsset({
+            args: {
                 amount: 10_000_000_000,
                 asset: fakeUSDC,
-                recipient: baanx.addr,
+                recipient: baanx.addr.toString(),
             },
-            {
-                sendParams: {
-                    fee: microAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(recover.confirmation!.poolError).toBe('');
+        expect(recover.confirmation.poolError).toBe('');
     });
 
     test('Create new partner', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
         const CHANNEL_NAME = 'Pera';
 
-        const getMbr = await appClient.getPartnerChannelMbr(
-            {
-                partnerChannelName: CHANNEL_NAME,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
-
-        const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: baanx.addr,
-            to: appAddress,
-            amount: getMbr.return!,
-            suggestedParams: await algod.getTransactionParams().do(),
+        const getMbr = await appClient.send.getPartnerChannelMbr({
+            args: { partnerChannelName: CHANNEL_NAME },
+            staticFee: AlgoAmount.MicroAlgos(1_000),
         });
 
-        const result = await appClient.partnerChannelCreate(
-            { mbr, partnerChannelName: CHANNEL_NAME },
-            { sendParams: { fee: microAlgos(5_000), populateAppCallResources: true } }
-        );
+        const mbr = await algorand.createTransaction.payment({
+            sender: baanx.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(getMbr.return!),
+        });
+
+        const result = await appClient.send.partnerChannelCreate({
+            args: { mbr, partnerChannelName: CHANNEL_NAME },
+            staticFee: AlgoAmount.MicroAlgos(5_000),
+        });
         expect(result.return).toBeDefined();
 
         newPartnerChannel = result.return!;
     });
 
     test('Create new card without assets', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        const getMbr = await appClient.getCardFundMbr(
-            {
-                asset: 0,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
-
-        const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: user2.addr,
-            to: appAddress,
-            amount: getMbr.return!,
-            suggestedParams: await algod.getTransactionParams().do(),
+        const getMbr = await appClient.send.getCardFundMbr({
+            args: { asset: 0 },
+            staticFee: AlgoAmount.MicroAlgos(1_000),
         });
-        const result = await appClient.cardFundCreate(
-            {
+
+        const mbr = await algorand.createTransaction.payment({
+            sender: user2.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(getMbr.return!),
+        });
+        const result = await appClient.send.cardFundCreate({
+            args: {
                 mbr,
                 partnerChannel: newPartnerChannel,
                 asset: 0,
             },
-            {
-                sender: user2,
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(4_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user2.addr,
+            staticFee: AlgoAmount.MicroAlgos(4_000),
+        });
         expect(result.return).toBeDefined();
 
         newCardAddress = result.return!;
     });
 
     test('Close card without assets', async () => {
-        const result = await appClient.cardFundClose(
-            {
-                cardFund: newCardAddress,
-            },
-            {
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.cardFundClose({
+            args: { cardFund: newCardAddress },
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Create new card with FakeUSDC', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        const getMbr = await appClient.getCardFundMbr(
-            {
-                asset: fakeUSDC,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
-
-        const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: user.addr,
-            to: appAddress,
-            amount: getMbr.return!,
-            suggestedParams: await algod.getTransactionParams().do(),
+        const getMbr = await appClient.send.getCardFundMbr({
+            args: { asset: fakeUSDC },
+            staticFee: AlgoAmount.MicroAlgos(1_000),
         });
-        const result = await appClient.cardFundCreate(
-            {
+
+        const mbr = await algorand.createTransaction.payment({
+            sender: user.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(getMbr.return!),
+        });
+        const result = await appClient.send.cardFundCreate({
+            args: {
                 mbr,
                 partnerChannel: newPartnerChannel,
                 asset: fakeUSDC,
             },
-            {
-                sender: user,
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(5_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user.addr,
+            staticFee: AlgoAmount.MicroAlgos(5_000),
+        });
         expect(result.return).toBeDefined();
 
         newCardAddress = result.return!;
     });
 
     test('Disable FakeUSDC for card', async () => {
-        const result = await appClient.cardFundDisableAsset(
-            {
+        const result = await appClient.send.cardFundDisableAsset({
+            args: {
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
             },
-            {
-                sender: user,
-                sendParams: {
-                    fee: microAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user.addr,
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Enable FakeUSDC for card', async () => {
-        const { appAddress } = await appClient.appClient.getAppReference();
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        const getMbr = await appClient.getCardFundAssetMbr(
-            {},
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
-
-        const mbr = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-            from: user.addr,
-            to: appAddress,
-            amount: getMbr.return!,
-            suggestedParams: await algod.getTransactionParams().do(),
+        const getMbr = await appClient.send.getCardFundAssetMbr({
+            args: {},
+            staticFee: AlgoAmount.MicroAlgos(1_000),
         });
 
-        const result = await appClient.cardFundEnableAsset(
-            {
+        const mbr = await algorand.createTransaction.payment({
+            sender: user.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(getMbr.return!),
+        });
+
+        const result = await appClient.send.cardFundEnableAsset({
+            args: {
                 mbr,
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
             },
-            {
-                sender: user,
-                sendParams: {
-                    fee: microAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user.addr,
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Deposit FakeUSDC to card', async () => {
-        const { algod } = fixture.context;
+        const { algorand } = fixture.context;
 
-        const result = await sendTransaction(
-            {
-                transaction: algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-                    from: user.addr,
-                    to: newCardAddress,
-                    assetIndex: fakeUSDC,
-                    amount: 10_000_000,
-                    suggestedParams: await algod.getTransactionParams().do(),
-                }),
-                from: user,
-            },
-            algod
-        );
+        const result = await algorand.send.assetTransfer({
+            sender: user.addr,
+            receiver: newCardAddress,
+            assetId: fakeUSDC,
+            amount: 10_000_000n,
+        });
 
-        expect(result.confirmation!.poolError).toBeDefined();
+        expect(result.confirmation.poolError).toBeDefined();
     });
 
     test('User spends, Baanx debits', async () => {
-        const nextNonce = await appClient.getNextCardFundNonce(
-            {
-                cardFund: newCardAddress,
-            },
-            {
-                sendParams: {
-                    // fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const nextNonce = await appClient.send.getNextCardFundNonce({
+            args: { cardFund: newCardAddress },
+        });
 
-        const result = await appClient.cardFundDebit(
-            {
+        const result = await appClient.send.cardFundDebit({
+            args: {
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
                 amount: 5_000_000,
-                nonce: nextNonce.return as bigint,
+                nonce: nextNonce.return!,
                 ref: 'Test Transaction REF-1234567890',
             },
-            {
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(result.confirmation!.poolError).toBeDefined();
+        expect(result.confirmation.poolError).toBeDefined();
     });
 
     test('Get CardFundData', async () => {
-        const result = await appClient.getCardFundData(
-            {
-                cardFund: newCardAddress,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.getCardFundData({
+            args: { cardFund: newCardAddress },
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
 
-        expect(result.return?.[0]).toBe(newPartnerChannel);
-        expect(result.return?.[1]).toBe(user.addr);
-        expect(result.return?.[2]).toBe(newCardAddress);
-        expect(result.return?.[3]).toEqual(BigInt(1));
+        expect(result.return?.partnerChannel).toBe(newPartnerChannel);
+        expect(result.return?.owner).toBe(user.addr.toString());
+        expect(result.return?.address).toBe(newCardAddress);
+        expect(result.return?.nonce).toEqual(BigInt(1));
     });
 
     test('Update Contract', async () => {
-        const result = await appClient.update.update(
-            {},
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.update.update({
+            args: [],
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Recover Card', async () => {
-        const result = await appClient.cardFundRecover(
-            {
+        const result = await appClient.send.cardFundRecover({
+            args: {
                 cardFund: newCardAddress,
-                newCardFundHolder: user2.addr,
+                newCardFundHolder: user2.addr.toString(),
             },
-            {
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('User creates withdrawal request', async () => {
-        const result = await appClient.optIn.cardFundInitPermissionlessWithdrawal(
-            {
+        const result = await appClient.send.cardFundInitPermissionlessWithdrawal({
+            args: {
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
                 amount: 3_000_000,
             },
-            {
-                sender: user2,
-                sendParams: {
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user2.addr,
+        });
 
         expect(result.return).toBeDefined();
 
@@ -605,75 +406,55 @@ describe('Baanx', () => {
     });
 
     test('Settle debits', async () => {
-        const settlementNonce = await appClient.getNextSettlementNonce(
-            {},
-            {
-                sendParams: {
-                    fee: microAlgos(1_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const settlementNonce = await appClient.send.getNextSettlementNonce({
+            args: {},
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
 
-        const result = await appClient.settle(
-            {
+        const result = await appClient.send.settle({
+            args: {
                 asset: fakeUSDC,
                 amount: 5_000_000,
-                nonce: settlementNonce.return as bigint,
+                nonce: settlementNonce.return!,
             },
-            {
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Complete withdrawal request', async () => {
-        const result = await appClient.closeOut.cardFundExecutePermissionlessWithdrawal(
-            {
+        const result = await appClient.send.cardFundExecutePermissionlessWithdrawal({
+            args: {
                 cardFund: newCardAddress,
-                amount: withdrawalRequest[3],
+                amount: withdrawalRequest.amount,
             },
-            {
-                sender: user2,
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user2.addr,
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Set withdrawal rounds to 10', async () => {
         // A real value would be:
         // 60 * 60 * 24 * 5 = 432_000 seconds = 5 days
         // We're using 0 seconds to allow for instant withdrawals
-        const result = await appClient.setWithdrawalTimeout({ seconds: 10 });
+        const result = await appClient.send.setWithdrawalTimeout({ args: { seconds: 10 } });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     // TODO: cardWithdrawEarly test
     test('User creates another withdrawal request', async () => {
-        const result = await appClient.optIn.cardFundInitPermissionlessWithdrawal(
-            {
+        const result = await appClient.send.cardFundInitPermissionlessWithdrawal({
+            args: {
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
                 amount: 2_000_000,
             },
-            {
-                sender: user2,
-                sendParams: {
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user2.addr,
+        });
 
         expect(result.return).toBeDefined();
 
@@ -682,17 +463,17 @@ describe('Baanx', () => {
 
     // Early Withdrawal Test
     test('Request early withdrawal', async () => {
-        const { algod } = fixture.context;
-        const genesis = await algod.genesis().do();
-        const genesisHash = Buffer.from(genesis.genesisHash as string, 'base64');
+        const { algorand } = fixture.context;
+        const suggestedParams = await algorand.client.algod.getTransactionParams().do();
+        const genesisHash = Buffer.from(suggestedParams.genesisHash!);
 
-        const [cardFundAddr, _recipient, withdrawalAsset, amount, _createdAt, nonce] = withdrawalRequest;
+        const { cardFund: cardFundAddr, asset: withdrawalAsset, amount, nonce } = withdrawalRequest;
         const expiresAt = BigInt(Math.floor(Date.now() / 1000)) + BigInt(3600);
 
         // Build withdrawal bytes matching the contract: cardFund(32) + recipient(32) + asset(8) + amount(8) + expiresAt(8) + nonce(8) + genesisHash(32)
         const withdrawalBytes = Buffer.concat([
             algosdk.decodeAddress(cardFundAddr).publicKey,
-            algosdk.decodeAddress(user2.addr).publicKey,
+            user2.addr.publicKey,
             algosdk.encodeUint64(withdrawalAsset),
             algosdk.encodeUint64(amount),
             algosdk.encodeUint64(expiresAt),
@@ -705,105 +486,69 @@ describe('Baanx', () => {
         const withdrawalHash = createHash('sha256').update(withdrawalBytes).digest();
         const sig = nacl.sign.detached(withdrawalHash, withdrawalAcc.sk);
 
-        const result = await appClient.cardFundExecuteApprovedWithdrawal(
-            {
+        const result = await appClient.send.cardFundExecuteApprovedWithdrawal({
+            args: {
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
-                amount: amount,
-                expiresAt: expiresAt,
-                nonce: nonce,
+                amount,
+                expiresAt,
+                nonce,
                 signature: sig,
             },
-            {
-                sender: user2,
-                sendParams: {
-                    fee: microAlgos(2_000 + 3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
-        console.log(result.transaction?.txID());
+            sender: user2.addr,
+            staticFee: AlgoAmount.MicroAlgos(2_000 + 3_000),
+        });
+        console.log(result.transaction.txID());
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Disable FakeUSDC for card', async () => {
-        const result = await appClient.cardFundDisableAsset(
-            {
+        const result = await appClient.send.cardFundDisableAsset({
+            args: {
                 cardFund: newCardAddress,
                 asset: fakeUSDC,
             },
-            {
-                sender: user2,
-                sendParams: {
-                    fee: microAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+            sender: user2.addr,
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Close card', async () => {
-        const result = await appClient.cardFundClose(
-            {
-                cardFund: newCardAddress,
-            },
-            {
-                sendParams: {
-                    fee: AlgoAmount.MicroAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.cardFundClose({
+            args: { cardFund: newCardAddress },
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Close Partner', async () => {
-        const result = await appClient.partnerChannelClose(
-            {
-                partnerChannel: newPartnerChannel,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.partnerChannelClose({
+            args: { partnerChannel: newPartnerChannel },
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Allowlist Remove FakeUSDC', async () => {
-        const result = await appClient.assetAllowlistRemove(
-            {
-                asset: fakeUSDC,
-            },
-            {
-                sendParams: {
-                    fee: microAlgos(3_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.assetAllowlistRemove({
+            args: { asset: fakeUSDC },
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Destroy Contract', async () => {
-        const result = await appClient.delete.destroy(
-            {},
-            {
-                sendParams: {
-                    fee: microAlgos(2_000),
-                    populateAppCallResources: true,
-                },
-            }
-        );
+        const result = await appClient.send.delete.destroy({
+            args: [],
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
 
-        expect(result.confirmation!.poolError).toBe('');
+        expect(result.confirmation.poolError).toBe('');
     });
 });
