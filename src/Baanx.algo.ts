@@ -47,7 +47,6 @@ import {
     Bytes,
 } from '@algorandfoundation/algorand-typescript';
 import type { gtxn } from '@algorandfoundation/algorand-typescript';
-import { Pausable } from './roles/Pausable.algo';
 import { Recoverable } from './roles/Recoverable.algo';
 
 // CardFundData
@@ -157,26 +156,6 @@ type Withdrawal = {
     nonce: uint64;
     type: string;
 };
-
-// eslint-disable-next-line no-unused-vars
-class Placeholder extends Pausable {
-    // Updatable and destroyable placeholder contract
-    @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
-    deploy(): void {
-        this._transferOwnership(Txn.sender);
-        this._pauser.value = Txn.sender;
-    }
-
-    @abimethod({ allowActions: ['UpdateApplication'] })
-    update(): void {
-        assert(Txn.sender === Global.creatorAddress, 'SENDER_NOT_ALLOWED');
-    }
-
-    @abimethod({ allowActions: ['DeleteApplication'] })
-    destroy(): void {
-        assert(Txn.sender === Global.creatorAddress, 'SENDER_NOT_ALLOWED');
-    }
-}
 
 class ControlledAddress extends Contract {
     /**
@@ -328,12 +307,19 @@ export class Master extends Recoverable {
 
     // ========== External Methods ==========
     /**
-     * Deploy a partner channel, setting the owner as provided
+     * Deploy the contract, setting the owner as provided and initializing global state.
      */
     @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     deploy(owner: Account): Account {
         this._transferOwnership(owner);
         this._pauser.value = Txn.sender;
+
+        // puya-ts does not auto-zero-init GlobalState, so set the counters explicitly
+        // at creation time.
+        this.card_funds_active_count.value = 0;
+        this.partner_channels_active_count.value = 0;
+        this.settlement_nonce.value = 0;
+        this.paused.value = false;
 
         return Global.currentApplicationAddress;
     }
@@ -344,21 +330,6 @@ export class Master extends Recoverable {
     @abimethod({ allowActions: ['UpdateApplication'] })
     update(): void {
         this.onlyOwner();
-
-        // Initialize global counters on first upgrade from the placeholder contract.
-        // puya-ts does not auto-zero-init GlobalState, so set them explicitly if unset.
-        if (!this.card_funds_active_count.hasValue) {
-            this.card_funds_active_count.value = 0;
-        }
-        if (!this.partner_channels_active_count.hasValue) {
-            this.partner_channels_active_count.value = 0;
-        }
-        if (!this.settlement_nonce.hasValue) {
-            this.settlement_nonce.value = 0;
-        }
-        if (!this.paused.hasValue) {
-            this.paused.value = false;
-        }
     }
 
     /**

@@ -5,13 +5,11 @@ import nacl from 'tweetnacl';
 import { Config } from '@algorandfoundation/algokit-utils';
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount';
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing';
-import { MasterClient } from '../client/MasterClient';
+import { MasterClient, MasterFactory } from '../client/MasterClient';
 import type { PermissionlessWithdrawalRequest } from '../client/MasterClient';
-import { PlaceholderFactory, PlaceholderClient } from '../client/PlaceholderClient';
 
 const fixture = algorandFixture({ testAccountFunding: AlgoAmount.MicroAlgos(0) });
 
-let placeholderClient: PlaceholderClient;
 let appClient: MasterClient;
 
 describe('Baanx', () => {
@@ -66,13 +64,13 @@ describe('Baanx', () => {
             amount: 100_000_000n,
         });
 
-        // Deploy the Placeholder contract
-        const factory = algorand.client.getTypedAppFactory(PlaceholderFactory, {
+        // Deploy the Master contract directly
+        const factory = algorand.client.getTypedAppFactory(MasterFactory, {
             defaultSender: baanx.addr,
         });
 
         const deployment = await factory.send.create.deploy({
-            args: [],
+            args: [baanx.addr.toString()],
             extraProgramPages: 3,
             schema: {
                 globalInts: 32,
@@ -81,38 +79,10 @@ describe('Baanx', () => {
                 localByteSlices: 8,
             },
         });
-        placeholderClient = deployment.appClient;
+        appClient = deployment.appClient;
 
-        // FIX: Do I need to fund the app account?
-        await placeholderClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(100_000) });
-    });
-
-    test('Upgrade Placeholder with Master', async () => {
-        const { algorand } = fixture.context;
-
-        appClient = algorand.client.getTypedAppClientById(MasterClient, {
-            appId: placeholderClient.appId,
-            defaultSender: baanx.addr,
-        });
-
-        const result = await appClient.send.update.update({
-            args: [],
-            staticFee: AlgoAmount.MicroAlgos(1_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
-    });
-
-    test('Initialize Master state', async () => {
-        // The first upgrade is authorized by the Placeholder's `update`, so the Master's
-        // `update` (which zero-inits the global counters) does not run until the next
-        // update call. Run it once now to initialize state before using the contract.
-        const result = await appClient.send.update.update({
-            args: [],
-            staticFee: AlgoAmount.MicroAlgos(1_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
+        // Fund the app account to cover minimum balance requirements
+        await appClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(100_000) });
     });
 
     test('Set withdrawal rounds to 0', async () => {
