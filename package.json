@@ -6,7 +6,7 @@
     "scripts": {
         "clean": "rm -rf {dist,client}/*",
         "compile-contracts": "pnpm exec puya-ts src/*.algo.ts --out-dir ../dist",
-        "generate-clients": "for f in dist/*.arc56.json; do name=$(basename \"$f\" .arc56.json); pnpm exec algokitgen generate -a \"$f\" -o \"client/${name}Client.ts\"; done",
+        "generate-clients": "algokit generate client dist --language typescript --output client/{contract_name}Client.ts",
         "build": "pnpm compile-contracts && pnpm generate-clients",
         "test": "pnpm build && jest __test__/Baanx.test.ts"
     },
