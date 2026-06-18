@@ -41,8 +41,8 @@ import {
 
 export class AutoDraw extends LogicSig {
     program() {
-        const prevTxn = gtxn.Transaction(Txn.groupIndex - 1);
-        const twoBeforeTxn = gtxn.Transaction(Txn.groupIndex - 2);
+        const nextTxn = gtxn.Transaction(Txn.groupIndex + 1);
+        const twoNextTxn = gtxn.Transaction(Txn.groupIndex + 2);
         const ASSET = TemplateVar<Asset>('ASSET');
         return (
             // Safety checks
@@ -52,18 +52,18 @@ export class AutoDraw extends LogicSig {
             Txn.typeEnum === TransactionType.AssetTransfer &&
             Txn.xferAsset === ASSET &&
             Txn.fee === 0 &&
-            // Enforce the previous transaction is a Killswitch call
-            prevTxn.type === TransactionType.ApplicationCall &&
-            prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-            prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-            prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-            // Enforce the two before transaction is a Master call
-            twoBeforeTxn.type === TransactionType.ApplicationCall &&
-            twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-            twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-            Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
-            Txn.xferAsset.id === op.btoi(twoBeforeTxn.appArgs(2)) &&
-            Txn.assetAmount <= op.btoi(twoBeforeTxn.appArgs(3))
+            // Enforce the next transaction is a Killswitch call
+            nextTxn.type === TransactionType.ApplicationCall &&
+            nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+            nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+            nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+            // Enforce the two next transaction is a Master call
+            twoNextTxn.type === TransactionType.ApplicationCall &&
+            twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+            twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+            Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
+            Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
+            Txn.assetAmount <= op.btoi(twoNextTxn.appArgs(3))
         );
     }
 }

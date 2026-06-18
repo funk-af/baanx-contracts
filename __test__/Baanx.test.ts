@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /* eslint-disable import/no-extraneous-dependencies */
 import { describe, test, expect, beforeAll } from '@jest/globals';
 import algosdk from 'algosdk';

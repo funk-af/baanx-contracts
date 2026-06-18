@@ -5,15 +5,15 @@
 main:
     intcblock 1 0 2 6 TMPL_ASSET TMPL_KILLSWITCH_APP TMPL_MASTER_APP
     // src/AutoDraw.algo.ts:44
-    // const prevTxn = gtxn.Transaction(Txn.groupIndex - 1);
+    // const nextTxn = gtxn.Transaction(Txn.groupIndex + 1);
     txn GroupIndex
     intc_0 // 1
-    -
+    +
     // src/AutoDraw.algo.ts:45
-    // const twoBeforeTxn = gtxn.Transaction(Txn.groupIndex - 2);
+    // const twoNextTxn = gtxn.Transaction(Txn.groupIndex + 2);
     txn GroupIndex
     intc_2 // 2
-    -
+    +
     // src/AutoDraw.algo.ts:49
     // Txn.rekeyTo === Global.zeroAddress &&
     txn RekeyTo
@@ -67,7 +67,7 @@ main:
     // Txn.fee === 0 &&
     bnz main_bool_false@16
     // src/AutoDraw.algo.ts:56
-    // prevTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.type === TransactionType.ApplicationCall &&
     dig 1
     gtxns TypeEnum
     intc_3 // 6
@@ -79,11 +79,11 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:57
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
     dig 1
     gtxns ApplicationID
     intc 5 // TMPL_KILLSWITCH_APP
@@ -95,12 +95,12 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:58
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
     dig 1
     intc_1 // 0
     gtxnsas ApplicationArgs
@@ -113,13 +113,13 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:59
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
     dig 1
     intc_0 // 1
     gtxnsas ApplicationArgs
@@ -132,14 +132,14 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:61
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
     dup
     gtxns TypeEnum
     intc_3 // 6
@@ -151,16 +151,16 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    // // Enforce the two before transaction is a Master call
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the two next transaction is a Master call
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:62
-    // twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    // twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
     dup
     gtxns ApplicationID
     intc 6 // TMPL_MASTER_APP
@@ -172,17 +172,17 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    // // Enforce the two before transaction is a Master call
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    // twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the two next transaction is a Master call
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
+    // twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:63
-    // twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
     dup
     intc_1 // 0
     gtxnsas ApplicationArgs
@@ -195,18 +195,18 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    // // Enforce the two before transaction is a Master call
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    // twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-    // twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the two next transaction is a Master call
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
+    // twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    // twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:64
-    // Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
+    // Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
     txn AssetReceiver
     dig 1
     intc_0 // 1
@@ -219,19 +219,19 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    // // Enforce the two before transaction is a Master call
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    // twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-    // twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-    // Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the two next transaction is a Master call
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
+    // twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    // twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:65
-    // Txn.xferAsset.id === op.btoi(twoBeforeTxn.appArgs(2)) &&
+    // Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
     txn XferAsset
     dig 1
     intc_2 // 2
@@ -245,20 +245,20 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    // // Enforce the two before transaction is a Master call
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    // twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-    // twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-    // Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
-    // Txn.xferAsset.id === op.btoi(twoBeforeTxn.appArgs(2)) &&
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the two next transaction is a Master call
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
+    // twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    // twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
+    // Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:66
-    // Txn.assetAmount <= op.btoi(twoBeforeTxn.appArgs(3))
+    // Txn.assetAmount <= op.btoi(twoNextTxn.appArgs(3))
     txn AssetAmount
     dig 1
     pushint 3 // 3
@@ -272,18 +272,18 @@ main:
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    // // Enforce the previous transaction is a Killswitch call
-    // prevTxn.type === TransactionType.ApplicationCall &&
-    // prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    // prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    // prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    // // Enforce the two before transaction is a Master call
-    // twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    // twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-    // twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-    // Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
-    // Txn.xferAsset.id === op.btoi(twoBeforeTxn.appArgs(2)) &&
-    // Txn.assetAmount <= op.btoi(twoBeforeTxn.appArgs(3))
+    // // Enforce the next transaction is a Killswitch call
+    // nextTxn.type === TransactionType.ApplicationCall &&
+    // nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    // nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    // nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    // // Enforce the two next transaction is a Master call
+    // twoNextTxn.type === TransactionType.ApplicationCall &&
+    // twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    // twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
+    // Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
+    // Txn.assetAmount <= op.btoi(twoNextTxn.appArgs(3))
     bz main_bool_false@16
     intc_0 // 1
     // src/AutoDraw.algo.ts:47-67
@@ -295,18 +295,18 @@ main:
     //     Txn.typeEnum === TransactionType.AssetTransfer &&
     //     Txn.xferAsset === ASSET &&
     //     Txn.fee === 0 &&
-    //     // Enforce the previous transaction is a Killswitch call
-    //     prevTxn.type === TransactionType.ApplicationCall &&
-    //     prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    //     prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    //     prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    //     // Enforce the two before transaction is a Master call
-    //     twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    //     twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-    //     twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-    //     Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
-    //     Txn.xferAsset.id === op.btoi(twoBeforeTxn.appArgs(2)) &&
-    //     Txn.assetAmount <= op.btoi(twoBeforeTxn.appArgs(3))
+    //     // Enforce the next transaction is a Killswitch call
+    //     nextTxn.type === TransactionType.ApplicationCall &&
+    //     nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    //     nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    //     nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    //     // Enforce the two next transaction is a Master call
+    //     twoNextTxn.type === TransactionType.ApplicationCall &&
+    //     twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    //     twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    //     Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
+    //     Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
+    //     Txn.assetAmount <= op.btoi(twoNextTxn.appArgs(3))
     // );
     return
 
@@ -321,17 +321,17 @@ main_bool_false@16:
     //     Txn.typeEnum === TransactionType.AssetTransfer &&
     //     Txn.xferAsset === ASSET &&
     //     Txn.fee === 0 &&
-    //     // Enforce the previous transaction is a Killswitch call
-    //     prevTxn.type === TransactionType.ApplicationCall &&
-    //     prevTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    //     prevTxn.appArgs(0) === Bytes.fromHex('73bc6501') && // authorize
-    //     prevTxn.appArgs(1) === Txn.assetSender.bytes &&
-    //     // Enforce the two before transaction is a Master call
-    //     twoBeforeTxn.type === TransactionType.ApplicationCall &&
-    //     twoBeforeTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-    //     twoBeforeTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-    //     Txn.assetReceiver.bytes === twoBeforeTxn.appArgs(1) &&
-    //     Txn.xferAsset.id === op.btoi(twoBeforeTxn.appArgs(2)) &&
-    //     Txn.assetAmount <= op.btoi(twoBeforeTxn.appArgs(3))
+    //     // Enforce the next transaction is a Killswitch call
+    //     nextTxn.type === TransactionType.ApplicationCall &&
+    //     nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+    //     nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+    //     nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+    //     // Enforce the two next transaction is a Master call
+    //     twoNextTxn.type === TransactionType.ApplicationCall &&
+    //     twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+    //     twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    //     Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
+    //     Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
+    //     Txn.assetAmount <= op.btoi(twoNextTxn.appArgs(3))
     // );
     return
