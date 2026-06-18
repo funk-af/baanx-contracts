@@ -3,7 +3,7 @@
   "sources": [
     "../src/AutoDraw.algo.ts"
   ],
-  "mappings": "AAyCyC;;AAAiB;AAAjB;AACG;;AAAiB;AAAjB;AAIhC;;AAAgB;;AAAhB;AAAA;;;AACA;;AAAqB;;AAArB;AADA;;;AAGA;;AAAiB;;AAAjB;AAHA;;;AAIA;;AAAkB;;AAAlB;AAJA;;;AAKA;;AALA;;;AAOA;;AAAA;;AAAiB;AAAjB;AAPA;;;AAQA;;AAAA;;AAAkB;;AAAlB;AARA;;;AASA;;AAAgB;AAAhB;;AAAuB;;;;;;AAAvB;AATA;;;AAUA;;AAAgB;AAAhB;;AAAuB;;AAAvB;AAVA;;;AAYA;AAAA;;AAAoB;AAApB;AAZA;;;AAaA;AAAA;;AAAqB;;AAArB;AAbA;;;AAcA;AAAmB;AAAnB;;AAA0B;;;;;;AAA1B;AAdA;;;AAeA;;AAA4B;;AAAmB;AAAnB;;AAA5B;AAfA;;;AAgBA;;AAA6B;;AAAmB;AAAnB;;AAAR;AAArB;AAhBA;;;AAiBA;;AAA2B;;AAAmB;;AAAnB;;AAAR;AAAnB;AAjBA;;;;AAFJ;;AAAA",
+  "mappings": "AAyCyC;;AAAiB;AAAjB;AACM;;AAAiB;AAAjB;AAInC;;AAAgB;;AAAhB;AAAA;;;AACA;;AAAqB;;AAArB;AADA;;;AAGA;;AAAiB;;AAAjB;AAHA;;;AAIA;;AAAkB;;AAAlB;AAJA;;;AAKA;;AALA;;;AAOA;;AAAA;;AAAiB;AAAjB;AAPA;;;AAQA;;AAAA;;AAAkB;;AAAlB;AARA;;;AASA;;AAAgB;AAAhB;;AAAuB;;;;;;AAAvB;AATA;;;AAUA;;AAAgB;AAAhB;;AAAuB;;AAAvB;AAVA;;;AAYA;AAAA;;AAAuB;AAAvB;AAZA;;;AAaA;AAAA;;AAAwB;;AAAxB;AAbA;;;AAcA;AAAsB;AAAtB;;AAA6B;;;;;;AAA7B;AAdA;;;AAeA;;AAA4B;;AAAsB;AAAtB;;AAA5B;AAfA;;;AAgBA;;AAA6B;;AAAsB;AAAtB;;AAAR;AAArB;AAhBA;;;AAiBA;;AAA2B;;AAAsB;;AAAtB;;AAAR;AAAnB;AAjBA;;;;AAFJ;;AAAA",
   "op_pc_offset": 1,
   "pc_events": {
     "0": {
@@ -63,23 +63,23 @@
       "op": "+",
       "defined_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "8": {
       "op": "txn RekeyTo",
       "defined_out": [
         "nextTxn#0",
-        "tmp%2#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%2#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%2#0"
       ]
     },
@@ -87,13 +87,13 @@
       "op": "global ZeroAddress",
       "defined_out": [
         "nextTxn#0",
+        "secondNextTxn#0",
         "tmp%2#0",
-        "tmp%3#0",
-        "twoNextTxn#0"
+        "tmp%3#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%2#0",
         "tmp%3#0"
       ]
@@ -102,12 +102,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%4#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%4#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%4#0"
       ]
     },
@@ -115,19 +115,19 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "16": {
       "op": "txn AssetCloseTo",
       "defined_out": [
         "nextTxn#0",
-        "tmp%5#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%5#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%5#0"
       ]
     },
@@ -135,13 +135,13 @@
       "op": "global ZeroAddress",
       "defined_out": [
         "nextTxn#0",
+        "secondNextTxn#0",
         "tmp%5#0",
-        "tmp%6#0",
-        "twoNextTxn#0"
+        "tmp%6#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%5#0",
         "tmp%6#0"
       ]
@@ -150,12 +150,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%7#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%7#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%7#0"
       ]
     },
@@ -163,19 +163,19 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "24": {
       "op": "txn TypeEnum",
       "defined_out": [
         "nextTxn#0",
-        "tmp%8#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%8#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%8#0"
       ]
     },
@@ -184,12 +184,12 @@
       "defined_out": [
         "4",
         "nextTxn#0",
-        "tmp%8#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%8#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%8#0",
         "4"
       ]
@@ -198,12 +198,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%9#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%9#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%9#0"
       ]
     },
@@ -211,19 +211,19 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "32": {
       "op": "txn XferAsset",
       "defined_out": [
         "nextTxn#0",
-        "tmp%10#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%10#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%10#0"
       ]
     },
@@ -232,12 +232,12 @@
       "defined_out": [
         "TMPL_ASSET",
         "nextTxn#0",
-        "tmp%10#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%10#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%10#0",
         "TMPL_ASSET"
       ]
@@ -246,12 +246,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%11#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%11#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%11#0"
       ]
     },
@@ -259,19 +259,19 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "40": {
       "op": "txn Fee",
       "defined_out": [
         "nextTxn#0",
-        "tmp%12#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%12#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%12#0"
       ]
     },
@@ -279,14 +279,14 @@
       "op": "bnz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "45": {
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "nextTxn#0"
       ]
     },
@@ -294,12 +294,12 @@
       "op": "gtxns TypeEnum",
       "defined_out": [
         "nextTxn#0",
-        "tmp%14#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%14#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%14#0"
       ]
     },
@@ -308,12 +308,12 @@
       "defined_out": [
         "6",
         "nextTxn#0",
-        "tmp%14#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%14#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%14#0",
         "6"
       ]
@@ -322,12 +322,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%15#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%15#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%15#0"
       ]
     },
@@ -335,14 +335,14 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "54": {
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "nextTxn#0"
       ]
     },
@@ -350,12 +350,12 @@
       "op": "gtxns ApplicationID",
       "defined_out": [
         "nextTxn#0",
-        "tmp%16#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%16#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%16#0"
       ]
     },
@@ -364,12 +364,12 @@
       "defined_out": [
         "TMPL_KILLSWITCH_APP",
         "nextTxn#0",
-        "tmp%16#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%16#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%16#0",
         "TMPL_KILLSWITCH_APP"
       ]
@@ -378,12 +378,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%17#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%17#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%17#0"
       ]
     },
@@ -391,14 +391,14 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "64": {
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "nextTxn#0"
       ]
     },
@@ -406,7 +406,7 @@
       "op": "intc_1 // 0",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "nextTxn#0",
         "0"
       ]
@@ -415,12 +415,12 @@
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "nextTxn#0",
-        "tmp%18#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%18#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%18#0"
       ]
     },
@@ -429,12 +429,12 @@
       "defined_out": [
         "0x73bc6501",
         "nextTxn#0",
-        "tmp%18#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%18#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%18#0",
         "0x73bc6501"
       ]
@@ -443,12 +443,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%19#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%19#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%19#0"
       ]
     },
@@ -456,14 +456,14 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "79": {
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "nextTxn#0"
       ]
     },
@@ -471,7 +471,7 @@
       "op": "intc_0 // 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "nextTxn#0",
         "1"
       ]
@@ -480,12 +480,12 @@
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "nextTxn#0",
-        "tmp%20#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%20#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%20#0"
       ]
     },
@@ -494,12 +494,12 @@
       "defined_out": [
         "nextTxn#0",
         "reinterpret_bytes[32]%0#0",
-        "tmp%20#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%20#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%20#0",
         "reinterpret_bytes[32]%0#0"
       ]
@@ -508,12 +508,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%21#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%21#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%21#0"
       ]
     },
@@ -521,27 +521,27 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "90": {
       "op": "dup",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "secondNextTxn#0"
       ]
     },
     "91": {
       "op": "gtxns TypeEnum",
       "defined_out": [
         "nextTxn#0",
-        "tmp%22#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%22#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%22#0"
       ]
     },
@@ -549,7 +549,7 @@
       "op": "intc_3 // 6",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%22#0",
         "6"
       ]
@@ -558,12 +558,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%23#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%23#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%23#0"
       ]
     },
@@ -571,27 +571,27 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "98": {
       "op": "dup",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "secondNextTxn#0"
       ]
     },
     "99": {
       "op": "gtxns ApplicationID",
       "defined_out": [
         "nextTxn#0",
-        "tmp%24#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%24#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%24#0"
       ]
     },
@@ -600,12 +600,12 @@
       "defined_out": [
         "TMPL_MASTER_APP",
         "nextTxn#0",
-        "tmp%24#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%24#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%24#0",
         "TMPL_MASTER_APP"
       ]
@@ -614,12 +614,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%25#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%25#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%25#0"
       ]
     },
@@ -627,23 +627,23 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "107": {
       "op": "dup",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "secondNextTxn#0"
       ]
     },
     "108": {
       "op": "intc_1 // 0",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
+        "secondNextTxn#0",
         "0"
       ]
     },
@@ -651,12 +651,12 @@
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "nextTxn#0",
-        "tmp%26#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%26#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%26#0"
       ]
     },
@@ -665,12 +665,12 @@
       "defined_out": [
         "0x06755b0d",
         "nextTxn#0",
-        "tmp%26#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%26#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%26#0",
         "0x06755b0d"
       ]
@@ -679,12 +679,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%27#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%27#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%27#0"
       ]
     },
@@ -692,7 +692,7 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "121": {
@@ -700,11 +700,11 @@
       "defined_out": [
         "nextTxn#0",
         "reinterpret_bytes[32]%1#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "reinterpret_bytes[32]%1#0"
       ]
     },
@@ -712,18 +712,18 @@
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "reinterpret_bytes[32]%1#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "125": {
       "op": "intc_0 // 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "reinterpret_bytes[32]%1#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "1"
       ]
     },
@@ -732,12 +732,12 @@
       "defined_out": [
         "nextTxn#0",
         "reinterpret_bytes[32]%1#0",
-        "tmp%28#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%28#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "reinterpret_bytes[32]%1#0",
         "tmp%28#0"
       ]
@@ -746,12 +746,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%29#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%29#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%29#0"
       ]
     },
@@ -759,19 +759,19 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "132": {
       "op": "txn XferAsset",
       "defined_out": [
         "nextTxn#0",
-        "tmp%30#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%30#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0"
       ]
     },
@@ -779,18 +779,18 @@
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "136": {
       "op": "intc_2 // 2",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "2"
       ]
     },
@@ -798,13 +798,13 @@
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "nextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0",
-        "tmp%31#0",
-        "twoNextTxn#0"
+        "tmp%31#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0",
         "tmp%31#0"
       ]
@@ -813,13 +813,13 @@
       "op": "btoi",
       "defined_out": [
         "nextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0",
-        "tmp%32#0",
-        "twoNextTxn#0"
+        "tmp%32#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%30#0",
         "tmp%32#0"
       ]
@@ -828,12 +828,12 @@
       "op": "==",
       "defined_out": [
         "nextTxn#0",
-        "tmp%33#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%33#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%33#0"
       ]
     },
@@ -841,19 +841,19 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "144": {
       "op": "txn AssetAmount",
       "defined_out": [
         "nextTxn#0",
-        "tmp%34#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%34#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0"
       ]
     },
@@ -861,9 +861,9 @@
       "op": "dig 1",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "148": {
@@ -871,14 +871,14 @@
       "defined_out": [
         "3",
         "nextTxn#0",
-        "tmp%34#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%34#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "3"
       ]
     },
@@ -886,13 +886,13 @@
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "nextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0",
-        "tmp%35#0",
-        "twoNextTxn#0"
+        "tmp%35#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0",
         "tmp%35#0"
       ]
@@ -901,13 +901,13 @@
       "op": "btoi",
       "defined_out": [
         "nextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0",
-        "tmp%36#0",
-        "twoNextTxn#0"
+        "tmp%36#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%34#0",
         "tmp%36#0"
       ]
@@ -916,12 +916,12 @@
       "op": "<=",
       "defined_out": [
         "nextTxn#0",
-        "tmp%37#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0",
+        "tmp%37#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "tmp%37#0"
       ]
     },
@@ -929,7 +929,7 @@
       "op": "bz main_bool_false@16",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "157": {
@@ -937,11 +937,11 @@
       "defined_out": [
         "and_result%0#0",
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "and_result%0#0"
       ]
     },
@@ -949,14 +949,14 @@
       "op": "return",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     },
     "159": {
       "block": "main_bool_false@16",
       "stack_in": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ],
       "op": "intc_1 // 0",
       "defined_out": [
@@ -964,7 +964,7 @@
       ],
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0",
+        "secondNextTxn#0",
         "and_result%0#0"
       ]
     },
@@ -972,7 +972,7 @@
       "op": "return",
       "stack_out": [
         "nextTxn#0",
-        "twoNextTxn#0"
+        "secondNextTxn#0"
       ]
     }
   }

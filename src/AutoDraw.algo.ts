@@ -40,7 +40,7 @@ import {
 export class AutoDraw extends LogicSig {
     program() {
         const nextTxn = gtxn.Transaction(Txn.groupIndex + 1);
-        const twoNextTxn = gtxn.Transaction(Txn.groupIndex + 2);
+        const secondNextTxn = gtxn.Transaction(Txn.groupIndex + 2);
         const ASSET = TemplateVar<Asset>('ASSET');
         return (
             // Safety checks
@@ -55,13 +55,13 @@ export class AutoDraw extends LogicSig {
             nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
             nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
             nextTxn.appArgs(1) === Txn.sender.bytes &&
-            // Enforce the two next transaction is a Master call
-            twoNextTxn.type === TransactionType.ApplicationCall &&
-            twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-            twoNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-            Txn.assetReceiver.bytes === twoNextTxn.appArgs(1) &&
-            Txn.xferAsset.id === op.btoi(twoNextTxn.appArgs(2)) &&
-            Txn.assetAmount <= op.btoi(twoNextTxn.appArgs(3))
+            // Enforce the second next transaction is a Master call
+            secondNextTxn.type === TransactionType.ApplicationCall &&
+            secondNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
+            secondNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+            Txn.assetReceiver.bytes === secondNextTxn.appArgs(1) &&
+            Txn.xferAsset.id === op.btoi(secondNextTxn.appArgs(2)) &&
+            Txn.assetAmount <= op.btoi(secondNextTxn.appArgs(3))
         );
     }
 }
