@@ -76,11 +76,11 @@ export class Killswitch extends Pausable {
         this.accounts(account).value = new FixedArray<boolean, 2>(true, true);
     }
     /**
-     * Checks if the delegation is allowed for the account.
+     * Checks if the delegation is authorized for the account.
      *
      * @param account The address of the user to check.
      */
-    delegationCheck(account: Account): void {
+    authorize(account: Account): void {
         this.whenNotPaused();
         this.accountExists(account);
         assert(this.accounts(account).value[USER_INDEX], 'USER_REFUSED');

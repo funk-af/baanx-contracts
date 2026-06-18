@@ -12,9 +12,9 @@ main:
     assert // OnCompletion must be NoOp
     txn ApplicationID
     bz main_create_NoOp@16
-    pushbytess 0x597fc7c0 0x579ece24 0x5857d548 0xf402c9a3 0xd36c4a04 0x80a4aee8 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method "register()void", method "delegationCheck(address)void", method "enable()void", method "disable()void", method "enableUser(address)void", method "disableUser(address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "owner()address", method "transferOwnership(address)void"
+    pushbytess 0x597fc7c0 0x73bc6501 0x5857d548 0xf402c9a3 0xd36c4a04 0x80a4aee8 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method "register()void", method "authorize(address)void", method "enable()void", method "disable()void", method "enableUser(address)void", method "disableUser(address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "owner()address", method "transferOwnership(address)void"
     txna ApplicationArgs 0
-    match register delegationCheck enable disable enableUser disableUser pauser pause unpause updatePauser owner transferOwnership
+    match register authorize enable disable enableUser disableUser pauser pause unpause updatePauser owner transferOwnership
     err
 
 main_create_NoOp@16:
@@ -95,10 +95,10 @@ register:
     return
 
 
-// src/Killswitch.algo.ts::Killswitch.delegationCheck[routing]() -> void:
-delegationCheck:
+// src/Killswitch.algo.ts::Killswitch.authorize[routing]() -> void:
+authorize:
     // src/Killswitch.algo.ts:83
-    // delegationCheck(account: Account): void {
+    // authorize(account: Account): void {
     txna ApplicationArgs 1
     dup
     len
@@ -137,7 +137,7 @@ delegationCheck:
     getbit
     assert // INSTITUTION_REFUSED
     // src/Killswitch.algo.ts:83
-    // delegationCheck(account: Account): void {
+    // authorize(account: Account): void {
     intc_0 // 1
     return
 
