@@ -1,0 +1,491 @@
+#pragma version 11
+#pragma typetrack false
+
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
+    intcblock 1 0 32 8
+    bytecblock "_owner" "_pauser" "paused" 0x151f7c75
+    // src/Killswitch.algo.ts:42
+    // export class Killswitch extends Pausable {
+    txn OnCompletion
+    !
+    assert // OnCompletion must be NoOp
+    txn ApplicationID
+    bz main_create_NoOp@16
+    pushbytess 0x597fc7c0 0x579ece24 0x5857d548 0xf402c9a3 0xd36c4a04 0x80a4aee8 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method "register()void", method "delegationCheck(address)void", method "enable()void", method "disable()void", method "enableUser(address)void", method "disableUser(address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "owner()address", method "transferOwnership(address)void"
+    txna ApplicationArgs 0
+    match register delegationCheck enable disable enableUser disableUser pauser pause unpause updatePauser owner transferOwnership
+    err
+
+main_create_NoOp@16:
+    // src/Killswitch.algo.ts:42
+    // export class Killswitch extends Pausable {
+    pushbytes 0x9270773d // method "deploy(address)address"
+    txna ApplicationArgs 0
+    match deploy
+    err
+
+
+// src/Killswitch.algo.ts::Killswitch.deploy[routing]() -> void:
+deploy:
+    // src/Killswitch.algo.ts:64
+    // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/Killswitch.algo.ts:66
+    // this._transferOwnership(owner);
+    callsub _transferOwnership
+    // src/roles/Pausable.algo.ts:34
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/Killswitch.algo.ts:67
+    // this._pauser.value = Txn.sender;
+    txn Sender
+    app_global_put
+    // src/roles/Pausable.algo.ts:36
+    // paused = GlobalState<boolean>();
+    bytec_2 // "paused"
+    // src/Killswitch.algo.ts:68
+    // this.paused.value = false;
+    intc_1 // 0
+    app_global_put
+    // src/Killswitch.algo.ts:64
+    // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
+    bytec_3 // 0x151f7c75
+    // src/Killswitch.algo.ts:69
+    // return Global.currentApplicationAddress;
+    global CurrentApplicationAddress
+    // src/Killswitch.algo.ts:64
+    // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
+    concat
+    log
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch.register[routing]() -> void:
+register:
+    // src/Killswitch.algo.ts:73
+    // const account = Txn.sender;
+    txn Sender
+    // src/Killswitch.algo.ts:74
+    // assert(!this.accounts(account).exists, 'ALREADY_REGISTERED');
+    dup
+    box_len
+    bury 1
+    !
+    assert // ALREADY_REGISTERED
+    // src/Killswitch.algo.ts:75
+    // this.accounts(account).create();
+    dup
+    intc_0 // 1
+    box_create
+    pop
+    // src/Killswitch.algo.ts:76
+    // this.accounts(account).value = new FixedArray<boolean, 2>(true, true);
+    pushbytes 0xc0
+    box_put
+    // src/Killswitch.algo.ts:72
+    // register(): void {
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch.delegationCheck[routing]() -> void:
+delegationCheck:
+    // src/Killswitch.algo.ts:83
+    // delegationCheck(account: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Pausable.algo.ts:43
+    // assert(!this.paused.value);
+    intc_1 // 0
+    // src/roles/Pausable.algo.ts:36
+    // paused = GlobalState<boolean>();
+    bytec_2 // "paused"
+    // src/roles/Pausable.algo.ts:43
+    // assert(!this.paused.value);
+    app_global_get_ex
+    assert // check GlobalState exists
+    !
+    assert
+    // src/Killswitch.algo.ts:51
+    // assert(this.accounts(account).exists, 'NOT_REGISTERED');
+    dup
+    box_len
+    bury 1
+    assert // NOT_REGISTERED
+    // src/Killswitch.algo.ts:86
+    // assert(this.accounts(account).value[USER_INDEX], 'USER_REFUSED');
+    box_get
+    pop
+    dup
+    intc_1 // 0
+    getbit
+    assert // USER_REFUSED
+    // src/Killswitch.algo.ts:87
+    // assert(this.accounts(account).value[INSTITUTION_INDEX], 'INSTITUTION_REFUSED');
+    intc_0 // 1
+    getbit
+    assert // INSTITUTION_REFUSED
+    // src/Killswitch.algo.ts:83
+    // delegationCheck(account: Account): void {
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch.enable[routing]() -> void:
+enable:
+    // src/Killswitch.algo.ts:94
+    // this._setSwitch(Txn.sender, USER_INDEX, true);
+    txn Sender
+    intc_1 // 0
+    intc_0 // 1
+    callsub _setSwitch
+    // src/Killswitch.algo.ts:93
+    // enable(): void {
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch.disable[routing]() -> void:
+disable:
+    // src/Killswitch.algo.ts:101
+    // this._setSwitch(Txn.sender, USER_INDEX, false);
+    txn Sender
+    intc_1 // 0
+    dup
+    callsub _setSwitch
+    // src/Killswitch.algo.ts:100
+    // disable(): void {
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch.enableUser[routing]() -> void:
+enableUser:
+    // src/Killswitch.algo.ts:107
+    // enableUser(account: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/Killswitch.algo.ts:108
+    // this.onlyOwner();
+    callsub onlyOwner
+    // src/Killswitch.algo.ts:109
+    // this._setSwitch(account, INSTITUTION_INDEX, true);
+    intc_0 // 1
+    dup
+    callsub _setSwitch
+    // src/Killswitch.algo.ts:107
+    // enableUser(account: Account): void {
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch.disableUser[routing]() -> void:
+disableUser:
+    // src/Killswitch.algo.ts:115
+    // disableUser(account: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/Killswitch.algo.ts:116
+    // this.onlyOwner();
+    callsub onlyOwner
+    // src/Killswitch.algo.ts:117
+    // this._setSwitch(account, INSTITUTION_INDEX, false);
+    intc_0 // 1
+    intc_1 // 0
+    callsub _setSwitch
+    // src/Killswitch.algo.ts:115
+    // disableUser(account: Account): void {
+    intc_0 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.pauser[routing]() -> void:
+pauser:
+    // src/roles/Pausable.algo.ts:59
+    // return this._pauser.value;
+    intc_1 // 0
+    // src/roles/Pausable.algo.ts:34
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/roles/Pausable.algo.ts:59
+    // return this._pauser.value;
+    app_global_get_ex
+    assert // check GlobalState exists
+    // src/roles/Pausable.algo.ts:58
+    // pauser(): Account {
+    bytec_3 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.pause[routing]() -> void:
+pause:
+    // src/roles/Pausable.algo.ts:67
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:36
+    // paused = GlobalState<boolean>();
+    bytec_2 // "paused"
+    // src/roles/Pausable.algo.ts:69
+    // this.paused.value = true;
+    intc_0 // 1
+    app_global_put
+    // src/roles/Pausable.algo.ts:70
+    // emit<Pause>({});
+    pushbytes 0xcf23a30f
+    log
+    // src/roles/Pausable.algo.ts:66
+    // pause(): void {
+    intc_0 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.unpause[routing]() -> void:
+unpause:
+    // src/roles/Pausable.algo.ts:77
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:36
+    // paused = GlobalState<boolean>();
+    bytec_2 // "paused"
+    // src/roles/Pausable.algo.ts:79
+    // this.paused.value = false;
+    intc_1 // 0
+    app_global_put
+    // src/roles/Pausable.algo.ts:80
+    // emit<Unpause>({});
+    pushbytes 0xb163ee0b
+    log
+    // src/roles/Pausable.algo.ts:76
+    // unpause(): void {
+    intc_0 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]() -> void:
+updatePauser:
+    // src/roles/Pausable.algo.ts:86
+    // updatePauser(_newPauser: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Pausable.algo.ts:87
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:89
+    // assert(_newPauser !== Global.zeroAddress);
+    dup
+    global ZeroAddress
+    !=
+    assert
+    // src/roles/Pausable.algo.ts:34
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/roles/Pausable.algo.ts:90
+    // this._pauser.value = _newPauser;
+    dig 1
+    app_global_put
+    // src/roles/Pausable.algo.ts:91
+    // emit<PauserChanged>({ newAddress: this._pauser.value });
+    pushbytes 0xcc40923c // method "PauserChanged(address)"
+    swap
+    concat
+    log
+    // src/roles/Pausable.algo.ts:86
+    // updatePauser(_newPauser: Account): void {
+    intc_0 // 1
+    return
+
+
+// src/roles/Ownable.algo.ts::Ownable.owner[routing]() -> void:
+owner:
+    // src/roles/Ownable.algo.ts:67
+    // return this._owner.value;
+    intc_1 // 0
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_0 // "_owner"
+    // src/roles/Ownable.algo.ts:67
+    // return this._owner.value;
+    app_global_get_ex
+    assert // check GlobalState exists
+    // src/roles/Ownable.algo.ts:65
+    // @abimethod({ readonly: true })
+    bytec_3 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+
+// src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]() -> void:
+transferOwnership:
+    // src/roles/Ownable.algo.ts:92
+    // transferOwnership(newOwner: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Ownable.algo.ts:93
+    // this.onlyOwner();
+    callsub onlyOwner
+    // src/roles/Ownable.algo.ts:95
+    // this._transferOwnership(newOwner);
+    callsub _transferOwnership
+    // src/roles/Ownable.algo.ts:92
+    // transferOwnership(newOwner: Account): void {
+    intc_0 // 1
+    return
+
+
+// src/Killswitch.algo.ts::Killswitch._setSwitch(account: bytes, index: uint64, val: uint64) -> void:
+_setSwitch:
+    // src/Killswitch.algo.ts:55
+    // private _setSwitch(account: Account, index: uint64, val: boolean): void {
+    proto 3 0
+    // src/Killswitch.algo.ts:51
+    // assert(this.accounts(account).exists, 'NOT_REGISTERED');
+    frame_dig -3
+    box_len
+    bury 1
+    assert // NOT_REGISTERED
+    // src/Killswitch.algo.ts:57
+    // this.accounts(account).value[index] = val;
+    frame_dig -2
+    intc_3 // 8
+    /
+    frame_dig -2
+    intc_3 // 8
+    %
+    frame_dig -3
+    dig 2
+    intc_0 // 1
+    box_extract
+    dig 1
+    intc_3 // 8
+    <
+    assert // index access is out of bounds
+    swap
+    frame_dig -1
+    setbit
+    frame_dig -3
+    cover 2
+    box_replace
+    retsub
+
+
+// src/roles/Pausable.algo.ts::Pausable.onlyPauser() -> void:
+onlyPauser:
+    // src/roles/Pausable.algo.ts:50
+    // assert(Txn.sender === this._pauser.value);
+    txn Sender
+    intc_1 // 0
+    // src/roles/Pausable.algo.ts:34
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/roles/Pausable.algo.ts:50
+    // assert(Txn.sender === this._pauser.value);
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert
+    retsub
+
+
+// src/roles/Ownable.algo.ts::Ownable.onlyOwner() -> void:
+onlyOwner:
+    // src/roles/Ownable.algo.ts:53
+    // assert(Txn.sender === this._owner.value, 'SENDER_NOT_ALLOWED');
+    txn Sender
+    intc_1 // 0
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_0 // "_owner"
+    // src/roles/Ownable.algo.ts:53
+    // assert(Txn.sender === this._owner.value, 'SENDER_NOT_ALLOWED');
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert // SENDER_NOT_ALLOWED
+    retsub
+
+
+// src/roles/Ownable.algo.ts::Ownable._transferOwnership(newOwner: bytes) -> void:
+_transferOwnership:
+    // src/roles/Ownable.algo.ts:75
+    // protected _transferOwnership(newOwner: Account): void {
+    proto 1 0
+    // src/roles/Ownable.algo.ts:76
+    // const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
+    intc_1 // 0
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_0 // "_owner"
+    // src/roles/Ownable.algo.ts:76
+    // const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
+    app_global_get_ex
+    bury 1
+    bz _transferOwnership_ternary_false@2
+    intc_1 // 0
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_0 // "_owner"
+    // src/roles/Ownable.algo.ts:76
+    // const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
+    app_global_get_ex
+    assert // check GlobalState exists
+
+_transferOwnership_ternary_merge@3:
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_0 // "_owner"
+    // src/roles/Ownable.algo.ts:77
+    // this._owner.value = newOwner;
+    frame_dig -1
+    app_global_put
+    // src/roles/Ownable.algo.ts:79-82
+    // emit<OwnershipTransferred>({
+    //     previousOwner: previousOwner,
+    //     newOwner: newOwner,
+    // });
+    frame_dig -1
+    concat
+    pushbytes 0x9a223efb // method "OwnershipTransferred(address,address)"
+    swap
+    concat
+    log
+    retsub
+
+_transferOwnership_ternary_false@2:
+    // src/roles/Ownable.algo.ts:76
+    // const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
+    global ZeroAddress
+    b _transferOwnership_ternary_merge@3
