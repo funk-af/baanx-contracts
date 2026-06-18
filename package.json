@@ -8,7 +8,7 @@
         "compile-contracts": "pnpm exec puya-ts src/*.algo.ts --out-dir ../dist",
         "generate-clients": "algokit generate client dist --language typescript --output client/{contract_name}Client.ts",
         "build": "pnpm compile-contracts && pnpm generate-clients",
-        "test": "pnpm build && jest --runInBand __test__/Baanx.test.ts __test__/Killswitch.test.ts"
+        "test": "pnpm build && jest __test__/Baanx.test.ts"
     },
     "devDependencies": {
         "@algorandfoundation/algokit-client-generator": "^6.0.1",

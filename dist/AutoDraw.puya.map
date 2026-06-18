@@ -3,7 +3,7 @@
   "sources": [
     "../src/AutoDraw.algo.ts"
   ],
-  "mappings": "AA2CyC;;AAAiB;AAAjB;AACG;;AAAiB;AAAjB;AAIhC;;AAAgB;;AAAhB;AAAA;;;AACA;;AAAqB;;AAArB;AADA;;;AAGA;;AAAiB;;AAAjB;AAHA;;;AAIA;;AAAkB;;AAAlB;AAJA;;;AAKA;;AALA;;;AAOA;;AAAA;;AAAiB;AAAjB;AAPA;;;AAQA;;AAAA;;AAAkB;;AAAlB;AARA;;;AASA;;AAAgB;AAAhB;;AAAuB;;;;;;AAAvB;AATA;;;AAUA;;AAAgB;AAAhB;;AAAuB;;AAAvB;AAVA;;;AAYA;AAAA;;AAAoB;AAApB;AAZA;;;AAaA;AAAA;;AAAqB;;AAArB;AAbA;;;AAcA;AAAmB;AAAnB;;AAA0B;;;;;;AAA1B;AAdA;;;AAeA;;AAA4B;;AAAmB;AAAnB;;AAA5B;AAfA;;;AAgBA;;AAA6B;;AAAmB;AAAnB;;AAAR;AAArB;AAhBA;;;AAiBA;;AAA2B;;AAAmB;;AAAnB;;AAAR;AAAnB;AAjBA;;;;AAFJ;;AAAA",
+  "mappings": "AAyCyC;;AAAiB;AAAjB;AACG;;AAAiB;AAAjB;AAIhC;;AAAgB;;AAAhB;AAAA;;;AACA;;AAAqB;;AAArB;AADA;;;AAGA;;AAAiB;;AAAjB;AAHA;;;AAIA;;AAAkB;;AAAlB;AAJA;;;AAKA;;AALA;;;AAOA;;AAAA;;AAAiB;AAAjB;AAPA;;;AAQA;;AAAA;;AAAkB;;AAAlB;AARA;;;AASA;;AAAgB;AAAhB;;AAAuB;;;;;;AAAvB;AATA;;;AAUA;;AAAgB;AAAhB;;AAAuB;;AAAvB;AAVA;;;AAYA;AAAA;;AAAoB;AAApB;AAZA;;;AAaA;AAAA;;AAAqB;;AAArB;AAbA;;;AAcA;AAAmB;AAAnB;;AAA0B;;;;;;AAA1B;AAdA;;;AAeA;;AAA4B;;AAAmB;AAAnB;;AAA5B;AAfA;;;AAgBA;;AAA6B;;AAAmB;AAAnB;;AAAR;AAArB;AAhBA;;;AAiBA;;AAA2B;;AAAmB;;AAAnB;;AAAR;AAAnB;AAjBA;;;;AAFJ;;AAAA",
   "op_pc_offset": 1,
   "pc_events": {
     "0": {
@@ -490,7 +490,7 @@
       ]
     },
     "84": {
-      "op": "txn AssetSender",
+      "op": "txn Sender",
       "defined_out": [
         "nextTxn#0",
         "reinterpret_bytes[32]%0#0",

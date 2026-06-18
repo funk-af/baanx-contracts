@@ -25,11 +25,9 @@
 /* eslint-disable camelcase */
 
 import {
-    Account,
     Application,
     Asset,
     Bytes,
-    bytes,
     Global,
     gtxn,
     LogicSig,
@@ -56,7 +54,7 @@ export class AutoDraw extends LogicSig {
             nextTxn.type === TransactionType.ApplicationCall &&
             nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
             nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
-            nextTxn.appArgs(1) === Txn.assetSender.bytes &&
+            nextTxn.appArgs(1) === Txn.sender.bytes &&
             // Enforce the two next transaction is a Master call
             twoNextTxn.type === TransactionType.ApplicationCall &&
             twoNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&

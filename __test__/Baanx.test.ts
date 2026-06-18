@@ -1,17 +1,21 @@
 /// <reference types="node" />
 /* eslint-disable import/no-extraneous-dependencies */
 import { describe, test, expect, beforeAll } from '@jest/globals';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import algosdk from 'algosdk';
 import nacl from 'tweetnacl';
 import { Config } from '@algorandfoundation/algokit-utils';
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount';
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing';
 import { MasterClient, MasterFactory } from '../client/MasterClient';
+import { KillswitchClient, KillswitchFactory } from '../client/KillswitchClient';
 import type { PermissionlessWithdrawalRequest } from '../client/MasterClient';
 
 const fixture = algorandFixture({ testAccountFunding: AlgoAmount.MicroAlgos(0) });
 
 let appClient: MasterClient;
+let ksClient: KillswitchClient;
 
 describe('Baanx', () => {
     let circle: algosdk.Account & algosdk.Address;
@@ -24,6 +28,11 @@ describe('Baanx', () => {
     let newPartnerChannel: string;
     let newCardAddress: string;
     let withdrawalRequest: PermissionlessWithdrawalRequest;
+
+    // AutoDraw-specific state (uses a separate card so the main flow stays intact)
+    let autoDrawCardAddress: string;
+    let autoDrawLsig: algosdk.LogicSigAccount;
+    const AUTO_DRAW_DEBIT_AMOUNT = 5_000_000n;
 
     beforeAll(async () => {
         await fixture.beforeEach();
@@ -84,6 +93,24 @@ describe('Baanx', () => {
 
         // Fund the app account to cover minimum balance requirements
         await appClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(100_000) });
+
+        // Deploy the Killswitch contract (used by the AutoDraw delegation flow)
+        const ksFactory = algorand.client.getTypedAppFactory(KillswitchFactory, {
+            defaultSender: baanx.addr,
+        });
+        const ksDeployment = await ksFactory.send.create.deploy({
+            args: [baanx.addr.toString()],
+            schema: {
+                globalInts: 8,
+                globalByteSlices: 8,
+                localInts: 0,
+                localByteSlices: 0,
+            },
+        });
+        ksClient = ksDeployment.appClient;
+
+        // Fund Killswitch app for box MBR (2_500 + 400 * (32 + 2) = 16_100 per registration)
+        await ksClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(200_000) });
     });
 
     test('Set withdrawal rounds to 0', async () => {
@@ -490,6 +517,312 @@ describe('Baanx', () => {
     test('Close card', async () => {
         const result = await appClient.send.cardFundClose({
             args: { cardFund: newCardAddress },
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
+
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    // ========== Killswitch unit tests ==========
+
+    test('Killswitch: register user', async () => {
+        const result = await ksClient.send.register({
+            args: [],
+            sender: user.addr,
+        });
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('Killswitch: authorize registered user succeeds', async () => {
+        const result = await ksClient.send.authorize({
+            args: { account: user.addr.toString() },
+        });
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('Killswitch: user disables themselves — authorize fails with USER_REFUSED', async () => {
+        await ksClient.send.disable({ args: [], sender: user.addr });
+
+        await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow(
+            'USER_REFUSED'
+        );
+    });
+
+    test('Killswitch: user re-enables themselves — authorize succeeds', async () => {
+        await ksClient.send.enable({ args: [], sender: user.addr });
+
+        const result = await ksClient.send.authorize({
+            args: { account: user.addr.toString() },
+        });
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('Killswitch: institution disables user — authorize fails with INSTITUTION_REFUSED', async () => {
+        await ksClient.send.disableUser({ args: { account: user.addr.toString() } });
+
+        await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow(
+            'INSTITUTION_REFUSED'
+        );
+    });
+
+    test('Killswitch: institution re-enables user — authorize succeeds', async () => {
+        await ksClient.send.enableUser({ args: { account: user.addr.toString() } });
+
+        const result = await ksClient.send.authorize({
+            args: { account: user.addr.toString() },
+        });
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('Killswitch: registering again fails with ALREADY_REGISTERED', async () => {
+        await expect(ksClient.send.register({ args: [], sender: user.addr })).rejects.toThrow('ALREADY_REGISTERED');
+    });
+
+    test('Killswitch: authorize unregistered account fails with NOT_REGISTERED', async () => {
+        await expect(ksClient.send.authorize({ args: { account: user2.addr.toString() } })).rejects.toThrow(
+            'NOT_REGISTERED'
+        );
+    });
+
+    test('Killswitch: pause contract — authorize fails', async () => {
+        await ksClient.send.pause({ args: [] });
+
+        await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow();
+    });
+
+    test('Killswitch: unpause contract — authorize succeeds', async () => {
+        await ksClient.send.unpause({ args: [] });
+
+        const result = await ksClient.send.authorize({
+            args: { account: user.addr.toString() },
+        });
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    // ========== AutoDraw integration tests ==========
+
+    test('AutoDraw: create card for user', async () => {
+        const { algorand } = fixture.context;
+
+        const getMbr = await appClient.send.getCardFundMbr({
+            args: { asset: fakeUSDC },
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
+
+        const mbr = await algorand.createTransaction.payment({
+            sender: user.addr,
+            receiver: appClient.appAddress,
+            amount: AlgoAmount.MicroAlgos(getMbr.return!),
+        });
+        const result = await appClient.send.cardFundCreate({
+            args: {
+                mbr,
+                partnerChannel: newPartnerChannel,
+                asset: fakeUSDC,
+            },
+            sender: user.addr,
+            staticFee: AlgoAmount.MicroAlgos(5_000),
+        });
+        expect(result.return).toBeDefined();
+
+        autoDrawCardAddress = result.return!;
+    });
+
+    test('AutoDraw: compile lsig and user signs for delegation', async () => {
+        const { algorand } = fixture.context;
+        const algod = algorand.client.algod;
+
+        const tealTemplate = readFileSync(join(__dirname, '../dist/AutoDraw.teal'), 'utf-8');
+        const teal = tealTemplate
+            .replace('TMPL_ASSET', String(fakeUSDC))
+            .replace('TMPL_KILLSWITCH_APP', String(ksClient.appId))
+            .replace('TMPL_MASTER_APP', String(appClient.appId));
+
+        const compiled = await algod.compile(teal).do();
+        const program = Buffer.from(compiled.result, 'base64');
+
+        autoDrawLsig = new algosdk.LogicSigAccount(program);
+        autoDrawLsig.sign(user.sk);
+
+        expect(autoDrawLsig.lsig.sig).toBeDefined();
+    });
+
+    test('AutoDraw: group debit succeeds from zero-balance card', async () => {
+        const { algorand } = fixture.context;
+        const algod = algorand.client.algod;
+
+        const nonceResult = await appClient.send.getNextCardFundNonce({
+            args: { cardFund: autoDrawCardAddress },
+        });
+
+        const suggestedParams = await algod.getTransactionParams().do();
+        const axferTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+            sender: user.addr.toString(),
+            receiver: autoDrawCardAddress,
+            assetIndex: Number(fakeUSDC),
+            amount: AUTO_DRAW_DEBIT_AMOUNT,
+            suggestedParams: { ...suggestedParams, flatFee: true, fee: 0 },
+        });
+
+        const composer = algorand.newGroup();
+        // [0] AutoDraw lsig axfer: user's main account → card (fee=0)
+        composer.addTransaction(axferTxn, algosdk.makeLogicSigAccountTransactionSigner(autoDrawLsig));
+        // [1] Killswitch.authorize: validates user's switches and paused state
+        composer.addAppCallMethodCall(
+            await ksClient.params.authorize({
+                args: { account: user.addr.toString() },
+                staticFee: AlgoAmount.MicroAlgos(1_000),
+            })
+        );
+        // [2] cardFundDebit: inner txn card→Master now sees the card funded by [0]
+        composer.addAppCallMethodCall(
+            await appClient.params.cardFundDebit({
+                args: {
+                    cardFund: autoDrawCardAddress,
+                    asset: fakeUSDC,
+                    amount: AUTO_DRAW_DEBIT_AMOUNT,
+                    nonce: nonceResult.return!,
+                    ref: 'AutoDraw Test REF-001',
+                },
+                staticFee: AlgoAmount.MicroAlgos(3_000),
+            })
+        );
+
+        const result = await composer.send();
+        expect(result.confirmations.every((c) => c.poolError === '')).toBe(true);
+    });
+
+    test('AutoDraw: card nonce incremented after debit', async () => {
+        const result = await appClient.send.getCardFundData({
+            args: { cardFund: autoDrawCardAddress },
+        });
+        expect(result.return?.nonce).toEqual(1n);
+    });
+
+    test('AutoDraw: group fails when user has disabled themselves', async () => {
+        const { algorand } = fixture.context;
+        const algod = algorand.client.algod;
+
+        await ksClient.send.disable({ args: [], sender: user.addr });
+
+        const nonceResult = await appClient.send.getNextCardFundNonce({
+            args: { cardFund: autoDrawCardAddress },
+        });
+
+        const suggestedParams = await algod.getTransactionParams().do();
+        const axferTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+            sender: user.addr.toString(),
+            receiver: autoDrawCardAddress,
+            assetIndex: Number(fakeUSDC),
+            amount: AUTO_DRAW_DEBIT_AMOUNT,
+            suggestedParams: { ...suggestedParams, flatFee: true, fee: 0 },
+        });
+
+        const composer = algorand.newGroup();
+        composer.addTransaction(axferTxn, algosdk.makeLogicSigAccountTransactionSigner(autoDrawLsig));
+        composer.addAppCallMethodCall(
+            await ksClient.params.authorize({
+                args: { account: user.addr.toString() },
+                staticFee: AlgoAmount.MicroAlgos(1_000),
+            })
+        );
+        composer.addAppCallMethodCall(
+            await appClient.params.cardFundDebit({
+                args: {
+                    cardFund: autoDrawCardAddress,
+                    asset: fakeUSDC,
+                    amount: AUTO_DRAW_DEBIT_AMOUNT,
+                    nonce: nonceResult.return!,
+                    ref: 'AutoDraw Test REF-002',
+                },
+                staticFee: AlgoAmount.MicroAlgos(3_000),
+            })
+        );
+
+        await expect(composer.send()).rejects.toThrow('USER_REFUSED');
+
+        await ksClient.send.enable({ args: [], sender: user.addr });
+    });
+
+    test('AutoDraw: group fails when Killswitch is paused', async () => {
+        const { algorand } = fixture.context;
+        const algod = algorand.client.algod;
+
+        await ksClient.send.pause({ args: [] });
+
+        const nonceResult = await appClient.send.getNextCardFundNonce({
+            args: { cardFund: autoDrawCardAddress },
+        });
+
+        const suggestedParams = await algod.getTransactionParams().do();
+        const axferTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+            sender: user.addr.toString(),
+            receiver: autoDrawCardAddress,
+            assetIndex: Number(fakeUSDC),
+            amount: AUTO_DRAW_DEBIT_AMOUNT,
+            suggestedParams: { ...suggestedParams, flatFee: true, fee: 0 },
+        });
+
+        const composer = algorand.newGroup();
+        composer.addTransaction(axferTxn, algosdk.makeLogicSigAccountTransactionSigner(autoDrawLsig));
+        composer.addAppCallMethodCall(
+            await ksClient.params.authorize({
+                args: { account: user.addr.toString() },
+                staticFee: AlgoAmount.MicroAlgos(1_000),
+            })
+        );
+        composer.addAppCallMethodCall(
+            await appClient.params.cardFundDebit({
+                args: {
+                    cardFund: autoDrawCardAddress,
+                    asset: fakeUSDC,
+                    amount: AUTO_DRAW_DEBIT_AMOUNT,
+                    nonce: nonceResult.return!,
+                    ref: 'AutoDraw Test REF-003',
+                },
+                staticFee: AlgoAmount.MicroAlgos(3_000),
+            })
+        );
+
+        await expect(composer.send()).rejects.toThrow();
+
+        await ksClient.send.unpause({ args: [] });
+    });
+
+    test('AutoDraw: settle debits', async () => {
+        const settlementNonce = await appClient.send.getNextSettlementNonce({
+            args: {},
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
+
+        const result = await appClient.send.settle({
+            args: {
+                asset: fakeUSDC,
+                amount: 5_000_000,
+                nonce: settlementNonce.return!,
+            },
+            staticFee: AlgoAmount.MicroAlgos(2_000),
+        });
+
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('AutoDraw: disable FakeUSDC for card', async () => {
+        const result = await appClient.send.cardFundDisableAsset({
+            args: {
+                cardFund: autoDrawCardAddress,
+                asset: fakeUSDC,
+            },
+            sender: user.addr,
+            staticFee: AlgoAmount.MicroAlgos(3_000),
+        });
+
+        expect(result.confirmation.poolError).toBe('');
+    });
+
+    test('AutoDraw: close card', async () => {
+        const result = await appClient.send.cardFundClose({
+            args: { cardFund: autoDrawCardAddress },
             staticFee: AlgoAmount.MicroAlgos(3_000),
         });
 
