@@ -3,9 +3,10 @@
   "sources": [
     "../src/Killswitch.algo.ts",
     "../src/roles/Ownable.algo.ts",
-    "../src/roles/Pausable.algo.ts"
+    "../src/roles/Pausable.algo.ts",
+    "../src/roles/Recoverable.algo.ts"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAyCA;;AAAA;AAAA;AAAA;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;;;;;;AAAA;;;AAAA;;;;AAAA;AAsBK;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEG;;;AEhCJ;AFiCyB;;AAArB;AE/BJ;AFgCwB;AAApB;AAJH;AAKU;;AALV;AAAA;AAAA;AAAA;AASmB;;AACR;AAAA;AAAA;;AAAD;AAAP;AACA;AAAA;AAAA;;AAC+B;;;AAA/B;AAJJ;AAAA;AAWA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AExCY;AAPZ;AAOY;AAAA;AAAD;AAAP;AFQO;AAAA;AAAA;;AAAP;AAmCO;AAAA;AAAA;AAA6B;AAA7B;AAAP;AACoC;AAA7B;AAAP;AAJJ;AAAA;AAWoB;;AAAY;AAAY;AAAxC;;;AADJ;AAAA;AAQoB;;AAAY;AAAY;AAAxC;;;AADJ;AAAA;AAOA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AACyB;AAAmB;AAA5C;;;AAFJ;AAAA;AAQA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AACyB;AAAmB;AAA5C;;;AAFJ;AAAA;AExDW;AAzBX;AAyBW;AAAA;AADX;AAAA;AAAA;AAAA;AAAA;AAAA;AASI;;;AA/BJ;AAiCwB;AAApB;AACA;;;;;;AAAA;AAJJ;AAAA;AAWI;;;AAzCJ;AA2CwB;AAApB;AACA;;;;;;AAAA;AAJJ;AAAA;AAUA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AAEO;AAAe;;AAAf;AAAP;AAvDJ;AAwDI;;AAAA;AACA;;;;;;AAAA;AAAA;AAAA;AALJ;AAAA;ADnBW;AArBX;AAqBW;AAAA;AAFV;AAAA;AAAA;AAAA;AAAA;AAAA;AA2BD;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AAEA;;;AAHJ;AAAA;ADrCA;;;AAJW;;AAAA;AAAA;;AAAP;AAMA;;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;;AAAA;;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;AAAA;;AAAA;AAAA;;AAAA;;AAAA;;AEPO;;AAAe;AAhB1B;AAgB0B;AAAA;AAAf;AAAP;;ADGO;;AAAe;AAP1B;AAO0B;AAAA;AAAf;AAAP;;AAsBJ;;;AAC0B;AA9B1B;AA8B0B;AAAA;;AAAA;;;AAAuB;AA9BjD;AA8BiD;AAAA;AA9BjD;AA+BI;;AAAA;AAE2B;;AAAA;AAA3B;;;;;;AAAA;AAAA;AAAA;;AAHiE;;",
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AA4BA;;AAAA;AAAA;AAAA;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;;;;;;AAAA;;;AAAA;;;;AAAA;AAQK;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAEG;;;AELJ;AFMyB;;AAArB;AEJJ;AFKwB;AAApB;AAJH;AAKU;;AALV;AAAA;AAAA;AAAA;AAaD;;;AAAA;AAAA;AAAA;AAAA;AAAA;AEPY;AAPZ;AAOY;AAAA;AAAD;AAAP;AFSO;AAAA;;AAAP;AAFJ;AAAA;AAS0B;;AAAd;AAAA;;AAAD;AAAP;AACc;;AAAd;AAAA;;AAFJ;AAAA;AASyB;;AAAd;AAAA;;AAAP;AACc;;AAAd;;AAFJ;AAAA;AG7BA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;;;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;AACI;;;AAGA;;;AACI;;;;;;;;;AAAA;;;;AAAA;;;AAAA;AALR;AAAA;AAWQ;;;;;AAAA;;;AAAA;;;AAAA;;;;ADWG;AAzBX;AAyBW;AAAA;AADX;AAAA;AAAA;AAAA;AAAA;AAAA;AASI;;;AA/BJ;AAiCwB;AAApB;AACA;;;;;;AAAA;AAJJ;AAAA;AAWI;;;AAzCJ;AA2CwB;AAApB;AACA;;;;;;AAAA;AAJJ;AAAA;AAUA;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AAEO;AAAe;;AAAf;AAAP;AAvDJ;AAwDI;;AAAA;AACA;;;;;;AAAA;AAAA;AAAA;AALJ;AAAA;ADnBW;AArBX;AAqBW;AAAA;AAFV;AAAA;AAAA;AAAA;AAAA;AAAA;AA2BD;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACI;;;AAEA;;;AAHJ;AAAA;AC1CW;;AAAe;AAhB1B;AAgB0B;AAAA;AAAf;AAAP;;ADGO;;AAAe;AAP1B;AAO0B;AAAA;AAAf;AAAP;;AAsBJ;;;AAC0B;AA9B1B;AA8B0B;AAAA;;AAAA;;;AAAuB;AA9BjD;AA8BiD;AAAA;AA9BjD;AA+BI;;AAAA;AAE2B;;AAAA;AAA3B;;;;;;AAAA;AAAA;AAAA;;AAHiE;;",
   "op_pc_offset": 0,
   "pc_events": {
     "1": {
@@ -51,32 +52,28 @@
       ]
     },
     "42": {
-      "op": "bz main_create_NoOp@16",
+      "op": "bz main_create_NoOp@14",
       "stack_out": []
     },
     "45": {
-      "op": "pushbytess 0x597fc7c0 0x73bc6501 0x5857d548 0xf402c9a3 0xd36c4a04 0x80a4aee8 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method \"register()void\", method \"authorize(address)void\", method \"enable()void\", method \"disable()void\", method \"enableUser(address)void\", method \"disableUser(address)void\", method \"pauser()address\", method \"pause()void\", method \"unpause()void\", method \"updatePauser(address)void\", method \"owner()address\", method \"transferOwnership(address)void\"",
+      "op": "pushbytess 0x73bc6501 0x5857d548 0xb9c21155 0x785a1bf9 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method \"authorize(address)void\", method \"enable()void\", method \"kill()void\", method \"recoverAsset(uint64,uint64,address)void\", method \"pauser()address\", method \"pause()void\", method \"unpause()void\", method \"updatePauser(address)void\", method \"owner()address\", method \"transferOwnership(address)void\"",
       "defined_out": [
         "Method(authorize(address)void)",
-        "Method(disable()void)",
-        "Method(disableUser(address)void)",
         "Method(enable()void)",
-        "Method(enableUser(address)void)",
+        "Method(kill()void)",
         "Method(owner()address)",
         "Method(pause()void)",
         "Method(pauser()address)",
-        "Method(register()void)",
+        "Method(recoverAsset(uint64,uint64,address)void)",
         "Method(transferOwnership(address)void)",
         "Method(unpause()void)",
         "Method(updatePauser(address)void)"
       ],
       "stack_out": [
-        "Method(register()void)",
         "Method(authorize(address)void)",
         "Method(enable()void)",
-        "Method(disable()void)",
-        "Method(enableUser(address)void)",
-        "Method(disableUser(address)void)",
+        "Method(kill()void)",
+        "Method(recoverAsset(uint64,uint64,address)void)",
         "Method(pauser()address)",
         "Method(pause()void)",
         "Method(unpause()void)",
@@ -85,30 +82,26 @@
         "Method(transferOwnership(address)void)"
       ]
     },
-    "107": {
+    "97": {
       "op": "txna ApplicationArgs 0",
       "defined_out": [
         "Method(authorize(address)void)",
-        "Method(disable()void)",
-        "Method(disableUser(address)void)",
         "Method(enable()void)",
-        "Method(enableUser(address)void)",
+        "Method(kill()void)",
         "Method(owner()address)",
         "Method(pause()void)",
         "Method(pauser()address)",
-        "Method(register()void)",
+        "Method(recoverAsset(uint64,uint64,address)void)",
         "Method(transferOwnership(address)void)",
         "Method(unpause()void)",
         "Method(updatePauser(address)void)",
         "tmp%4#0"
       ],
       "stack_out": [
-        "Method(register()void)",
         "Method(authorize(address)void)",
         "Method(enable()void)",
-        "Method(disable()void)",
-        "Method(enableUser(address)void)",
-        "Method(disableUser(address)void)",
+        "Method(kill()void)",
+        "Method(recoverAsset(uint64,uint64,address)void)",
         "Method(pauser()address)",
         "Method(pause()void)",
         "Method(unpause()void)",
@@ -118,15 +111,15 @@
         "tmp%4#0"
       ]
     },
-    "110": {
-      "op": "match register authorize enable disable enableUser disableUser pauser pause unpause updatePauser owner transferOwnership",
+    "100": {
+      "op": "match authorize enable kill recoverAsset pauser pause unpause updatePauser owner transferOwnership",
       "stack_out": []
     },
-    "136": {
+    "122": {
       "op": "err"
     },
-    "137": {
-      "block": "main_create_NoOp@16",
+    "123": {
+      "block": "main_create_NoOp@14",
       "stack_in": [],
       "op": "pushbytes 0x9270773d // method \"deploy(address)address\"",
       "defined_out": [
@@ -136,7 +129,7 @@
         "Method(deploy(address)address)"
       ]
     },
-    "143": {
+    "129": {
       "op": "txna ApplicationArgs 0",
       "defined_out": [
         "Method(deploy(address)address)",
@@ -147,14 +140,14 @@
         "tmp%5#0"
       ]
     },
-    "146": {
+    "132": {
       "op": "match deploy",
       "stack_out": []
     },
-    "150": {
+    "136": {
       "op": "err"
     },
-    "151": {
+    "137": {
       "subroutine": "src/Killswitch.algo.ts::Killswitch.deploy[routing]",
       "params": {},
       "block": "deploy",
@@ -167,7 +160,7 @@
         "owner#0"
       ]
     },
-    "154": {
+    "140": {
       "op": "dup",
       "defined_out": [
         "owner#0",
@@ -178,7 +171,7 @@
         "owner#0 (copy)"
       ]
     },
-    "155": {
+    "141": {
       "op": "len",
       "defined_out": [
         "len%0#0",
@@ -189,7 +182,7 @@
         "len%0#0"
       ]
     },
-    "156": {
+    "142": {
       "op": "intc_2 // 32",
       "defined_out": [
         "32",
@@ -202,7 +195,7 @@
         "32"
       ]
     },
-    "157": {
+    "143": {
       "op": "==",
       "defined_out": [
         "eq%0#0",
@@ -213,19 +206,19 @@
         "eq%0#0"
       ]
     },
-    "158": {
+    "144": {
       "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "stack_out": [
         "owner#0"
       ]
     },
-    "159": {
+    "145": {
       "callsub": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
       "op": "callsub _transferOwnership",
       "stack_out": []
     },
-    "162": {
+    "148": {
       "op": "bytec_1 // \"_pauser\"",
       "defined_out": [
         "\"_pauser\""
@@ -234,7 +227,7 @@
         "\"_pauser\""
       ]
     },
-    "163": {
+    "149": {
       "op": "txn Sender",
       "defined_out": [
         "\"_pauser\"",
@@ -245,11 +238,11 @@
         "tmp%0#1"
       ]
     },
-    "165": {
+    "151": {
       "op": "app_global_put",
       "stack_out": []
     },
-    "166": {
+    "152": {
       "op": "bytec_2 // \"paused\"",
       "defined_out": [
         "\"paused\""
@@ -258,7 +251,7 @@
         "\"paused\""
       ]
     },
-    "167": {
+    "153": {
       "op": "intc_1 // 0",
       "defined_out": [
         "\"paused\"",
@@ -269,11 +262,11 @@
         "0"
       ]
     },
-    "168": {
+    "154": {
       "op": "app_global_put",
       "stack_out": []
     },
-    "169": {
+    "155": {
       "op": "bytec_3 // 0x151f7c75",
       "defined_out": [
         "0x151f7c75"
@@ -282,7 +275,7 @@
         "0x151f7c75"
       ]
     },
-    "170": {
+    "156": {
       "op": "global CurrentApplicationAddress",
       "defined_out": [
         "0x151f7c75",
@@ -293,7 +286,7 @@
         "tmp%1#1"
       ]
     },
-    "172": {
+    "158": {
       "op": "concat",
       "defined_out": [
         "tmp%4#0"
@@ -302,11 +295,11 @@
         "tmp%4#0"
       ]
     },
-    "173": {
+    "159": {
       "op": "log",
       "stack_out": []
     },
-    "174": {
+    "160": {
       "op": "intc_0 // 1",
       "defined_out": [
         "1"
@@ -315,135 +308,11 @@
         "1"
       ]
     },
-    "175": {
+    "161": {
       "op": "return",
       "stack_out": []
     },
-    "176": {
-      "subroutine": "src/Killswitch.algo.ts::Killswitch.register[routing]",
-      "params": {},
-      "block": "register",
-      "stack_in": [],
-      "op": "txn Sender",
-      "defined_out": [
-        "account#0"
-      ],
-      "stack_out": [
-        "account#0"
-      ]
-    },
-    "178": {
-      "op": "dup",
-      "defined_out": [
-        "account#0",
-        "account#0 (copy)"
-      ],
-      "stack_out": [
-        "account#0",
-        "account#0 (copy)"
-      ]
-    },
-    "179": {
-      "op": "box_len",
-      "defined_out": [
-        "_%0#0",
-        "account#0",
-        "maybe_exists%0#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "_%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "180": {
-      "op": "bury 1",
-      "stack_out": [
-        "account#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "182": {
-      "op": "!",
-      "defined_out": [
-        "account#0",
-        "tmp%1#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "tmp%1#0"
-      ]
-    },
-    "183": {
-      "error": "ALREADY_REGISTERED",
-      "op": "assert // ALREADY_REGISTERED",
-      "stack_out": [
-        "account#0"
-      ]
-    },
-    "184": {
-      "op": "dup",
-      "stack_out": [
-        "account#0",
-        "account#0 (copy)"
-      ]
-    },
-    "185": {
-      "op": "intc_0 // 1",
-      "defined_out": [
-        "1",
-        "account#0",
-        "account#0 (copy)"
-      ],
-      "stack_out": [
-        "account#0",
-        "account#0 (copy)",
-        "1"
-      ]
-    },
-    "186": {
-      "op": "box_create",
-      "defined_out": [
-        "account#0",
-        "{box_create}"
-      ],
-      "stack_out": [
-        "account#0",
-        "{box_create}"
-      ]
-    },
-    "187": {
-      "op": "pop",
-      "stack_out": [
-        "account#0"
-      ]
-    },
-    "188": {
-      "op": "pushbytes 0xc0",
-      "defined_out": [
-        "0xc0",
-        "account#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "0xc0"
-      ]
-    },
-    "191": {
-      "op": "box_put",
-      "stack_out": []
-    },
-    "192": {
-      "op": "intc_0 // 1",
-      "stack_out": [
-        "1"
-      ]
-    },
-    "193": {
-      "op": "return",
-      "stack_out": []
-    },
-    "194": {
+    "162": {
       "subroutine": "src/Killswitch.algo.ts::Killswitch.authorize[routing]",
       "params": {},
       "block": "authorize",
@@ -456,7 +325,7 @@
         "account#0"
       ]
     },
-    "197": {
+    "165": {
       "op": "dup",
       "defined_out": [
         "account#0",
@@ -467,7 +336,7 @@
         "account#0 (copy)"
       ]
     },
-    "198": {
+    "166": {
       "op": "len",
       "defined_out": [
         "account#0",
@@ -478,7 +347,7 @@
         "len%0#0"
       ]
     },
-    "199": {
+    "167": {
       "op": "intc_2 // 32",
       "defined_out": [
         "32",
@@ -491,7 +360,7 @@
         "32"
       ]
     },
-    "200": {
+    "168": {
       "op": "==",
       "defined_out": [
         "account#0",
@@ -502,14 +371,14 @@
         "eq%0#0"
       ]
     },
-    "201": {
+    "169": {
       "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "stack_out": [
         "account#0"
       ]
     },
-    "202": {
+    "170": {
       "op": "intc_1 // 0",
       "defined_out": [
         "0",
@@ -520,7 +389,7 @@
         "0"
       ]
     },
-    "203": {
+    "171": {
       "op": "bytec_2 // \"paused\"",
       "defined_out": [
         "\"paused\"",
@@ -533,7 +402,7 @@
         "\"paused\""
       ]
     },
-    "204": {
+    "172": {
       "op": "app_global_get_ex",
       "defined_out": [
         "account#0",
@@ -546,7 +415,7 @@
         "maybe_exists%0#0"
       ]
     },
-    "205": {
+    "173": {
       "error": "check GlobalState exists",
       "op": "assert // check GlobalState exists",
       "stack_out": [
@@ -554,7 +423,7 @@
         "maybe_value%0#0"
       ]
     },
-    "206": {
+    "174": {
       "op": "!",
       "defined_out": [
         "account#0",
@@ -565,449 +434,632 @@
         "tmp%0#1"
       ]
     },
-    "207": {
+    "175": {
       "op": "assert",
       "stack_out": [
         "account#0"
       ]
     },
-    "208": {
-      "op": "dup",
-      "stack_out": [
-        "account#0",
-        "account#0 (copy)"
-      ]
-    },
-    "209": {
+    "176": {
       "op": "box_len",
       "defined_out": [
         "_%0#0",
-        "account#0",
         "maybe_exists%0#0"
       ],
       "stack_out": [
-        "account#0",
         "_%0#0",
         "maybe_exists%0#0"
       ]
     },
-    "210": {
+    "177": {
       "op": "bury 1",
       "stack_out": [
-        "account#0",
         "maybe_exists%0#0"
       ]
     },
-    "212": {
-      "error": "NOT_REGISTERED",
-      "op": "assert // NOT_REGISTERED",
-      "stack_out": [
-        "account#0"
-      ]
-    },
-    "213": {
-      "op": "box_get",
-      "defined_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%box_get%1#0"
-      ],
-      "stack_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%box_get%1#0"
-      ]
-    },
-    "214": {
-      "op": "pop",
-      "stack_out": [
-        "aggregate%box_get%0#0"
-      ]
-    },
-    "215": {
-      "op": "dup",
-      "defined_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%box_get%0#0 (copy)"
-      ],
-      "stack_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%box_get%0#0 (copy)"
-      ]
-    },
-    "216": {
-      "op": "intc_1 // 0",
-      "stack_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%box_get%0#0 (copy)",
-        "0"
-      ]
-    },
-    "217": {
-      "op": "getbit",
-      "defined_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%get_bit%0#0"
-      ],
-      "stack_out": [
-        "aggregate%box_get%0#0",
-        "aggregate%get_bit%0#0"
-      ]
-    },
-    "218": {
-      "error": "USER_REFUSED",
-      "op": "assert // USER_REFUSED",
-      "stack_out": [
-        "aggregate%box_get%0#0"
-      ]
-    },
-    "219": {
-      "op": "intc_0 // 1",
-      "defined_out": [
-        "1",
-        "aggregate%box_get%0#0"
-      ],
-      "stack_out": [
-        "aggregate%box_get%0#0",
-        "1"
-      ]
-    },
-    "220": {
-      "op": "getbit",
-      "defined_out": [
-        "aggregate%get_bit%1#0"
-      ],
-      "stack_out": [
-        "aggregate%get_bit%1#0"
-      ]
-    },
-    "221": {
-      "error": "INSTITUTION_REFUSED",
-      "op": "assert // INSTITUTION_REFUSED",
+    "179": {
+      "error": "REFUSED",
+      "op": "assert // REFUSED",
       "stack_out": []
     },
-    "222": {
+    "180": {
       "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
       "stack_out": [
         "1"
       ]
     },
-    "223": {
+    "181": {
       "op": "return",
       "stack_out": []
     },
-    "224": {
+    "182": {
       "subroutine": "src/Killswitch.algo.ts::Killswitch.enable[routing]",
       "params": {},
       "block": "enable",
       "stack_in": [],
       "op": "txn Sender",
       "defined_out": [
-        "tmp%0#0"
+        "materialized_values%0#0"
       ],
       "stack_out": [
-        "tmp%0#0"
+        "materialized_values%0#0"
       ]
     },
-    "226": {
-      "op": "intc_1 // 0",
+    "184": {
+      "op": "box_len",
       "defined_out": [
-        "0",
-        "tmp%0#0"
+        "_%0#0",
+        "maybe_exists%0#0"
       ],
       "stack_out": [
-        "tmp%0#0",
-        "0"
+        "_%0#0",
+        "maybe_exists%0#0"
       ]
     },
-    "227": {
-      "op": "intc_0 // 1",
+    "185": {
+      "op": "bury 1",
+      "stack_out": [
+        "maybe_exists%0#0"
+      ]
+    },
+    "187": {
+      "op": "!",
       "defined_out": [
-        "0",
-        "1",
         "tmp%0#0"
       ],
       "stack_out": [
-        "tmp%0#0",
-        "0",
-        "1"
+        "tmp%0#0"
       ]
     },
-    "228": {
-      "callsub": "src/Killswitch.algo.ts::Killswitch._setSwitch",
-      "op": "callsub _setSwitch",
+    "188": {
+      "error": "ALREADY_ENABLED",
+      "op": "assert // ALREADY_ENABLED",
       "stack_out": []
     },
-    "231": {
+    "189": {
+      "op": "txn Sender",
+      "defined_out": [
+        "materialized_values%1#0"
+      ],
+      "stack_out": [
+        "materialized_values%1#0"
+      ]
+    },
+    "191": {
+      "op": "intc_3 // 8",
+      "defined_out": [
+        "8",
+        "materialized_values%1#0"
+      ],
+      "stack_out": [
+        "materialized_values%1#0",
+        "8"
+      ]
+    },
+    "192": {
+      "op": "box_create",
+      "defined_out": [
+        "{box_create}"
+      ],
+      "stack_out": [
+        "{box_create}"
+      ]
+    },
+    "193": {
+      "op": "pop",
+      "stack_out": []
+    },
+    "194": {
       "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
       "stack_out": [
         "1"
       ]
     },
-    "232": {
+    "195": {
       "op": "return",
       "stack_out": []
     },
-    "233": {
-      "subroutine": "src/Killswitch.algo.ts::Killswitch.disable[routing]",
+    "196": {
+      "subroutine": "src/Killswitch.algo.ts::Killswitch.kill[routing]",
       "params": {},
-      "block": "disable",
+      "block": "kill",
       "stack_in": [],
       "op": "txn Sender",
       "defined_out": [
+        "materialized_values%0#0"
+      ],
+      "stack_out": [
+        "materialized_values%0#0"
+      ]
+    },
+    "198": {
+      "op": "box_len",
+      "defined_out": [
+        "_%0#0",
+        "maybe_exists%0#0"
+      ],
+      "stack_out": [
+        "_%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "199": {
+      "op": "bury 1",
+      "stack_out": [
+        "maybe_exists%0#0"
+      ]
+    },
+    "201": {
+      "error": "ALREADY_DISABLED",
+      "op": "assert // ALREADY_DISABLED",
+      "stack_out": []
+    },
+    "202": {
+      "op": "txn Sender",
+      "defined_out": [
+        "materialized_values%1#0"
+      ],
+      "stack_out": [
+        "materialized_values%1#0"
+      ]
+    },
+    "204": {
+      "op": "box_del",
+      "defined_out": [
+        "{box_del}"
+      ],
+      "stack_out": [
+        "{box_del}"
+      ]
+    },
+    "205": {
+      "op": "pop",
+      "stack_out": []
+    },
+    "206": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "207": {
+      "op": "return",
+      "stack_out": []
+    },
+    "208": {
+      "subroutine": "src/roles/Recoverable.algo.ts::Recoverable.recoverAsset[routing]",
+      "params": {},
+      "block": "recoverAsset",
+      "stack_in": [],
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
         "tmp%0#0"
       ],
       "stack_out": [
         "tmp%0#0"
+      ]
+    },
+    "211": {
+      "op": "dup",
+      "defined_out": [
+        "tmp%0#0",
+        "tmp%0#0 (copy)"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "tmp%0#0 (copy)"
+      ]
+    },
+    "212": {
+      "op": "len",
+      "defined_out": [
+        "len%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "len%0#0"
+      ]
+    },
+    "213": {
+      "op": "intc_3 // 8",
+      "defined_out": [
+        "8",
+        "len%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "len%0#0",
+        "8"
+      ]
+    },
+    "214": {
+      "op": "==",
+      "defined_out": [
+        "eq%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "eq%0#0"
+      ]
+    },
+    "215": {
+      "error": "invalid number of bytes for arc4.uint64",
+      "op": "assert // invalid number of bytes for arc4.uint64",
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "216": {
+      "op": "btoi",
+      "defined_out": [
+        "asset#0"
+      ],
+      "stack_out": [
+        "asset#0"
+      ]
+    },
+    "217": {
+      "op": "dup",
+      "defined_out": [
+        "asset#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "asset#0"
+      ]
+    },
+    "218": {
+      "op": "txna ApplicationArgs 2",
+      "defined_out": [
+        "asset#0",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "tmp%2#0"
+      ]
+    },
+    "221": {
+      "op": "dup",
+      "defined_out": [
+        "asset#0",
+        "tmp%2#0",
+        "tmp%2#0 (copy)"
+      ],
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "tmp%2#0",
+        "tmp%2#0 (copy)"
+      ]
+    },
+    "222": {
+      "op": "len",
+      "defined_out": [
+        "asset#0",
+        "len%1#0",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "tmp%2#0",
+        "len%1#0"
+      ]
+    },
+    "223": {
+      "op": "intc_3 // 8",
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "tmp%2#0",
+        "len%1#0",
+        "8"
+      ]
+    },
+    "224": {
+      "op": "==",
+      "defined_out": [
+        "asset#0",
+        "eq%1#0",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "tmp%2#0",
+        "eq%1#0"
+      ]
+    },
+    "225": {
+      "error": "invalid number of bytes for arc4.uint64",
+      "op": "assert // invalid number of bytes for arc4.uint64",
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "tmp%2#0"
+      ]
+    },
+    "226": {
+      "op": "btoi",
+      "defined_out": [
+        "amount#0",
+        "asset#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "asset#0",
+        "amount#0"
+      ]
+    },
+    "227": {
+      "op": "swap",
+      "defined_out": [
+        "amount#0",
+        "asset#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "amount#0",
+        "asset#0"
+      ]
+    },
+    "228": {
+      "op": "txna ApplicationArgs 3"
+    },
+    "231": {
+      "op": "dup",
+      "defined_out": [
+        "amount#0",
+        "asset#0",
+        "recipient#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "amount#0",
+        "asset#0",
+        "recipient#0",
+        "recipient#0"
+      ]
+    },
+    "232": {
+      "op": "cover 3",
+      "defined_out": [
+        "amount#0",
+        "asset#0",
+        "recipient#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "recipient#0",
+        "amount#0",
+        "asset#0",
+        "recipient#0"
+      ]
+    },
+    "234": {
+      "op": "len",
+      "defined_out": [
+        "amount#0",
+        "asset#0",
+        "len%2#0",
+        "recipient#0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "recipient#0",
+        "amount#0",
+        "asset#0",
+        "len%2#0"
       ]
     },
     "235": {
-      "op": "intc_1 // 0",
+      "op": "intc_2 // 32",
       "defined_out": [
-        "0",
-        "tmp%0#0"
+        "32",
+        "amount#0",
+        "asset#0",
+        "len%2#0",
+        "recipient#0"
       ],
       "stack_out": [
-        "tmp%0#0",
-        "0"
+        "asset#0",
+        "recipient#0",
+        "amount#0",
+        "asset#0",
+        "len%2#0",
+        "32"
       ]
     },
     "236": {
-      "op": "dup",
+      "op": "==",
+      "defined_out": [
+        "amount#0",
+        "asset#0",
+        "eq%2#0",
+        "recipient#0"
+      ],
       "stack_out": [
-        "tmp%0#0",
-        "0",
-        "0"
+        "asset#0",
+        "recipient#0",
+        "amount#0",
+        "asset#0",
+        "eq%2#0"
       ]
     },
     "237": {
-      "callsub": "src/Killswitch.algo.ts::Killswitch._setSwitch",
-      "op": "callsub _setSwitch",
-      "stack_out": []
-    },
-    "240": {
-      "op": "intc_0 // 1",
-      "defined_out": [
-        "1"
-      ],
+      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "stack_out": [
-        "1"
+        "asset#0",
+        "recipient#0",
+        "amount#0",
+        "asset#0"
       ]
+    },
+    "238": {
+      "callsub": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
+      "op": "callsub onlyOwner"
     },
     "241": {
-      "op": "return",
-      "stack_out": []
-    },
-    "242": {
-      "subroutine": "src/Killswitch.algo.ts::Killswitch.enableUser[routing]",
-      "params": {},
-      "block": "enableUser",
-      "stack_in": [],
-      "op": "txna ApplicationArgs 1",
-      "defined_out": [
-        "account#0"
-      ],
+      "op": "bz recoverAsset_else_body@4",
       "stack_out": [
-        "account#0"
+        "asset#0",
+        "recipient#0",
+        "amount#0"
       ]
+    },
+    "244": {
+      "op": "itxn_begin"
     },
     "245": {
-      "op": "dup",
-      "defined_out": [
-        "account#0",
-        "account#0 (copy)"
-      ],
+      "op": "dig 2",
       "stack_out": [
-        "account#0",
-        "account#0 (copy)"
-      ]
-    },
-    "246": {
-      "op": "len",
-      "defined_out": [
-        "account#0",
-        "len%0#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "len%0#0"
+        "asset#0",
+        "recipient#0",
+        "amount#0",
+        "asset#0"
       ]
     },
     "247": {
-      "op": "intc_2 // 32",
-      "defined_out": [
-        "32",
-        "account#0",
-        "len%0#0"
-      ],
+      "op": "itxn_field XferAsset",
       "stack_out": [
-        "account#0",
-        "len%0#0",
-        "32"
-      ]
-    },
-    "248": {
-      "op": "==",
-      "defined_out": [
-        "account#0",
-        "eq%0#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "eq%0#0"
+        "asset#0",
+        "recipient#0",
+        "amount#0"
       ]
     },
     "249": {
-      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "stack_out": [
-        "account#0"
-      ]
+      "op": "itxn_field AssetAmount"
     },
-    "250": {
-      "callsub": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
-      "op": "callsub onlyOwner"
+    "251": {
+      "op": "itxn_field AssetReceiver",
+      "stack_out": [
+        "asset#0"
+      ]
     },
     "253": {
-      "op": "intc_0 // 1",
+      "op": "pushint 4 // 4",
       "defined_out": [
-        "1",
-        "account#0"
+        "4",
+        "asset#0"
       ],
       "stack_out": [
-        "account#0",
-        "1"
-      ]
-    },
-    "254": {
-      "op": "dup",
-      "stack_out": [
-        "account#0",
-        "1",
-        "1"
+        "asset#0",
+        "4"
       ]
     },
     "255": {
-      "callsub": "src/Killswitch.algo.ts::Killswitch._setSwitch",
-      "op": "callsub _setSwitch",
-      "stack_out": []
-    },
-    "258": {
-      "op": "intc_0 // 1",
+      "op": "itxn_field TypeEnum",
       "stack_out": [
-        "1"
+        "asset#0"
       ]
     },
-    "259": {
-      "op": "return",
-      "stack_out": []
-    },
-    "260": {
-      "subroutine": "src/Killswitch.algo.ts::Killswitch.disableUser[routing]",
-      "params": {},
-      "block": "disableUser",
-      "stack_in": [],
-      "op": "txna ApplicationArgs 1",
-      "defined_out": [
-        "account#0"
-      ],
-      "stack_out": [
-        "account#0"
-      ]
-    },
-    "263": {
-      "op": "dup",
-      "defined_out": [
-        "account#0",
-        "account#0 (copy)"
-      ],
-      "stack_out": [
-        "account#0",
-        "account#0 (copy)"
-      ]
-    },
-    "264": {
-      "op": "len",
-      "defined_out": [
-        "account#0",
-        "len%0#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "len%0#0"
-      ]
-    },
-    "265": {
-      "op": "intc_2 // 32",
-      "defined_out": [
-        "32",
-        "account#0",
-        "len%0#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "len%0#0",
-        "32"
-      ]
-    },
-    "266": {
-      "op": "==",
-      "defined_out": [
-        "account#0",
-        "eq%0#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "eq%0#0"
-      ]
-    },
-    "267": {
-      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "stack_out": [
-        "account#0"
-      ]
-    },
-    "268": {
-      "callsub": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
-      "op": "callsub onlyOwner"
-    },
-    "271": {
-      "op": "intc_0 // 1",
-      "defined_out": [
-        "1",
-        "account#0"
-      ],
-      "stack_out": [
-        "account#0",
-        "1"
-      ]
-    },
-    "272": {
+    "257": {
       "op": "intc_1 // 0",
-      "defined_out": [
-        "0",
-        "1",
-        "account#0"
-      ],
       "stack_out": [
-        "account#0",
-        "1",
+        "asset#0",
         "0"
       ]
     },
-    "273": {
-      "callsub": "src/Killswitch.algo.ts::Killswitch._setSwitch",
-      "op": "callsub _setSwitch",
-      "stack_out": []
-    },
-    "276": {
-      "op": "intc_0 // 1",
+    "258": {
+      "op": "itxn_field Fee",
       "stack_out": [
+        "asset#0"
+      ]
+    },
+    "260": {
+      "op": "itxn_submit"
+    },
+    "261": {
+      "block": "recoverAsset_after_if_else@6",
+      "stack_in": [
+        "asset#0"
+      ],
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "asset#0",
         "1"
       ]
     },
-    "277": {
+    "262": {
       "op": "return",
-      "stack_out": []
+      "stack_out": [
+        "asset#0"
+      ]
+    },
+    "263": {
+      "block": "recoverAsset_else_body@4",
+      "stack_in": [
+        "asset#0",
+        "recipient#0",
+        "amount#0"
+      ],
+      "op": "itxn_begin"
+    },
+    "264": {
+      "op": "itxn_field Amount"
+    },
+    "266": {
+      "op": "itxn_field Receiver",
+      "defined_out": [],
+      "stack_out": [
+        "asset#0"
+      ]
+    },
+    "268": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "asset#0",
+        "1"
+      ]
+    },
+    "269": {
+      "op": "itxn_field TypeEnum",
+      "stack_out": [
+        "asset#0"
+      ]
+    },
+    "271": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "asset#0",
+        "0"
+      ]
+    },
+    "272": {
+      "op": "itxn_field Fee",
+      "stack_out": [
+        "asset#0"
+      ]
+    },
+    "274": {
+      "op": "itxn_submit"
+    },
+    "275": {
+      "op": "b recoverAsset_after_if_else@6"
     },
     "278": {
       "subroutine": "src/roles/Pausable.algo.ts::Pausable.pauser[routing]",
@@ -1555,263 +1607,6 @@
       "stack_out": []
     },
     "375": {
-      "subroutine": "src/Killswitch.algo.ts::Killswitch._setSwitch",
-      "params": {
-        "account#0": "bytes",
-        "index#0": "uint64",
-        "val#0": "uint64"
-      },
-      "block": "_setSwitch",
-      "stack_in": [],
-      "op": "proto 3 0"
-    },
-    "378": {
-      "op": "frame_dig -3",
-      "defined_out": [
-        "account#0 (copy)"
-      ],
-      "stack_out": [
-        "account#0 (copy)"
-      ]
-    },
-    "380": {
-      "op": "box_len",
-      "defined_out": [
-        "_%0#0",
-        "maybe_exists%0#0"
-      ],
-      "stack_out": [
-        "_%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "381": {
-      "op": "bury 1",
-      "stack_out": [
-        "maybe_exists%0#0"
-      ]
-    },
-    "383": {
-      "error": "NOT_REGISTERED",
-      "op": "assert // NOT_REGISTERED",
-      "stack_out": []
-    },
-    "384": {
-      "op": "frame_dig -2",
-      "defined_out": [
-        "index#0 (copy)"
-      ],
-      "stack_out": [
-        "index#0 (copy)"
-      ]
-    },
-    "386": {
-      "op": "intc_3 // 8",
-      "defined_out": [
-        "8",
-        "index#0 (copy)"
-      ],
-      "stack_out": [
-        "index#0 (copy)",
-        "8"
-      ]
-    },
-    "387": {
-      "op": "/",
-      "defined_out": [
-        "box%element_byte_offset%0#0"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0"
-      ]
-    },
-    "388": {
-      "op": "frame_dig -2",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "index#0 (copy)"
-      ]
-    },
-    "390": {
-      "op": "intc_3 // 8",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "index#0 (copy)",
-        "8"
-      ]
-    },
-    "391": {
-      "op": "%",
-      "defined_out": [
-        "box%element_bit_offset%0#0",
-        "box%element_byte_offset%0#0"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0"
-      ]
-    },
-    "392": {
-      "op": "frame_dig -3",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "account#0 (copy)"
-      ]
-    },
-    "394": {
-      "op": "dig 2",
-      "defined_out": [
-        "account#0 (copy)",
-        "box%element_bit_offset%0#0",
-        "box%element_byte_offset%0#0",
-        "box%element_byte_offset%0#0 (copy)"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "account#0 (copy)",
-        "box%element_byte_offset%0#0 (copy)"
-      ]
-    },
-    "396": {
-      "op": "intc_0 // 1",
-      "defined_out": [
-        "1",
-        "account#0 (copy)",
-        "box%element_bit_offset%0#0",
-        "box%element_byte_offset%0#0",
-        "box%element_byte_offset%0#0 (copy)"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "account#0 (copy)",
-        "box%element_byte_offset%0#0 (copy)",
-        "1"
-      ]
-    },
-    "397": {
-      "op": "box_extract",
-      "defined_out": [
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0",
-        "box%element_byte_offset%0#0"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "box%box_extract%0#0"
-      ]
-    },
-    "398": {
-      "op": "dig 1",
-      "defined_out": [
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0",
-        "box%element_bit_offset%0#0 (copy)",
-        "box%element_byte_offset%0#0"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0 (copy)"
-      ]
-    },
-    "400": {
-      "op": "intc_3 // 8",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0 (copy)",
-        "8"
-      ]
-    },
-    "401": {
-      "op": "<",
-      "defined_out": [
-        "aggregate%lt%0#0",
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0",
-        "box%element_byte_offset%0#0"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "box%box_extract%0#0",
-        "aggregate%lt%0#0"
-      ]
-    },
-    "402": {
-      "error": "index access is out of bounds",
-      "op": "assert // index access is out of bounds",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%element_bit_offset%0#0",
-        "box%box_extract%0#0"
-      ]
-    },
-    "403": {
-      "op": "swap",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0"
-      ]
-    },
-    "404": {
-      "op": "frame_dig -1",
-      "defined_out": [
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0",
-        "box%element_byte_offset%0#0",
-        "val#0 (copy)"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "box%box_extract%0#0",
-        "box%element_bit_offset%0#0",
-        "val#0 (copy)"
-      ]
-    },
-    "406": {
-      "op": "setbit",
-      "defined_out": [
-        "aggregate%updated_target%0#0",
-        "box%element_byte_offset%0#0"
-      ],
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "aggregate%updated_target%0#0"
-      ]
-    },
-    "407": {
-      "op": "frame_dig -3",
-      "stack_out": [
-        "box%element_byte_offset%0#0",
-        "aggregate%updated_target%0#0",
-        "account#0 (copy)"
-      ]
-    },
-    "409": {
-      "op": "cover 2",
-      "stack_out": [
-        "account#0 (copy)",
-        "box%element_byte_offset%0#0",
-        "aggregate%updated_target%0#0"
-      ]
-    },
-    "411": {
-      "op": "box_replace",
-      "stack_out": []
-    },
-    "412": {
-      "retsub": true,
-      "op": "retsub"
-    },
-    "413": {
       "subroutine": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
       "params": {},
       "block": "onlyPauser",
@@ -1824,7 +1619,7 @@
         "tmp%0#0"
       ]
     },
-    "415": {
+    "377": {
       "op": "intc_1 // 0",
       "defined_out": [
         "0",
@@ -1835,7 +1630,7 @@
         "0"
       ]
     },
-    "416": {
+    "378": {
       "op": "bytec_1 // \"_pauser\"",
       "defined_out": [
         "\"_pauser\"",
@@ -1848,7 +1643,7 @@
         "\"_pauser\""
       ]
     },
-    "417": {
+    "379": {
       "op": "app_global_get_ex",
       "defined_out": [
         "maybe_exists%0#0",
@@ -1861,7 +1656,7 @@
         "maybe_exists%0#0"
       ]
     },
-    "418": {
+    "380": {
       "error": "check GlobalState exists",
       "op": "assert // check GlobalState exists",
       "stack_out": [
@@ -1869,7 +1664,7 @@
         "maybe_value%0#0"
       ]
     },
-    "419": {
+    "381": {
       "op": "==",
       "defined_out": [
         "tmp%1#0"
@@ -1878,15 +1673,15 @@
         "tmp%1#0"
       ]
     },
-    "420": {
+    "382": {
       "op": "assert",
       "stack_out": []
     },
-    "421": {
+    "383": {
       "retsub": true,
       "op": "retsub"
     },
-    "422": {
+    "384": {
       "subroutine": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
       "params": {},
       "block": "onlyOwner",
@@ -1899,7 +1694,7 @@
         "tmp%0#0"
       ]
     },
-    "424": {
+    "386": {
       "op": "intc_1 // 0",
       "defined_out": [
         "0",
@@ -1910,7 +1705,7 @@
         "0"
       ]
     },
-    "425": {
+    "387": {
       "op": "bytec_0 // \"_owner\"",
       "defined_out": [
         "\"_owner\"",
@@ -1923,7 +1718,7 @@
         "\"_owner\""
       ]
     },
-    "426": {
+    "388": {
       "op": "app_global_get_ex",
       "defined_out": [
         "maybe_exists%0#0",
@@ -1936,7 +1731,7 @@
         "maybe_exists%0#0"
       ]
     },
-    "427": {
+    "389": {
       "error": "check GlobalState exists",
       "op": "assert // check GlobalState exists",
       "stack_out": [
@@ -1944,7 +1739,7 @@
         "maybe_value%0#0"
       ]
     },
-    "428": {
+    "390": {
       "op": "==",
       "defined_out": [
         "tmp%1#0"
@@ -1953,16 +1748,16 @@
         "tmp%1#0"
       ]
     },
-    "429": {
+    "391": {
       "error": "SENDER_NOT_ALLOWED",
       "op": "assert // SENDER_NOT_ALLOWED",
       "stack_out": []
     },
-    "430": {
+    "392": {
       "retsub": true,
       "op": "retsub"
     },
-    "431": {
+    "393": {
       "subroutine": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
       "params": {
         "newOwner#0": "bytes"
@@ -1971,7 +1766,7 @@
       "stack_in": [],
       "op": "proto 1 0"
     },
-    "434": {
+    "396": {
       "op": "intc_1 // 0",
       "defined_out": [
         "0"
@@ -1980,7 +1775,7 @@
         "0"
       ]
     },
-    "435": {
+    "397": {
       "op": "bytec_0 // \"_owner\"",
       "defined_out": [
         "\"_owner\"",
@@ -1991,7 +1786,7 @@
         "\"_owner\""
       ]
     },
-    "436": {
+    "398": {
       "op": "app_global_get_ex",
       "defined_out": [
         "_%0#0",
@@ -2002,30 +1797,30 @@
         "maybe_exists%0#0"
       ]
     },
-    "437": {
+    "399": {
       "op": "bury 1",
       "stack_out": [
         "maybe_exists%0#0"
       ]
     },
-    "439": {
+    "401": {
       "op": "bz _transferOwnership_ternary_false@2",
       "stack_out": []
     },
-    "442": {
+    "404": {
       "op": "intc_1 // 0",
       "stack_out": [
         "0"
       ]
     },
-    "443": {
+    "405": {
       "op": "bytec_0 // \"_owner\"",
       "stack_out": [
         "0",
         "\"_owner\""
       ]
     },
-    "444": {
+    "406": {
       "op": "app_global_get_ex",
       "defined_out": [
         "maybe_exists%1#0",
@@ -2036,7 +1831,7 @@
         "maybe_exists%1#0"
       ]
     },
-    "445": {
+    "407": {
       "error": "check GlobalState exists",
       "op": "assert // check GlobalState exists",
       "defined_out": [
@@ -2046,7 +1841,7 @@
         "previousOwner#0"
       ]
     },
-    "446": {
+    "408": {
       "block": "_transferOwnership_ternary_merge@3",
       "stack_in": [
         "previousOwner#0"
@@ -2060,7 +1855,7 @@
         "\"_owner\""
       ]
     },
-    "447": {
+    "409": {
       "op": "frame_dig -1",
       "defined_out": [
         "\"_owner\"",
@@ -2072,7 +1867,7 @@
         "newOwner#0 (copy)"
       ]
     },
-    "449": {
+    "411": {
       "op": "app_global_put",
       "defined_out": [
         "previousOwner#0"
@@ -2081,14 +1876,14 @@
         "previousOwner#0"
       ]
     },
-    "450": {
+    "412": {
       "op": "frame_dig -1",
       "stack_out": [
         "previousOwner#0",
         "newOwner#0 (copy)"
       ]
     },
-    "452": {
+    "414": {
       "op": "concat",
       "defined_out": [
         "aggregate%head%1#0"
@@ -2097,7 +1892,7 @@
         "aggregate%head%1#0"
       ]
     },
-    "453": {
+    "415": {
       "op": "pushbytes 0x9a223efb // method \"OwnershipTransferred(address,address)\"",
       "defined_out": [
         "Method(OwnershipTransferred(address,address))",
@@ -2108,14 +1903,14 @@
         "Method(OwnershipTransferred(address,address))"
       ]
     },
-    "459": {
+    "421": {
       "op": "swap",
       "stack_out": [
         "Method(OwnershipTransferred(address,address))",
         "aggregate%head%1#0"
       ]
     },
-    "460": {
+    "422": {
       "op": "concat",
       "defined_out": [
         "event%0#0"
@@ -2124,15 +1919,15 @@
         "event%0#0"
       ]
     },
-    "461": {
+    "423": {
       "op": "log",
       "stack_out": []
     },
-    "462": {
+    "424": {
       "retsub": true,
       "op": "retsub"
     },
-    "463": {
+    "425": {
       "block": "_transferOwnership_ternary_false@2",
       "stack_in": [],
       "op": "global ZeroAddress",
@@ -2143,7 +1938,7 @@
         "previousOwner#0"
       ]
     },
-    "465": {
+    "427": {
       "op": "b _transferOwnership_ternary_merge@3"
     }
   }

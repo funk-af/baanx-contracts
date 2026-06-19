@@ -39,8 +39,8 @@ import {
 
 export class AutoDraw extends LogicSig {
     program() {
-        const nextTxn = gtxn.Transaction(Txn.groupIndex + 1);
-        const secondNextTxn = gtxn.Transaction(Txn.groupIndex + 2);
+        const txnKillswitch = gtxn.Transaction(Txn.groupIndex + 1);
+        const txnMasterDebit = gtxn.Transaction(Txn.groupIndex + 2);
         const ASSET = TemplateVar<Asset>('ASSET');
         return (
             // Safety checks
@@ -51,17 +51,17 @@ export class AutoDraw extends LogicSig {
             Txn.xferAsset === ASSET &&
             Txn.fee === 0 &&
             // Enforce the next transaction is a Killswitch call
-            nextTxn.type === TransactionType.ApplicationCall &&
-            nextTxn.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-            nextTxn.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
-            nextTxn.appArgs(1) === Txn.sender.bytes &&
+            txnKillswitch.type === TransactionType.ApplicationCall &&
+            txnKillswitch.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
+            txnKillswitch.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+            txnKillswitch.appArgs(1) === Txn.sender.bytes &&
             // Enforce the second next transaction is a Master call
-            secondNextTxn.type === TransactionType.ApplicationCall &&
-            secondNextTxn.appId === TemplateVar<Application>('MASTER_APP') &&
-            secondNextTxn.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
-            Txn.assetReceiver.bytes === secondNextTxn.appArgs(1) &&
-            Txn.xferAsset.id === op.btoi(secondNextTxn.appArgs(2)) &&
-            Txn.assetAmount <= op.btoi(secondNextTxn.appArgs(3))
+            txnMasterDebit.type === TransactionType.ApplicationCall &&
+            txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
+            txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+            Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
+            Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
+            Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))
         );
     }
 }

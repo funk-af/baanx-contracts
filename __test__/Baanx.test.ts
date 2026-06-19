@@ -109,7 +109,7 @@ describe('Baanx', () => {
         });
         ksClient = ksDeployment.appClient;
 
-        // Fund Killswitch app for box MBR (2_500 + 400 * (32 + 2) = 16_100 per registration)
+        // Fund Killswitch app for box MBR (2_500 + 400 * (32 + 8) = 18_500 per enabled account)
         await ksClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(200_000) });
     });
 
@@ -525,27 +525,25 @@ describe('Baanx', () => {
 
     // ========== Killswitch unit tests ==========
 
-    test('Killswitch: register user', async () => {
-        const result = await ksClient.send.register({
+    test('Killswitch: enable user', async () => {
+        const result = await ksClient.send.enable({
             args: [],
             sender: user.addr,
         });
         expect(result.confirmation.poolError).toBe('');
     });
 
-    test('Killswitch: authorize registered user succeeds', async () => {
+    test('Killswitch: authorize enabled user succeeds', async () => {
         const result = await ksClient.send.authorize({
             args: { account: user.addr.toString() },
         });
         expect(result.confirmation.poolError).toBe('');
     });
 
-    test('Killswitch: user disables themselves — authorize fails with USER_REFUSED', async () => {
-        await ksClient.send.disable({ args: [], sender: user.addr });
+    test('Killswitch: user kills their delegation — authorize fails with REFUSED', async () => {
+        await ksClient.send.kill({ args: [], sender: user.addr });
 
-        await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow(
-            'USER_REFUSED'
-        );
+        await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow('REFUSED');
     });
 
     test('Killswitch: user re-enables themselves — authorize succeeds', async () => {
@@ -557,31 +555,12 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
-    test('Killswitch: institution disables user — authorize fails with INSTITUTION_REFUSED', async () => {
-        await ksClient.send.disableUser({ args: { account: user.addr.toString() } });
-
-        await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow(
-            'INSTITUTION_REFUSED'
-        );
+    test('Killswitch: enabling again fails with ALREADY_ENABLED', async () => {
+        await expect(ksClient.send.enable({ args: [], sender: user.addr })).rejects.toThrow('ALREADY_ENABLED');
     });
 
-    test('Killswitch: institution re-enables user — authorize succeeds', async () => {
-        await ksClient.send.enableUser({ args: { account: user.addr.toString() } });
-
-        const result = await ksClient.send.authorize({
-            args: { account: user.addr.toString() },
-        });
-        expect(result.confirmation.poolError).toBe('');
-    });
-
-    test('Killswitch: registering again fails with ALREADY_REGISTERED', async () => {
-        await expect(ksClient.send.register({ args: [], sender: user.addr })).rejects.toThrow('ALREADY_REGISTERED');
-    });
-
-    test('Killswitch: authorize unregistered account fails with NOT_REGISTERED', async () => {
-        await expect(ksClient.send.authorize({ args: { account: user2.addr.toString() } })).rejects.toThrow(
-            'NOT_REGISTERED'
-        );
+    test('Killswitch: authorize non-enabled account fails with REFUSED', async () => {
+        await expect(ksClient.send.authorize({ args: { account: user2.addr.toString() } })).rejects.toThrow('REFUSED');
     });
 
     test('Killswitch: pause contract — authorize fails', async () => {
@@ -703,7 +682,7 @@ describe('Baanx', () => {
         const { algorand } = fixture.context;
         const algod = algorand.client.algod;
 
-        await ksClient.send.disable({ args: [], sender: user.addr });
+        await ksClient.send.kill({ args: [], sender: user.addr });
 
         const nonceResult = await appClient.send.getNextCardFundNonce({
             args: { cardFund: autoDrawCardAddress },
@@ -739,7 +718,7 @@ describe('Baanx', () => {
             })
         );
 
-        await expect(composer.send()).rejects.toThrow('USER_REFUSED');
+        await expect(composer.send()).rejects.toThrow('REFUSED');
 
         await ksClient.send.enable({ args: [], sender: user.addr });
     });
