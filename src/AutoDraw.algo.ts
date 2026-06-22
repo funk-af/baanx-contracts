@@ -26,9 +26,9 @@
 
 import {
     Application,
+    arc4,
     Asset,
     bytes,
-    Bytes,
     Global,
     gtxn,
     LogicSig,
@@ -37,6 +37,8 @@ import {
     TransactionType,
     Txn,
 } from '@algorandfoundation/algorand-typescript';
+import { Killswitch } from './Killswitch.algo';
+import { Master } from './Master.algo';
 
 export class AutoDraw extends LogicSig {
     program() {
@@ -55,12 +57,12 @@ export class AutoDraw extends LogicSig {
             // Enforce the next transaction is a Killswitch call
             txnKillswitch.type === TransactionType.ApplicationCall &&
             txnKillswitch.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-            txnKillswitch.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
+            txnKillswitch.appArgs(0) === arc4.methodSelector<typeof Killswitch.prototype.authorize>() &&
             txnKillswitch.appArgs(1) === Txn.sender.bytes &&
             // Enforce the second next transaction is a Master call
             txnMasterDebit.type === TransactionType.ApplicationCall &&
             txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-            txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
+            txnMasterDebit.appArgs(0) === arc4.methodSelector<typeof Master.prototype.cardDebit>() &&
             Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
             Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
             Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))
