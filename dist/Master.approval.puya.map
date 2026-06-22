@@ -6,7 +6,7 @@
     "../src/roles/Pausable.algo.ts",
     "../src/roles/Recoverable.algo.ts"
   ],
-  "mappings": "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",
+  "mappings": "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",
   "op_pc_offset": 0,
   "pc_events": {
     "1": {
@@ -44,11 +44,11 @@
       ]
     },
     "108": {
-      "op": "match main_update_route@2 main_destroy_route@3",
+      "op": "match main_update_route@4 main_destroy_route@5",
       "stack_out": []
     },
     "114": {
-      "block": "main_switch_case_next@4",
+      "block": "main_switch_case_next@6",
       "stack_in": [],
       "op": "txn OnCompletion",
       "defined_out": [
@@ -82,11 +82,11 @@
       ]
     },
     "120": {
-      "op": "bz main_create_NoOp@37",
+      "op": "bz main_create_NoOp@39",
       "stack_out": []
     },
     "123": {
-      "op": "pushbytess 0xa050f5f1 0xe2ebbf86 0x5b277143 0x47bb9dfd 0x3fa1238b 0x7c722747 0x4dae281f 0xd3c7a652 0x7b9e6b02 0x00dc02c4 0xefc52993 0x75271a07 0xcbee2ba1 0x745dbf16 0x51b47f06 0x419eeffb 0xf458fc1a 0x4f67f91d 0x9537d509 0xb7349158 0xbbd0def0 0x13ff1ce9 0xf2e3f37f 0x785a1bf9 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method \"setWithdrawalTimeout(uint64)void\", method \"setEarlyWithdrawalPubkey(byte[32])void\", method \"cardCreate(address,uint64)address\", method \"cardClose(address)void\", method \"cardRecover(address,address)void\", method \"assetAllowlistAdd(uint64,address)void\", method \"assetAllowlistRemove(uint64)void\", method \"cardDebit(address,uint64,uint64,uint64,string)void\", method \"getRefundAddress()address\", method \"setRefundAddress(address)void\", method \"cardRefund(address,uint64,uint64,uint64)void\", method \"getNextSettlementNonce()uint64\", method \"getNextCardNonce(address)uint64\", method \"getCardData(address)(address,address,uint64,uint64)\", method \"getSettlementAddress(uint64)address\", method \"setSettlementAddress(uint64,address)void\", method \"settle(uint64,uint64,uint64)void\", method \"cardEnableAsset(address,uint64)void\", method \"cardDisableAsset(address,uint64)void\", method \"withdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)\", method \"withdrawalCancel(address)void\", method \"withdraw(address,uint64)void\", method \"withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void\", method \"recoverAsset(uint64,uint64,address)void\", method \"pauser()address\", method \"pause()void\", method \"unpause()void\", method \"updatePauser(address)void\", method \"owner()address\", method \"transferOwnership(address)void\"",
+      "op": "pushbytess 0xa050f5f1 0xe2ebbf86 0x5b277143 0x47bb9dfd 0x3fa1238b 0x7c722747 0x4dae281f 0xd3c7a652 0x7b9e6b02 0x00dc02c4 0xefc52993 0x75271a07 0xcbee2ba1 0x745dbf16 0x51b47f06 0x419eeffb 0xf458fc1a 0x4f67f91d 0x9537d509 0xb7349158 0xbbd0def0 0x13ff1ce9 0xf2e3f37f 0xb1bbb0a8 0xe17bafb4 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0x785a1bf9 // method \"setWithdrawalTimeout(uint64)void\", method \"setEarlyWithdrawalPubkey(byte[32])void\", method \"cardCreate(address,uint64)address\", method \"cardClose(address)void\", method \"cardRecover(address,address)void\", method \"assetAllowlistAdd(uint64,address)void\", method \"assetAllowlistRemove(uint64)void\", method \"cardDebit(address,uint64,uint64,uint64,string)void\", method \"getRefundAddress()address\", method \"setRefundAddress(address)void\", method \"cardRefund(address,uint64,uint64,uint64)void\", method \"getNextSettlementNonce()uint64\", method \"getNextCardNonce(address)uint64\", method \"getCardData(address)(address,address,uint64,uint64)\", method \"getSettlementAddress(uint64)address\", method \"setSettlementAddress(uint64,address)void\", method \"settle(uint64,uint64,uint64)void\", method \"cardEnableAsset(address,uint64)void\", method \"cardDisableAsset(address,uint64)void\", method \"withdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)\", method \"withdrawalCancel(address)void\", method \"withdraw(address,uint64)void\", method \"withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void\", method \"owner()address\", method \"transferOwnership(address)void\", method \"pauser()address\", method \"pause()void\", method \"unpause()void\", method \"updatePauser(address)void\", method \"recoverAsset(uint64,uint64,address)void\"",
       "defined_out": [
         "Method(assetAllowlistAdd(uint64,address)void)",
         "Method(assetAllowlistRemove(uint64)void)",
@@ -143,13 +143,13 @@
         "Method(withdrawalCancel(address)void)",
         "Method(withdraw(address,uint64)void)",
         "Method(withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void)",
-        "Method(recoverAsset(uint64,uint64,address)void)",
+        "Method(owner()address)",
+        "Method(transferOwnership(address)void)",
         "Method(pauser()address)",
         "Method(pause()void)",
         "Method(unpause()void)",
         "Method(updatePauser(address)void)",
-        "Method(owner()address)",
-        "Method(transferOwnership(address)void)"
+        "Method(recoverAsset(uint64,uint64,address)void)"
       ]
     },
     "275": {
@@ -211,25 +211,25 @@
         "Method(withdrawalCancel(address)void)",
         "Method(withdraw(address,uint64)void)",
         "Method(withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void)",
-        "Method(recoverAsset(uint64,uint64,address)void)",
+        "Method(owner()address)",
+        "Method(transferOwnership(address)void)",
         "Method(pauser()address)",
         "Method(pause()void)",
         "Method(unpause()void)",
         "Method(updatePauser(address)void)",
-        "Method(owner()address)",
-        "Method(transferOwnership(address)void)",
+        "Method(recoverAsset(uint64,uint64,address)void)",
         "tmp%15#0"
       ]
     },
     "278": {
-      "op": "match setWithdrawalTimeout setEarlyWithdrawalPubkey cardCreate cardClose cardRecover assetAllowlistAdd assetAllowlistRemove cardDebit getRefundAddress setRefundAddress cardRefund getNextSettlementNonce getNextCardNonce getCardData getSettlementAddress setSettlementAddress settle cardEnableAsset cardDisableAsset withdrawalRequest withdrawalCancel withdraw withdrawPermissioned recoverAsset pauser pause unpause updatePauser owner transferOwnership",
+      "op": "match setWithdrawalTimeout setEarlyWithdrawalPubkey cardCreate cardClose cardRecover assetAllowlistAdd assetAllowlistRemove cardDebit getRefundAddress setRefundAddress cardRefund getNextSettlementNonce getNextCardNonce getCardData getSettlementAddress setSettlementAddress settle cardEnableAsset cardDisableAsset withdrawalRequest withdrawalCancel withdraw withdrawPermissioned owner transferOwnership pauser pause unpause updatePauser recoverAsset",
       "stack_out": []
     },
     "340": {
       "op": "err"
     },
     "341": {
-      "block": "main_create_NoOp@37",
+      "block": "main_create_NoOp@39",
       "stack_in": [],
       "op": "pushbytes 0x9270773d // method \"deploy(address)address\"",
       "defined_out": [
@@ -258,7 +258,7 @@
       "op": "err"
     },
     "355": {
-      "block": "main_destroy_route@3",
+      "block": "main_destroy_route@5",
       "stack_in": [],
       "op": "txn OnCompletion",
       "defined_out": [
@@ -317,7 +317,7 @@
       "op": "b destroy"
     },
     "367": {
-      "block": "main_update_route@2",
+      "block": "main_update_route@4",
       "stack_in": [],
       "op": "txn OnCompletion",
       "defined_out": [
@@ -13556,6 +13556,551 @@
       ]
     },
     "2060": {
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable.owner[routing]",
+      "params": {},
+      "block": "owner",
+      "stack_in": [],
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "2061": {
+      "op": "bytec_3 // \"_owner\"",
+      "defined_out": [
+        "\"_owner\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"_owner\""
+      ]
+    },
+    "2062": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "2063": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "2064": {
+      "op": "bytec_1 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "0x151f7c75"
+      ]
+    },
+    "2065": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ]
+    },
+    "2066": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "2067": {
+      "op": "log",
+      "stack_out": []
+    },
+    "2068": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "2069": {
+      "op": "return",
+      "stack_out": []
+    },
+    "2070": {
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]",
+      "params": {},
+      "block": "transferOwnership",
+      "stack_in": [],
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0"
+      ]
+    },
+    "2073": {
+      "op": "dup",
+      "defined_out": [
+        "newOwner#0",
+        "newOwner#0 (copy)"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "newOwner#0 (copy)"
+      ]
+    },
+    "2074": {
+      "op": "len",
+      "defined_out": [
+        "len%0#0",
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "len%0#0"
+      ]
+    },
+    "2075": {
+      "op": "intc_3 // 32",
+      "defined_out": [
+        "32",
+        "len%0#0",
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "len%0#0",
+        "32"
+      ]
+    },
+    "2076": {
+      "op": "==",
+      "defined_out": [
+        "eq%0#0",
+        "newOwner#0"
+      ],
+      "stack_out": [
+        "newOwner#0",
+        "eq%0#0"
+      ]
+    },
+    "2077": {
+      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "stack_out": [
+        "newOwner#0"
+      ]
+    },
+    "2078": {
+      "callsub": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
+      "op": "callsub onlyOwner"
+    },
+    "2081": {
+      "callsub": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
+      "op": "callsub _transferOwnership",
+      "stack_out": []
+    },
+    "2084": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "2085": {
+      "op": "return",
+      "stack_out": []
+    },
+    "2086": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.pauser[routing]",
+      "params": {},
+      "block": "pauser",
+      "stack_in": [],
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "2087": {
+      "op": "bytec 5 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"_pauser\""
+      ]
+    },
+    "2089": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "2090": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "2091": {
+      "op": "bytec_1 // 0x151f7c75",
+      "defined_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "0x151f7c75"
+      ]
+    },
+    "2092": {
+      "op": "swap",
+      "stack_out": [
+        "0x151f7c75",
+        "maybe_value%0#0"
+      ]
+    },
+    "2093": {
+      "op": "concat",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "2094": {
+      "op": "log",
+      "stack_out": []
+    },
+    "2095": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "2096": {
+      "op": "return",
+      "stack_out": []
+    },
+    "2097": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.pause[routing]",
+      "params": {},
+      "block": "pause",
+      "stack_in": [],
+      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "op": "callsub onlyPauser"
+    },
+    "2100": {
+      "op": "bytec 7 // \"paused\"",
+      "defined_out": [
+        "\"paused\""
+      ],
+      "stack_out": [
+        "\"paused\""
+      ]
+    },
+    "2102": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "\"paused\"",
+        "1"
+      ],
+      "stack_out": [
+        "\"paused\"",
+        "1"
+      ]
+    },
+    "2103": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "2104": {
+      "op": "pushbytes 0xcf23a30f",
+      "defined_out": [
+        "0xcf23a30f"
+      ],
+      "stack_out": [
+        "0xcf23a30f"
+      ]
+    },
+    "2110": {
+      "op": "log",
+      "stack_out": []
+    },
+    "2111": {
+      "op": "intc_1 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "2112": {
+      "op": "return",
+      "stack_out": []
+    },
+    "2113": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.unpause[routing]",
+      "params": {},
+      "block": "unpause",
+      "stack_in": [],
+      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "op": "callsub onlyPauser"
+    },
+    "2116": {
+      "op": "bytec 7 // \"paused\"",
+      "defined_out": [
+        "\"paused\""
+      ],
+      "stack_out": [
+        "\"paused\""
+      ]
+    },
+    "2118": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "\"paused\"",
+        "0"
+      ],
+      "stack_out": [
+        "\"paused\"",
+        "0"
+      ]
+    },
+    "2119": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "2120": {
+      "op": "pushbytes 0xb163ee0b",
+      "defined_out": [
+        "0xb163ee0b"
+      ],
+      "stack_out": [
+        "0xb163ee0b"
+      ]
+    },
+    "2126": {
+      "op": "log",
+      "stack_out": []
+    },
+    "2127": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "2128": {
+      "op": "return",
+      "stack_out": []
+    },
+    "2129": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]",
+      "params": {},
+      "block": "updatePauser",
+      "stack_in": [],
+      "op": "txna ApplicationArgs 1",
+      "defined_out": [
+        "_newPauser#0"
+      ],
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "2132": {
+      "op": "dup",
+      "defined_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)"
+      ]
+    },
+    "2133": {
+      "op": "len",
+      "defined_out": [
+        "_newPauser#0",
+        "len%0#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "len%0#0"
+      ]
+    },
+    "2134": {
+      "op": "intc_3 // 32",
+      "defined_out": [
+        "32",
+        "_newPauser#0",
+        "len%0#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "len%0#0",
+        "32"
+      ]
+    },
+    "2135": {
+      "op": "==",
+      "defined_out": [
+        "_newPauser#0",
+        "eq%0#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "eq%0#0"
+      ]
+    },
+    "2136": {
+      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "2137": {
+      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "op": "callsub onlyPauser"
+    },
+    "2140": {
+      "op": "dup"
+    },
+    "2141": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)",
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "_newPauser#0 (copy)",
+        "tmp%0#1"
+      ]
+    },
+    "2143": {
+      "op": "!=",
+      "defined_out": [
+        "_newPauser#0",
+        "tmp%1#1"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "tmp%1#1"
+      ]
+    },
+    "2144": {
+      "op": "assert",
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "2145": {
+      "op": "bytec 5 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\"",
+        "_newPauser#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "\"_pauser\""
+      ]
+    },
+    "2147": {
+      "op": "dig 1",
+      "stack_out": [
+        "_newPauser#0",
+        "\"_pauser\"",
+        "_newPauser#0 (copy)"
+      ]
+    },
+    "2149": {
+      "op": "app_global_put",
+      "stack_out": [
+        "_newPauser#0"
+      ]
+    },
+    "2150": {
+      "op": "pushbytes 0xcc40923c // method \"PauserChanged(address)\"",
+      "defined_out": [
+        "Method(PauserChanged(address))",
+        "_newPauser#0"
+      ],
+      "stack_out": [
+        "_newPauser#0",
+        "Method(PauserChanged(address))"
+      ]
+    },
+    "2156": {
+      "op": "swap",
+      "stack_out": [
+        "Method(PauserChanged(address))",
+        "_newPauser#0"
+      ]
+    },
+    "2157": {
+      "op": "concat",
+      "defined_out": [
+        "event%0#0"
+      ],
+      "stack_out": [
+        "event%0#0"
+      ]
+    },
+    "2158": {
+      "op": "log",
+      "stack_out": []
+    },
+    "2159": {
+      "op": "intc_1 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "2160": {
+      "op": "return",
+      "stack_out": []
+    },
+    "2161": {
       "subroutine": "src/roles/Recoverable.algo.ts::Recoverable.recoverAsset[routing]",
       "params": {},
       "block": "recoverAsset",
@@ -13568,7 +14113,7 @@
         "tmp%0#0"
       ]
     },
-    "2063": {
+    "2164": {
       "op": "dup",
       "defined_out": [
         "tmp%0#0",
@@ -13579,7 +14124,7 @@
         "tmp%0#0 (copy)"
       ]
     },
-    "2064": {
+    "2165": {
       "op": "len",
       "defined_out": [
         "len%0#0",
@@ -13590,7 +14135,7 @@
         "len%0#0"
       ]
     },
-    "2065": {
+    "2166": {
       "op": "intc_2 // 8",
       "defined_out": [
         "8",
@@ -13603,7 +14148,7 @@
         "8"
       ]
     },
-    "2066": {
+    "2167": {
       "op": "==",
       "defined_out": [
         "eq%0#0",
@@ -13614,14 +14159,14 @@
         "eq%0#0"
       ]
     },
-    "2067": {
+    "2168": {
       "error": "invalid number of bytes for arc4.uint64",
       "op": "assert // invalid number of bytes for arc4.uint64",
       "stack_out": [
         "tmp%0#0"
       ]
     },
-    "2068": {
+    "2169": {
       "op": "btoi",
       "defined_out": [
         "asset#0"
@@ -13630,7 +14175,7 @@
         "asset#0"
       ]
     },
-    "2069": {
+    "2170": {
       "op": "dup",
       "defined_out": [
         "asset#0"
@@ -13640,7 +14185,7 @@
         "asset#0"
       ]
     },
-    "2070": {
+    "2171": {
       "op": "txna ApplicationArgs 2",
       "defined_out": [
         "asset#0",
@@ -13652,7 +14197,7 @@
         "tmp%2#0"
       ]
     },
-    "2073": {
+    "2174": {
       "op": "dup",
       "defined_out": [
         "asset#0",
@@ -13666,7 +14211,7 @@
         "tmp%2#0 (copy)"
       ]
     },
-    "2074": {
+    "2175": {
       "op": "len",
       "defined_out": [
         "asset#0",
@@ -13680,7 +14225,7 @@
         "len%1#0"
       ]
     },
-    "2075": {
+    "2176": {
       "op": "intc_2 // 8",
       "stack_out": [
         "asset#0",
@@ -13690,7 +14235,7 @@
         "8"
       ]
     },
-    "2076": {
+    "2177": {
       "op": "==",
       "defined_out": [
         "asset#0",
@@ -13704,7 +14249,7 @@
         "eq%1#0"
       ]
     },
-    "2077": {
+    "2178": {
       "error": "invalid number of bytes for arc4.uint64",
       "op": "assert // invalid number of bytes for arc4.uint64",
       "stack_out": [
@@ -13713,7 +14258,7 @@
         "tmp%2#0"
       ]
     },
-    "2078": {
+    "2179": {
       "op": "btoi",
       "defined_out": [
         "amount#0",
@@ -13725,7 +14270,7 @@
         "amount#0"
       ]
     },
-    "2079": {
+    "2180": {
       "op": "swap",
       "defined_out": [
         "amount#0",
@@ -13737,10 +14282,10 @@
         "asset#0"
       ]
     },
-    "2080": {
+    "2181": {
       "op": "txna ApplicationArgs 3"
     },
-    "2083": {
+    "2184": {
       "op": "dup",
       "defined_out": [
         "amount#0",
@@ -13755,7 +14300,7 @@
         "recipient#0"
       ]
     },
-    "2084": {
+    "2185": {
       "op": "cover 3",
       "defined_out": [
         "amount#0",
@@ -13770,7 +14315,7 @@
         "recipient#0"
       ]
     },
-    "2086": {
+    "2187": {
       "op": "len",
       "defined_out": [
         "amount#0",
@@ -13786,7 +14331,7 @@
         "len%2#0"
       ]
     },
-    "2087": {
+    "2188": {
       "op": "intc_3 // 32",
       "defined_out": [
         "32",
@@ -13804,7 +14349,7 @@
         "32"
       ]
     },
-    "2088": {
+    "2189": {
       "op": "==",
       "defined_out": [
         "amount#0",
@@ -13820,7 +14365,7 @@
         "eq%2#0"
       ]
     },
-    "2089": {
+    "2190": {
       "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
       "stack_out": [
@@ -13830,11 +14375,11 @@
         "asset#0"
       ]
     },
-    "2090": {
+    "2191": {
       "callsub": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
       "op": "callsub onlyOwner"
     },
-    "2093": {
+    "2194": {
       "op": "bz recoverAsset_else_body@4",
       "stack_out": [
         "asset#0",
@@ -13842,10 +14387,10 @@
         "amount#0"
       ]
     },
-    "2096": {
+    "2197": {
       "op": "itxn_begin"
     },
-    "2097": {
+    "2198": {
       "op": "dig 2",
       "stack_out": [
         "asset#0",
@@ -13854,7 +14399,7 @@
         "asset#0"
       ]
     },
-    "2099": {
+    "2200": {
       "op": "itxn_field XferAsset",
       "stack_out": [
         "asset#0",
@@ -13862,16 +14407,16 @@
         "amount#0"
       ]
     },
-    "2101": {
+    "2202": {
       "op": "itxn_field AssetAmount"
     },
-    "2103": {
+    "2204": {
       "op": "itxn_field AssetReceiver",
       "stack_out": [
         "asset#0"
       ]
     },
-    "2105": {
+    "2206": {
       "op": "pushint 4 // 4",
       "defined_out": [
         "4",
@@ -13882,29 +14427,29 @@
         "4"
       ]
     },
-    "2107": {
+    "2208": {
       "op": "itxn_field TypeEnum",
       "stack_out": [
         "asset#0"
       ]
     },
-    "2109": {
+    "2210": {
       "op": "intc_0 // 0",
       "stack_out": [
         "asset#0",
         "0"
       ]
     },
-    "2110": {
+    "2211": {
       "op": "itxn_field Fee",
       "stack_out": [
         "asset#0"
       ]
     },
-    "2112": {
+    "2213": {
       "op": "itxn_submit"
     },
-    "2113": {
+    "2214": {
       "block": "recoverAsset_after_if_else@6",
       "stack_in": [
         "asset#0"
@@ -13918,13 +14463,13 @@
         "1"
       ]
     },
-    "2114": {
+    "2215": {
       "op": "return",
       "stack_out": [
         "asset#0"
       ]
     },
-    "2115": {
+    "2216": {
       "block": "recoverAsset_else_body@4",
       "stack_in": [
         "asset#0",
@@ -13933,17 +14478,17 @@
       ],
       "op": "itxn_begin"
     },
-    "2116": {
+    "2217": {
       "op": "itxn_field Amount"
     },
-    "2118": {
+    "2219": {
       "op": "itxn_field Receiver",
       "defined_out": [],
       "stack_out": [
         "asset#0"
       ]
     },
-    "2120": {
+    "2221": {
       "op": "intc_1 // 1",
       "defined_out": [
         "1"
@@ -13953,13 +14498,13 @@
         "1"
       ]
     },
-    "2121": {
+    "2222": {
       "op": "itxn_field TypeEnum",
       "stack_out": [
         "asset#0"
       ]
     },
-    "2123": {
+    "2224": {
       "op": "intc_0 // 0",
       "defined_out": [
         "0"
@@ -13969,562 +14514,17 @@
         "0"
       ]
     },
-    "2124": {
+    "2225": {
       "op": "itxn_field Fee",
       "stack_out": [
         "asset#0"
       ]
     },
-    "2126": {
+    "2227": {
       "op": "itxn_submit"
     },
-    "2127": {
+    "2228": {
       "op": "b recoverAsset_after_if_else@6"
-    },
-    "2130": {
-      "subroutine": "src/roles/Pausable.algo.ts::Pausable.pauser[routing]",
-      "params": {},
-      "block": "pauser",
-      "stack_in": [],
-      "op": "intc_0 // 0",
-      "defined_out": [
-        "0"
-      ],
-      "stack_out": [
-        "0"
-      ]
-    },
-    "2131": {
-      "op": "bytec 5 // \"_pauser\"",
-      "defined_out": [
-        "\"_pauser\"",
-        "0"
-      ],
-      "stack_out": [
-        "0",
-        "\"_pauser\""
-      ]
-    },
-    "2133": {
-      "op": "app_global_get_ex",
-      "defined_out": [
-        "maybe_exists%0#0",
-        "maybe_value%0#0"
-      ],
-      "stack_out": [
-        "maybe_value%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "2134": {
-      "error": "check GlobalState exists",
-      "op": "assert // check GlobalState exists",
-      "stack_out": [
-        "maybe_value%0#0"
-      ]
-    },
-    "2135": {
-      "op": "bytec_1 // 0x151f7c75",
-      "defined_out": [
-        "0x151f7c75",
-        "maybe_value%0#0"
-      ],
-      "stack_out": [
-        "maybe_value%0#0",
-        "0x151f7c75"
-      ]
-    },
-    "2136": {
-      "op": "swap",
-      "stack_out": [
-        "0x151f7c75",
-        "maybe_value%0#0"
-      ]
-    },
-    "2137": {
-      "op": "concat",
-      "defined_out": [
-        "tmp%2#0"
-      ],
-      "stack_out": [
-        "tmp%2#0"
-      ]
-    },
-    "2138": {
-      "op": "log",
-      "stack_out": []
-    },
-    "2139": {
-      "op": "intc_1 // 1",
-      "defined_out": [
-        "1"
-      ],
-      "stack_out": [
-        "1"
-      ]
-    },
-    "2140": {
-      "op": "return",
-      "stack_out": []
-    },
-    "2141": {
-      "subroutine": "src/roles/Pausable.algo.ts::Pausable.pause[routing]",
-      "params": {},
-      "block": "pause",
-      "stack_in": [],
-      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
-      "op": "callsub onlyPauser"
-    },
-    "2144": {
-      "op": "bytec 7 // \"paused\"",
-      "defined_out": [
-        "\"paused\""
-      ],
-      "stack_out": [
-        "\"paused\""
-      ]
-    },
-    "2146": {
-      "op": "intc_1 // 1",
-      "defined_out": [
-        "\"paused\"",
-        "1"
-      ],
-      "stack_out": [
-        "\"paused\"",
-        "1"
-      ]
-    },
-    "2147": {
-      "op": "app_global_put",
-      "stack_out": []
-    },
-    "2148": {
-      "op": "pushbytes 0xcf23a30f",
-      "defined_out": [
-        "0xcf23a30f"
-      ],
-      "stack_out": [
-        "0xcf23a30f"
-      ]
-    },
-    "2154": {
-      "op": "log",
-      "stack_out": []
-    },
-    "2155": {
-      "op": "intc_1 // 1",
-      "stack_out": [
-        "1"
-      ]
-    },
-    "2156": {
-      "op": "return",
-      "stack_out": []
-    },
-    "2157": {
-      "subroutine": "src/roles/Pausable.algo.ts::Pausable.unpause[routing]",
-      "params": {},
-      "block": "unpause",
-      "stack_in": [],
-      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
-      "op": "callsub onlyPauser"
-    },
-    "2160": {
-      "op": "bytec 7 // \"paused\"",
-      "defined_out": [
-        "\"paused\""
-      ],
-      "stack_out": [
-        "\"paused\""
-      ]
-    },
-    "2162": {
-      "op": "intc_0 // 0",
-      "defined_out": [
-        "\"paused\"",
-        "0"
-      ],
-      "stack_out": [
-        "\"paused\"",
-        "0"
-      ]
-    },
-    "2163": {
-      "op": "app_global_put",
-      "stack_out": []
-    },
-    "2164": {
-      "op": "pushbytes 0xb163ee0b",
-      "defined_out": [
-        "0xb163ee0b"
-      ],
-      "stack_out": [
-        "0xb163ee0b"
-      ]
-    },
-    "2170": {
-      "op": "log",
-      "stack_out": []
-    },
-    "2171": {
-      "op": "intc_1 // 1",
-      "defined_out": [
-        "1"
-      ],
-      "stack_out": [
-        "1"
-      ]
-    },
-    "2172": {
-      "op": "return",
-      "stack_out": []
-    },
-    "2173": {
-      "subroutine": "src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]",
-      "params": {},
-      "block": "updatePauser",
-      "stack_in": [],
-      "op": "txna ApplicationArgs 1",
-      "defined_out": [
-        "_newPauser#0"
-      ],
-      "stack_out": [
-        "_newPauser#0"
-      ]
-    },
-    "2176": {
-      "op": "dup",
-      "defined_out": [
-        "_newPauser#0",
-        "_newPauser#0 (copy)"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "_newPauser#0 (copy)"
-      ]
-    },
-    "2177": {
-      "op": "len",
-      "defined_out": [
-        "_newPauser#0",
-        "len%0#0"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "len%0#0"
-      ]
-    },
-    "2178": {
-      "op": "intc_3 // 32",
-      "defined_out": [
-        "32",
-        "_newPauser#0",
-        "len%0#0"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "len%0#0",
-        "32"
-      ]
-    },
-    "2179": {
-      "op": "==",
-      "defined_out": [
-        "_newPauser#0",
-        "eq%0#0"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "eq%0#0"
-      ]
-    },
-    "2180": {
-      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "stack_out": [
-        "_newPauser#0"
-      ]
-    },
-    "2181": {
-      "callsub": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
-      "op": "callsub onlyPauser"
-    },
-    "2184": {
-      "op": "dup"
-    },
-    "2185": {
-      "op": "global ZeroAddress",
-      "defined_out": [
-        "_newPauser#0",
-        "_newPauser#0 (copy)",
-        "tmp%0#1"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "_newPauser#0 (copy)",
-        "tmp%0#1"
-      ]
-    },
-    "2187": {
-      "op": "!=",
-      "defined_out": [
-        "_newPauser#0",
-        "tmp%1#1"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "tmp%1#1"
-      ]
-    },
-    "2188": {
-      "op": "assert",
-      "stack_out": [
-        "_newPauser#0"
-      ]
-    },
-    "2189": {
-      "op": "bytec 5 // \"_pauser\"",
-      "defined_out": [
-        "\"_pauser\"",
-        "_newPauser#0"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "\"_pauser\""
-      ]
-    },
-    "2191": {
-      "op": "dig 1",
-      "stack_out": [
-        "_newPauser#0",
-        "\"_pauser\"",
-        "_newPauser#0 (copy)"
-      ]
-    },
-    "2193": {
-      "op": "app_global_put",
-      "stack_out": [
-        "_newPauser#0"
-      ]
-    },
-    "2194": {
-      "op": "pushbytes 0xcc40923c // method \"PauserChanged(address)\"",
-      "defined_out": [
-        "Method(PauserChanged(address))",
-        "_newPauser#0"
-      ],
-      "stack_out": [
-        "_newPauser#0",
-        "Method(PauserChanged(address))"
-      ]
-    },
-    "2200": {
-      "op": "swap",
-      "stack_out": [
-        "Method(PauserChanged(address))",
-        "_newPauser#0"
-      ]
-    },
-    "2201": {
-      "op": "concat",
-      "defined_out": [
-        "event%0#0"
-      ],
-      "stack_out": [
-        "event%0#0"
-      ]
-    },
-    "2202": {
-      "op": "log",
-      "stack_out": []
-    },
-    "2203": {
-      "op": "intc_1 // 1",
-      "defined_out": [
-        "1"
-      ],
-      "stack_out": [
-        "1"
-      ]
-    },
-    "2204": {
-      "op": "return",
-      "stack_out": []
-    },
-    "2205": {
-      "subroutine": "src/roles/Ownable.algo.ts::Ownable.owner[routing]",
-      "params": {},
-      "block": "owner",
-      "stack_in": [],
-      "op": "intc_0 // 0",
-      "defined_out": [
-        "0"
-      ],
-      "stack_out": [
-        "0"
-      ]
-    },
-    "2206": {
-      "op": "bytec_3 // \"_owner\"",
-      "defined_out": [
-        "\"_owner\"",
-        "0"
-      ],
-      "stack_out": [
-        "0",
-        "\"_owner\""
-      ]
-    },
-    "2207": {
-      "op": "app_global_get_ex",
-      "defined_out": [
-        "maybe_exists%0#0",
-        "maybe_value%0#0"
-      ],
-      "stack_out": [
-        "maybe_value%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "2208": {
-      "error": "check GlobalState exists",
-      "op": "assert // check GlobalState exists",
-      "stack_out": [
-        "maybe_value%0#0"
-      ]
-    },
-    "2209": {
-      "op": "bytec_1 // 0x151f7c75",
-      "defined_out": [
-        "0x151f7c75",
-        "maybe_value%0#0"
-      ],
-      "stack_out": [
-        "maybe_value%0#0",
-        "0x151f7c75"
-      ]
-    },
-    "2210": {
-      "op": "swap",
-      "stack_out": [
-        "0x151f7c75",
-        "maybe_value%0#0"
-      ]
-    },
-    "2211": {
-      "op": "concat",
-      "defined_out": [
-        "tmp%2#0"
-      ],
-      "stack_out": [
-        "tmp%2#0"
-      ]
-    },
-    "2212": {
-      "op": "log",
-      "stack_out": []
-    },
-    "2213": {
-      "op": "intc_1 // 1",
-      "defined_out": [
-        "1"
-      ],
-      "stack_out": [
-        "1"
-      ]
-    },
-    "2214": {
-      "op": "return",
-      "stack_out": []
-    },
-    "2215": {
-      "subroutine": "src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]",
-      "params": {},
-      "block": "transferOwnership",
-      "stack_in": [],
-      "op": "txna ApplicationArgs 1",
-      "defined_out": [
-        "newOwner#0"
-      ],
-      "stack_out": [
-        "newOwner#0"
-      ]
-    },
-    "2218": {
-      "op": "dup",
-      "defined_out": [
-        "newOwner#0",
-        "newOwner#0 (copy)"
-      ],
-      "stack_out": [
-        "newOwner#0",
-        "newOwner#0 (copy)"
-      ]
-    },
-    "2219": {
-      "op": "len",
-      "defined_out": [
-        "len%0#0",
-        "newOwner#0"
-      ],
-      "stack_out": [
-        "newOwner#0",
-        "len%0#0"
-      ]
-    },
-    "2220": {
-      "op": "intc_3 // 32",
-      "defined_out": [
-        "32",
-        "len%0#0",
-        "newOwner#0"
-      ],
-      "stack_out": [
-        "newOwner#0",
-        "len%0#0",
-        "32"
-      ]
-    },
-    "2221": {
-      "op": "==",
-      "defined_out": [
-        "eq%0#0",
-        "newOwner#0"
-      ],
-      "stack_out": [
-        "newOwner#0",
-        "eq%0#0"
-      ]
-    },
-    "2222": {
-      "error": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "op": "assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>",
-      "stack_out": [
-        "newOwner#0"
-      ]
-    },
-    "2223": {
-      "callsub": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
-      "op": "callsub onlyOwner"
-    },
-    "2226": {
-      "callsub": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
-      "op": "callsub _transferOwnership",
-      "stack_out": []
-    },
-    "2229": {
-      "op": "intc_1 // 1",
-      "defined_out": [
-        "1"
-      ],
-      "stack_out": [
-        "1"
-      ]
-    },
-    "2230": {
-      "op": "return",
-      "stack_out": []
     },
     "2231": {
       "subroutine": "src/Master.algo.ts::Master.isCardOwner",
@@ -15829,68 +15829,9 @@
       "op": "b updateSettlementAddress_ternary_merge@3"
     },
     "2472": {
-      "subroutine": "src/roles/Pausable.algo.ts::Pausable.whenNotPaused",
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
       "params": {},
-      "block": "whenNotPaused",
-      "stack_in": [],
-      "op": "intc_0 // 0",
-      "defined_out": [
-        "0"
-      ],
-      "stack_out": [
-        "0"
-      ]
-    },
-    "2473": {
-      "op": "bytec 7 // \"paused\"",
-      "defined_out": [
-        "\"paused\"",
-        "0"
-      ],
-      "stack_out": [
-        "0",
-        "\"paused\""
-      ]
-    },
-    "2475": {
-      "op": "app_global_get_ex",
-      "defined_out": [
-        "maybe_exists%0#0",
-        "maybe_value%0#0"
-      ],
-      "stack_out": [
-        "maybe_value%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "2476": {
-      "error": "check GlobalState exists",
-      "op": "assert // check GlobalState exists",
-      "stack_out": [
-        "maybe_value%0#0"
-      ]
-    },
-    "2477": {
-      "op": "!",
-      "defined_out": [
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0"
-      ]
-    },
-    "2478": {
-      "op": "assert",
-      "stack_out": []
-    },
-    "2479": {
-      "retsub": true,
-      "op": "retsub"
-    },
-    "2480": {
-      "subroutine": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
-      "params": {},
-      "block": "onlyPauser",
+      "block": "onlyOwner",
       "stack_in": [],
       "op": "txn Sender",
       "defined_out": [
@@ -15900,7 +15841,7 @@
         "tmp%0#0"
       ]
     },
-    "2482": {
+    "2474": {
       "op": "intc_0 // 0",
       "defined_out": [
         "0",
@@ -15911,17 +15852,93 @@
         "0"
       ]
     },
-    "2483": {
-      "op": "bytec 5 // \"_pauser\"",
+    "2475": {
+      "op": "bytec_3 // \"_owner\"",
       "defined_out": [
-        "\"_pauser\"",
+        "\"_owner\"",
         "0",
         "tmp%0#0"
       ],
       "stack_out": [
         "tmp%0#0",
         "0",
-        "\"_pauser\""
+        "\"_owner\""
+      ]
+    },
+    "2476": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "2477": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "2478": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "2479": {
+      "error": "SENDER_NOT_ALLOWED",
+      "op": "assert // SENDER_NOT_ALLOWED",
+      "stack_out": []
+    },
+    "2480": {
+      "retsub": true,
+      "op": "retsub"
+    },
+    "2481": {
+      "subroutine": "src/roles/Ownable.algo.ts::Ownable.isOwner",
+      "params": {},
+      "block": "isOwner",
+      "stack_in": [],
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "2483": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0"
+      ]
+    },
+    "2484": {
+      "op": "bytec_3 // \"_owner\"",
+      "defined_out": [
+        "\"_owner\"",
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0",
+        "\"_owner\""
       ]
     },
     "2485": {
@@ -15955,161 +15972,10 @@
       ]
     },
     "2488": {
-      "op": "assert",
-      "stack_out": []
+      "retsub": true,
+      "op": "retsub"
     },
     "2489": {
-      "retsub": true,
-      "op": "retsub"
-    },
-    "2490": {
-      "subroutine": "src/roles/Ownable.algo.ts::Ownable.onlyOwner",
-      "params": {},
-      "block": "onlyOwner",
-      "stack_in": [],
-      "op": "txn Sender",
-      "defined_out": [
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0"
-      ]
-    },
-    "2492": {
-      "op": "intc_0 // 0",
-      "defined_out": [
-        "0",
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0",
-        "0"
-      ]
-    },
-    "2493": {
-      "op": "bytec_3 // \"_owner\"",
-      "defined_out": [
-        "\"_owner\"",
-        "0",
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0",
-        "0",
-        "\"_owner\""
-      ]
-    },
-    "2494": {
-      "op": "app_global_get_ex",
-      "defined_out": [
-        "maybe_exists%0#0",
-        "maybe_value%0#0",
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0",
-        "maybe_value%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "2495": {
-      "error": "check GlobalState exists",
-      "op": "assert // check GlobalState exists",
-      "stack_out": [
-        "tmp%0#0",
-        "maybe_value%0#0"
-      ]
-    },
-    "2496": {
-      "op": "==",
-      "defined_out": [
-        "tmp%1#0"
-      ],
-      "stack_out": [
-        "tmp%1#0"
-      ]
-    },
-    "2497": {
-      "error": "SENDER_NOT_ALLOWED",
-      "op": "assert // SENDER_NOT_ALLOWED",
-      "stack_out": []
-    },
-    "2498": {
-      "retsub": true,
-      "op": "retsub"
-    },
-    "2499": {
-      "subroutine": "src/roles/Ownable.algo.ts::Ownable.isOwner",
-      "params": {},
-      "block": "isOwner",
-      "stack_in": [],
-      "op": "txn Sender",
-      "defined_out": [
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0"
-      ]
-    },
-    "2501": {
-      "op": "intc_0 // 0",
-      "defined_out": [
-        "0",
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0",
-        "0"
-      ]
-    },
-    "2502": {
-      "op": "bytec_3 // \"_owner\"",
-      "defined_out": [
-        "\"_owner\"",
-        "0",
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0",
-        "0",
-        "\"_owner\""
-      ]
-    },
-    "2503": {
-      "op": "app_global_get_ex",
-      "defined_out": [
-        "maybe_exists%0#0",
-        "maybe_value%0#0",
-        "tmp%0#0"
-      ],
-      "stack_out": [
-        "tmp%0#0",
-        "maybe_value%0#0",
-        "maybe_exists%0#0"
-      ]
-    },
-    "2504": {
-      "error": "check GlobalState exists",
-      "op": "assert // check GlobalState exists",
-      "stack_out": [
-        "tmp%0#0",
-        "maybe_value%0#0"
-      ]
-    },
-    "2505": {
-      "op": "==",
-      "defined_out": [
-        "tmp%1#0"
-      ],
-      "stack_out": [
-        "tmp%1#0"
-      ]
-    },
-    "2506": {
-      "retsub": true,
-      "op": "retsub"
-    },
-    "2507": {
       "subroutine": "src/roles/Ownable.algo.ts::Ownable._transferOwnership",
       "params": {
         "newOwner#0": "bytes"
@@ -16118,7 +15984,7 @@
       "stack_in": [],
       "op": "proto 1 0"
     },
-    "2510": {
+    "2492": {
       "op": "intc_0 // 0",
       "defined_out": [
         "0"
@@ -16127,7 +15993,7 @@
         "0"
       ]
     },
-    "2511": {
+    "2493": {
       "op": "bytec_3 // \"_owner\"",
       "defined_out": [
         "\"_owner\"",
@@ -16138,7 +16004,7 @@
         "\"_owner\""
       ]
     },
-    "2512": {
+    "2494": {
       "op": "app_global_get_ex",
       "defined_out": [
         "_%0#0",
@@ -16149,30 +16015,30 @@
         "maybe_exists%0#0"
       ]
     },
-    "2513": {
+    "2495": {
       "op": "bury 1",
       "stack_out": [
         "maybe_exists%0#0"
       ]
     },
-    "2515": {
+    "2497": {
       "op": "bz _transferOwnership_ternary_false@2",
       "stack_out": []
     },
-    "2518": {
+    "2500": {
       "op": "intc_0 // 0",
       "stack_out": [
         "0"
       ]
     },
-    "2519": {
+    "2501": {
       "op": "bytec_3 // \"_owner\"",
       "stack_out": [
         "0",
         "\"_owner\""
       ]
     },
-    "2520": {
+    "2502": {
       "op": "app_global_get_ex",
       "defined_out": [
         "maybe_exists%1#0",
@@ -16183,7 +16049,7 @@
         "maybe_exists%1#0"
       ]
     },
-    "2521": {
+    "2503": {
       "error": "check GlobalState exists",
       "op": "assert // check GlobalState exists",
       "defined_out": [
@@ -16193,7 +16059,7 @@
         "previousOwner#0"
       ]
     },
-    "2522": {
+    "2504": {
       "block": "_transferOwnership_ternary_merge@3",
       "stack_in": [
         "previousOwner#0"
@@ -16207,7 +16073,7 @@
         "\"_owner\""
       ]
     },
-    "2523": {
+    "2505": {
       "op": "frame_dig -1",
       "defined_out": [
         "\"_owner\"",
@@ -16219,7 +16085,7 @@
         "newOwner#0 (copy)"
       ]
     },
-    "2525": {
+    "2507": {
       "op": "app_global_put",
       "defined_out": [
         "previousOwner#0"
@@ -16228,14 +16094,14 @@
         "previousOwner#0"
       ]
     },
-    "2526": {
+    "2508": {
       "op": "frame_dig -1",
       "stack_out": [
         "previousOwner#0",
         "newOwner#0 (copy)"
       ]
     },
-    "2528": {
+    "2510": {
       "op": "concat",
       "defined_out": [
         "aggregate%head%1#0"
@@ -16244,7 +16110,7 @@
         "aggregate%head%1#0"
       ]
     },
-    "2529": {
+    "2511": {
       "op": "pushbytes 0x9a223efb // method \"OwnershipTransferred(address,address)\"",
       "defined_out": [
         "Method(OwnershipTransferred(address,address))",
@@ -16255,14 +16121,14 @@
         "Method(OwnershipTransferred(address,address))"
       ]
     },
-    "2535": {
+    "2517": {
       "op": "swap",
       "stack_out": [
         "Method(OwnershipTransferred(address,address))",
         "aggregate%head%1#0"
       ]
     },
-    "2536": {
+    "2518": {
       "op": "concat",
       "defined_out": [
         "event%0#0"
@@ -16271,15 +16137,15 @@
         "event%0#0"
       ]
     },
-    "2537": {
+    "2519": {
       "op": "log",
       "stack_out": []
     },
-    "2538": {
+    "2520": {
       "retsub": true,
       "op": "retsub"
     },
-    "2539": {
+    "2521": {
       "block": "_transferOwnership_ternary_false@2",
       "stack_in": [],
       "op": "global ZeroAddress",
@@ -16290,8 +16156,142 @@
         "previousOwner#0"
       ]
     },
-    "2541": {
+    "2523": {
       "op": "b _transferOwnership_ternary_merge@3"
+    },
+    "2526": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.whenNotPaused",
+      "params": {},
+      "block": "whenNotPaused",
+      "stack_in": [],
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0"
+      ],
+      "stack_out": [
+        "0"
+      ]
+    },
+    "2527": {
+      "op": "bytec 7 // \"paused\"",
+      "defined_out": [
+        "\"paused\"",
+        "0"
+      ],
+      "stack_out": [
+        "0",
+        "\"paused\""
+      ]
+    },
+    "2529": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0"
+      ],
+      "stack_out": [
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "2530": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "maybe_value%0#0"
+      ]
+    },
+    "2531": {
+      "op": "!",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "2532": {
+      "op": "assert",
+      "stack_out": []
+    },
+    "2533": {
+      "retsub": true,
+      "op": "retsub"
+    },
+    "2534": {
+      "subroutine": "src/roles/Pausable.algo.ts::Pausable.onlyPauser",
+      "params": {},
+      "block": "onlyPauser",
+      "stack_in": [],
+      "op": "txn Sender",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "2536": {
+      "op": "intc_0 // 0",
+      "defined_out": [
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0"
+      ]
+    },
+    "2537": {
+      "op": "bytec 5 // \"_pauser\"",
+      "defined_out": [
+        "\"_pauser\"",
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0",
+        "\"_pauser\""
+      ]
+    },
+    "2539": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "2540": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "2541": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "2542": {
+      "op": "assert",
+      "stack_out": []
+    },
+    "2543": {
+      "retsub": true,
+      "op": "retsub"
     }
   }
 }

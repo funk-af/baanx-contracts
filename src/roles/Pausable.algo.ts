@@ -22,14 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { GlobalState, Account, emit, Txn, Global, assert } from '@algorandfoundation/algorand-typescript';
-import { Ownable } from './Ownable.algo';
+import { Contract, GlobalState, Account, emit, Txn, Global, assert } from '@algorandfoundation/algorand-typescript';
 
 type Pause = {};
 type Unpause = {};
 type PauserChanged = { newAddress: Account };
 
-export class Pausable extends Ownable {
+export class Pausable extends Contract {
     // ============ State Variables ============
     _pauser = GlobalState<Account>();
 

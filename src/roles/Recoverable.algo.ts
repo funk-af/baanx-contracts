@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 import { Asset, uint64, Account, itxn } from '@algorandfoundation/algorand-typescript';
-import { Pausable } from './Pausable.algo';
+import { Ownable } from './Ownable.algo';
 
 /**
  * Recoverable class, with the ability to recover assets sent to the contract by mistake.
  */
-export class Recoverable extends Pausable {
+export class Recoverable extends Ownable {
     /**
      * Recover an asset sent to the contract by mistake. Only the owner can call this function.
      * @param asset Asset ID of the asset to recover. If 0, Algo will be recovered.

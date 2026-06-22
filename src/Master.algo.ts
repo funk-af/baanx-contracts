@@ -44,6 +44,9 @@ import {
     uint64,
     bytes,
 } from '@algorandfoundation/algorand-typescript';
+import { classes } from 'polytype';
+import { Ownable } from './roles/Ownable.algo';
+import { Pausable } from './roles/Pausable.algo';
 import { Recoverable } from './roles/Recoverable.algo';
 
 // CardData
@@ -164,7 +167,7 @@ class ControlledAddress extends Contract {
     }
 }
 
-export class Master extends Recoverable {
+export class Master extends classes(Ownable, Pausable, Recoverable) {
     // ========== Storage ==========
     // Cards
     cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });

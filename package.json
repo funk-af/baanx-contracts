@@ -33,6 +33,7 @@
         "@types/websocket": "^1.0.10",
         "algo-msgpack-with-bigint": "^2.1.1",
         "algosdk": "^3.6.0",
+        "polytype": "^0.17.0",
         "ts-jest": "^29.1.2",
         "tweetnacl": "^1.0.3",
         "websocket": "^1.0.34"

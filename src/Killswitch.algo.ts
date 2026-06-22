@@ -34,10 +34,13 @@ import {
     GlobalState,
     Txn,
 } from '@algorandfoundation/algorand-typescript';
+import { classes } from 'polytype';
+import { Ownable } from './roles/Ownable.algo';
+import { Pausable } from './roles/Pausable.algo';
 import { Recoverable } from './roles/Recoverable.algo';
 import type { Master } from './Master.algo';
 
-export class Killswitch extends Recoverable {
+export class Killswitch extends classes(Ownable, Pausable, Recoverable) {
     // ========== Storage ==========
     accounts = BoxMap<Account, boolean>({ keyPrefix: '' });
 

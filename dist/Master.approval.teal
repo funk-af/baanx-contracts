@@ -5,35 +5,35 @@
 main:
     intcblock 0 1 8 32
     bytecblock "cf" 0x151f7c75 "wr" "_owner" "cfac" "_pauser" "sn" "paused" "sa" "ra" "wwt" "pwpk" "permissionless" 0x068101 "approved"
-    // src/Master.algo.ts:167
-    // export class Master extends Recoverable {
+    // src/Master.algo.ts:170
+    // export class Master extends classes(Ownable, Pausable, Recoverable) {
     pushbytess 0xa0e81872 0x9c86a185 // method "update()void", method "destroy()void"
     txna ApplicationArgs 0
-    match main_update_route@2 main_destroy_route@3
+    match main_update_route@4 main_destroy_route@5
 
-main_switch_case_next@4:
-    // src/Master.algo.ts:167
-    // export class Master extends Recoverable {
+main_switch_case_next@6:
+    // src/Master.algo.ts:170
+    // export class Master extends classes(Ownable, Pausable, Recoverable) {
     txn OnCompletion
     !
     assert // OnCompletion must be NoOp
     txn ApplicationID
-    bz main_create_NoOp@37
-    pushbytess 0xa050f5f1 0xe2ebbf86 0x5b277143 0x47bb9dfd 0x3fa1238b 0x7c722747 0x4dae281f 0xd3c7a652 0x7b9e6b02 0x00dc02c4 0xefc52993 0x75271a07 0xcbee2ba1 0x745dbf16 0x51b47f06 0x419eeffb 0xf458fc1a 0x4f67f91d 0x9537d509 0xb7349158 0xbbd0def0 0x13ff1ce9 0xf2e3f37f 0x785a1bf9 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method "setWithdrawalTimeout(uint64)void", method "setEarlyWithdrawalPubkey(byte[32])void", method "cardCreate(address,uint64)address", method "cardClose(address)void", method "cardRecover(address,address)void", method "assetAllowlistAdd(uint64,address)void", method "assetAllowlistRemove(uint64)void", method "cardDebit(address,uint64,uint64,uint64,string)void", method "getRefundAddress()address", method "setRefundAddress(address)void", method "cardRefund(address,uint64,uint64,uint64)void", method "getNextSettlementNonce()uint64", method "getNextCardNonce(address)uint64", method "getCardData(address)(address,address,uint64,uint64)", method "getSettlementAddress(uint64)address", method "setSettlementAddress(uint64,address)void", method "settle(uint64,uint64,uint64)void", method "cardEnableAsset(address,uint64)void", method "cardDisableAsset(address,uint64)void", method "withdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)", method "withdrawalCancel(address)void", method "withdraw(address,uint64)void", method "withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void", method "recoverAsset(uint64,uint64,address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "owner()address", method "transferOwnership(address)void"
+    bz main_create_NoOp@39
+    pushbytess 0xa050f5f1 0xe2ebbf86 0x5b277143 0x47bb9dfd 0x3fa1238b 0x7c722747 0x4dae281f 0xd3c7a652 0x7b9e6b02 0x00dc02c4 0xefc52993 0x75271a07 0xcbee2ba1 0x745dbf16 0x51b47f06 0x419eeffb 0xf458fc1a 0x4f67f91d 0x9537d509 0xb7349158 0xbbd0def0 0x13ff1ce9 0xf2e3f37f 0xb1bbb0a8 0xe17bafb4 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0x785a1bf9 // method "setWithdrawalTimeout(uint64)void", method "setEarlyWithdrawalPubkey(byte[32])void", method "cardCreate(address,uint64)address", method "cardClose(address)void", method "cardRecover(address,address)void", method "assetAllowlistAdd(uint64,address)void", method "assetAllowlistRemove(uint64)void", method "cardDebit(address,uint64,uint64,uint64,string)void", method "getRefundAddress()address", method "setRefundAddress(address)void", method "cardRefund(address,uint64,uint64,uint64)void", method "getNextSettlementNonce()uint64", method "getNextCardNonce(address)uint64", method "getCardData(address)(address,address,uint64,uint64)", method "getSettlementAddress(uint64)address", method "setSettlementAddress(uint64,address)void", method "settle(uint64,uint64,uint64)void", method "cardEnableAsset(address,uint64)void", method "cardDisableAsset(address,uint64)void", method "withdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)", method "withdrawalCancel(address)void", method "withdraw(address,uint64)void", method "withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void", method "owner()address", method "transferOwnership(address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "recoverAsset(uint64,uint64,address)void"
     txna ApplicationArgs 0
-    match setWithdrawalTimeout setEarlyWithdrawalPubkey cardCreate cardClose cardRecover assetAllowlistAdd assetAllowlistRemove cardDebit getRefundAddress setRefundAddress cardRefund getNextSettlementNonce getNextCardNonce getCardData getSettlementAddress setSettlementAddress settle cardEnableAsset cardDisableAsset withdrawalRequest withdrawalCancel withdraw withdrawPermissioned recoverAsset pauser pause unpause updatePauser owner transferOwnership
+    match setWithdrawalTimeout setEarlyWithdrawalPubkey cardCreate cardClose cardRecover assetAllowlistAdd assetAllowlistRemove cardDebit getRefundAddress setRefundAddress cardRefund getNextSettlementNonce getNextCardNonce getCardData getSettlementAddress setSettlementAddress settle cardEnableAsset cardDisableAsset withdrawalRequest withdrawalCancel withdraw withdrawPermissioned owner transferOwnership pauser pause unpause updatePauser recoverAsset
     err
 
-main_create_NoOp@37:
-    // src/Master.algo.ts:167
-    // export class Master extends Recoverable {
+main_create_NoOp@39:
+    // src/Master.algo.ts:170
+    // export class Master extends classes(Ownable, Pausable, Recoverable) {
     pushbytes 0x9270773d // method "deploy(address)address"
     txna ApplicationArgs 0
     match deploy
     err
 
-main_destroy_route@3:
-    // src/Master.algo.ts:316
+main_destroy_route@5:
+    // src/Master.algo.ts:319
     // @abimethod({ allowActions: ['DeleteApplication'] })
     txn OnCompletion
     pushint 5 // DeleteApplication
@@ -43,8 +43,8 @@ main_destroy_route@3:
     assert // OnCompletion must be DeleteApplication && can only call when not creating
     b destroy
 
-main_update_route@2:
-    // src/Master.algo.ts:308
+main_update_route@4:
+    // src/Master.algo.ts:311
     // @abimethod({ allowActions: ['UpdateApplication'] })
     txn OnCompletion
     pushint 4 // UpdateApplication
@@ -57,7 +57,7 @@ main_update_route@2:
 
 // src/Master.algo.ts::Master.deploy[routing]() -> void:
 deploy:
-    // src/Master.algo.ts:291
+    // src/Master.algo.ts:294
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     txna ApplicationArgs 1
     dup
@@ -65,44 +65,44 @@ deploy:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:293
+    // src/Master.algo.ts:296
     // this._transferOwnership(owner);
     callsub _transferOwnership
-    // src/roles/Pausable.algo.ts:34
+    // src/roles/Pausable.algo.ts:33
     // _pauser = GlobalState<Account>();
     bytec 5 // "_pauser"
-    // src/Master.algo.ts:294
+    // src/Master.algo.ts:297
     // this._pauser.value = Txn.sender;
     txn Sender
     app_global_put
-    // src/Master.algo.ts:172
+    // src/Master.algo.ts:175
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Master.algo.ts:298
+    // src/Master.algo.ts:301
     // this.cards_active_count.value = 0;
     intc_0 // 0
     app_global_put
-    // src/Master.algo.ts:185
+    // src/Master.algo.ts:188
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Master.algo.ts:299
+    // src/Master.algo.ts:302
     // this.settlement_nonce.value = 0;
     intc_0 // 0
     app_global_put
-    // src/roles/Pausable.algo.ts:36
+    // src/roles/Pausable.algo.ts:35
     // paused = GlobalState<boolean>();
     bytec 7 // "paused"
-    // src/Master.algo.ts:300
+    // src/Master.algo.ts:303
     // this.paused.value = false;
     intc_0 // 0
     app_global_put
-    // src/Master.algo.ts:291
+    // src/Master.algo.ts:294
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     bytec_1 // 0x151f7c75
-    // src/Master.algo.ts:302
+    // src/Master.algo.ts:305
     // return Global.currentApplicationAddress;
     global CurrentApplicationAddress
-    // src/Master.algo.ts:291
+    // src/Master.algo.ts:294
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     concat
     log
@@ -112,10 +112,10 @@ deploy:
 
 // src/Master.algo.ts::Master.update[routing]() -> void:
 update:
-    // src/Master.algo.ts:310
+    // src/Master.algo.ts:313
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:308
+    // src/Master.algo.ts:311
     // @abimethod({ allowActions: ['UpdateApplication'] })
     intc_1 // 1
     return
@@ -123,29 +123,29 @@ update:
 
 // src/Master.algo.ts::Master.destroy[routing]() -> void:
 destroy:
-    // src/Master.algo.ts:318
+    // src/Master.algo.ts:321
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:321
+    // src/Master.algo.ts:324
     // assert(!this.cards_active_count.value, 'CARDS_STILL_ACTIVE');
     intc_0 // 0
-    // src/Master.algo.ts:172
+    // src/Master.algo.ts:175
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Master.algo.ts:321
+    // src/Master.algo.ts:324
     // assert(!this.cards_active_count.value, 'CARDS_STILL_ACTIVE');
     app_global_get_ex
     assert // check GlobalState exists
     !
     assert // CARDS_STILL_ACTIVE
-    // src/Master.algo.ts:323-327
+    // src/Master.algo.ts:326-330
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
     //     closeRemainderTo: this.owner(),
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:324
+    // src/Master.algo.ts:327
     // receiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
     // src/roles/Ownable.algo.ts:67
@@ -159,12 +159,12 @@ destroy:
     app_global_get_ex
     assert // check GlobalState exists
     itxn_field CloseRemainderTo
-    // src/Master.algo.ts:325
+    // src/Master.algo.ts:328
     // amount: 0,
     intc_0 // 0
     itxn_field Amount
     itxn_field Receiver
-    // src/Master.algo.ts:323-327
+    // src/Master.algo.ts:326-330
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
@@ -175,7 +175,7 @@ destroy:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:316
+    // src/Master.algo.ts:319
     // @abimethod({ allowActions: ['DeleteApplication'] })
     intc_1 // 1
     return
@@ -183,7 +183,7 @@ destroy:
 
 // src/Master.algo.ts::Master.setWithdrawalTimeout[routing]() -> void:
 setWithdrawalTimeout:
-    // src/Master.algo.ts:335
+    // src/Master.algo.ts:338
     // setWithdrawalTimeout(seconds: uint64): void {
     txna ApplicationArgs 1
     dup
@@ -192,17 +192,17 @@ setWithdrawalTimeout:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:336
+    // src/Master.algo.ts:339
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:175
+    // src/Master.algo.ts:178
     // withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
     bytec 10 // "wwt"
-    // src/Master.algo.ts:338
+    // src/Master.algo.ts:341
     // this.withdrawal_wait_time.value = seconds;
     swap
     app_global_put
-    // src/Master.algo.ts:335
+    // src/Master.algo.ts:338
     // setWithdrawalTimeout(seconds: uint64): void {
     intc_1 // 1
     return
@@ -210,7 +210,7 @@ setWithdrawalTimeout:
 
 // src/Master.algo.ts::Master.setEarlyWithdrawalPubkey[routing]() -> void:
 setEarlyWithdrawalPubkey:
-    // src/Master.algo.ts:345
+    // src/Master.algo.ts:348
     // setEarlyWithdrawalPubkey(pubkey: bytes<32>): void {
     txna ApplicationArgs 1
     dup
@@ -218,17 +218,17 @@ setEarlyWithdrawalPubkey:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:346
+    // src/Master.algo.ts:349
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:178
+    // src/Master.algo.ts:181
     // permissioned_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
     bytec 11 // "pwpk"
-    // src/Master.algo.ts:348
+    // src/Master.algo.ts:351
     // this.permissioned_withdrawal_pubkey.value = pubkey;
     swap
     app_global_put
-    // src/Master.algo.ts:345
+    // src/Master.algo.ts:348
     // setEarlyWithdrawalPubkey(pubkey: bytes<32>): void {
     intc_1 // 1
     return
@@ -236,7 +236,7 @@ setEarlyWithdrawalPubkey:
 
 // src/Master.algo.ts::Master.cardCreate[routing]() -> void:
 cardCreate:
-    // src/Master.algo.ts:358
+    // src/Master.algo.ts:361
     // cardCreate(cardOwner: Account, asset: Asset): Account {
     txna ApplicationArgs 1
     dupn 2
@@ -253,13 +253,13 @@ cardCreate:
     btoi
     dup
     uncover 2
-    // src/Master.algo.ts:359
+    // src/Master.algo.ts:362
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:363
+    // src/Master.algo.ts:366
     // address: Global.zeroAddress,
     global ZeroAddress
-    // src/Master.algo.ts:361-366
+    // src/Master.algo.ts:364-369
     // const cardData: CardData = {
     //     owner: cardOwner,
     //     address: Global.zeroAddress,
@@ -267,10 +267,10 @@ cardCreate:
     //     withdrawalNonce: 0,
     // };
     concat
-    // src/Master.algo.ts:364
+    // src/Master.algo.ts:367
     // nonce: 0,
     intc_0 // 0
-    // src/Master.algo.ts:361-366
+    // src/Master.algo.ts:364-369
     // const cardData: CardData = {
     //     owner: cardOwner,
     //     address: Global.zeroAddress,
@@ -283,7 +283,7 @@ cardCreate:
     concat
     swap
     concat
-    // src/Master.algo.ts:370-374
+    // src/Master.algo.ts:373-377
     // const cardAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
     //     approvalProgram: compiledCard.approvalProgram,
     //     clearStateProgram: compiledCard.clearStateProgram,
@@ -292,17 +292,17 @@ cardCreate:
     itxn_begin
     pushbytes 0x561d2fea // method "new()address"
     itxn_field ApplicationArgs
-    // src/Master.algo.ts:373
+    // src/Master.algo.ts:376
     // onCompletion: OnCompleteAction.DeleteApplication,
     pushint 5 // 5
     itxn_field OnCompletion
-    // src/Master.algo.ts:369
+    // src/Master.algo.ts:372
     // const compiledCard = compile(ControlledAddress);
     pushbytes base64(C4EBQw==)
     itxn_field ClearStateProgramPages
     pushbytes base64(CyACAAGABFYdL+o2GgCOAQABADEZgQUSMRgUEERCAACxMgoyDrIgIrIIsgcjshAisgGzgAQVH3x1MgpQsCND)
     itxn_field ApprovalProgramPages
-    // src/Master.algo.ts:370-374
+    // src/Master.algo.ts:373-377
     // const cardAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
     //     approvalProgram: compiledCard.approvalProgram,
     //     clearStateProgram: compiledCard.clearStateProgram,
@@ -328,30 +328,30 @@ cardCreate:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:377
+    // src/Master.algo.ts:380
     // cardData.address = cardAddr;
     replace2 32
     swap
-    // src/Master.algo.ts:380
+    // src/Master.algo.ts:383
     // const assetMbr: uint64 = asset.id ? Global.assetOptInMinBalance : 0;
     bz cardCreate_ternary_false@4
     global AssetOptInMinBalance
 
 cardCreate_ternary_merge@5:
-    // src/Master.algo.ts:381-384
+    // src/Master.algo.ts:384-387
     // itxn.payment({
     //     receiver: cardAddr,
     //     amount: Global.minBalance + assetMbr,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:383
+    // src/Master.algo.ts:386
     // amount: Global.minBalance + assetMbr,
     global MinBalance
     +
     itxn_field Amount
     dig 1
     itxn_field Receiver
-    // src/Master.algo.ts:381-384
+    // src/Master.algo.ts:384-387
     // itxn.payment({
     //     receiver: cardAddr,
     //     amount: Global.minBalance + assetMbr,
@@ -361,48 +361,48 @@ cardCreate_ternary_merge@5:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:387
+    // src/Master.algo.ts:390
     // if (asset.id) {
     dig 2
     bz cardCreate_after_if_else@8
-    // src/Master.algo.ts:388
+    // src/Master.algo.ts:391
     // this.cardAssetOptIn(cardAddr, asset);
     dig 1
     dig 3
     callsub cardAssetOptIn
 
 cardCreate_after_if_else@8:
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 2
     dup
     cover 2
     concat
-    // src/Master.algo.ts:392
+    // src/Master.algo.ts:395
     // this.cards(cardAddr).value = clone(cardData);
     dig 2
     box_put
-    // src/Master.algo.ts:395
+    // src/Master.algo.ts:398
     // this.cards_active_count.value = this.cards_active_count.value + 1;
     intc_0 // 0
-    // src/Master.algo.ts:172
+    // src/Master.algo.ts:175
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Master.algo.ts:395
+    // src/Master.algo.ts:398
     // this.cards_active_count.value = this.cards_active_count.value + 1;
     app_global_get_ex
     assert // check GlobalState exists
     intc_1 // 1
     +
-    // src/Master.algo.ts:172
+    // src/Master.algo.ts:175
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Master.algo.ts:395
+    // src/Master.algo.ts:398
     // this.cards_active_count.value = this.cards_active_count.value + 1;
     swap
     app_global_put
-    // src/Master.algo.ts:397-400
+    // src/Master.algo.ts:400-403
     // emit<CardCreated>({
     //     cardOwner: cardOwner,
     //     card: cardAddr,
@@ -414,7 +414,7 @@ cardCreate_after_if_else@8:
     swap
     concat
     log
-    // src/Master.algo.ts:358
+    // src/Master.algo.ts:361
     // cardCreate(cardOwner: Account, asset: Asset): Account {
     bytec_1 // 0x151f7c75
     swap
@@ -424,7 +424,7 @@ cardCreate_after_if_else@8:
     return
 
 cardCreate_ternary_false@4:
-    // src/Master.algo.ts:380
+    // src/Master.algo.ts:383
     // const assetMbr: uint64 = asset.id ? Global.assetOptInMinBalance : 0;
     intc_0 // 0
     b cardCreate_ternary_merge@5
@@ -432,7 +432,7 @@ cardCreate_ternary_false@4:
 
 // src/Master.algo.ts::Master.cardClose[routing]() -> void:
 cardClose:
-    // src/Master.algo.ts:410
+    // src/Master.algo.ts:413
     // cardClose(card: Account): void {
     txna ApplicationArgs 1
     dup
@@ -440,7 +440,7 @@ cardClose:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:411
+    // src/Master.algo.ts:414
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     callsub isOwner
     bnz cardClose_bool_true@3
@@ -452,10 +452,10 @@ cardClose_bool_true@3:
     intc_1 // 1
 
 cardClose_bool_merge@5:
-    // src/Master.algo.ts:411
+    // src/Master.algo.ts:414
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:415-420
+    // src/Master.algo.ts:418-423
     // itxn.payment({
     //     sender: card,
     //     receiver: Global.currentApplicationAddress,
@@ -463,21 +463,21 @@ cardClose_bool_merge@5:
     //     closeRemainderTo: Global.currentApplicationAddress,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:417
+    // src/Master.algo.ts:420
     // receiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Master.algo.ts:419
+    // src/Master.algo.ts:422
     // closeRemainderTo: Global.currentApplicationAddress,
     dup
     itxn_field CloseRemainderTo
-    // src/Master.algo.ts:418
+    // src/Master.algo.ts:421
     // amount: 0,
     intc_0 // 0
     itxn_field Amount
     itxn_field Receiver
     dupn 2
     itxn_field Sender
-    // src/Master.algo.ts:415-420
+    // src/Master.algo.ts:418-423
     // itxn.payment({
     //     sender: card,
     //     receiver: Global.currentApplicationAddress,
@@ -489,35 +489,35 @@ cardClose_bool_merge@5:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     swap
     concat
-    // src/Master.algo.ts:423
+    // src/Master.algo.ts:426
     // this.cards(card).delete();
     box_del
     pop
-    // src/Master.algo.ts:426
+    // src/Master.algo.ts:429
     // this.cards_active_count.value = this.cards_active_count.value - 1;
     intc_0 // 0
-    // src/Master.algo.ts:172
+    // src/Master.algo.ts:175
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Master.algo.ts:426
+    // src/Master.algo.ts:429
     // this.cards_active_count.value = this.cards_active_count.value - 1;
     app_global_get_ex
     assert // check GlobalState exists
     intc_1 // 1
     -
-    // src/Master.algo.ts:172
+    // src/Master.algo.ts:175
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Master.algo.ts:426
+    // src/Master.algo.ts:429
     // this.cards_active_count.value = this.cards_active_count.value - 1;
     swap
     app_global_put
-    // src/Master.algo.ts:410
+    // src/Master.algo.ts:413
     // cardClose(card: Account): void {
     intc_1 // 1
     return
@@ -529,7 +529,7 @@ cardClose_bool_false@4:
 
 // src/Master.algo.ts::Master.cardRecover[routing]() -> void:
 cardRecover:
-    // src/Master.algo.ts:436
+    // src/Master.algo.ts:439
     // cardRecover(card: Account, newCardHolder: Account): void {
     txna ApplicationArgs 1
     dup
@@ -543,20 +543,20 @@ cardRecover:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:437
+    // src/Master.algo.ts:440
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     uncover 2
     concat
-    // src/Master.algo.ts:439
+    // src/Master.algo.ts:442
     // this.cards(card).value.owner = newCardHolder;
     intc_0 // 0
     uncover 2
     box_replace
-    // src/Master.algo.ts:436
+    // src/Master.algo.ts:439
     // cardRecover(card: Account, newCardHolder: Account): void {
     intc_1 // 1
     return
@@ -564,7 +564,7 @@ cardRecover:
 
 // src/Master.algo.ts::Master.assetAllowlistAdd[routing]() -> void:
 assetAllowlistAdd:
-    // src/Master.algo.ts:449
+    // src/Master.algo.ts:452
     // assetAllowlistAdd(asset: Asset, settlementAddress: Account): void {
     txna ApplicationArgs 1
     dup
@@ -579,10 +579,10 @@ assetAllowlistAdd:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:450
+    // src/Master.algo.ts:453
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:452-457
+    // src/Master.algo.ts:455-460
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -590,13 +590,13 @@ assetAllowlistAdd:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:453
+    // src/Master.algo.ts:456
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Master.algo.ts:454
+    // src/Master.algo.ts:457
     // assetReceiver: Global.currentApplicationAddress,
     dup
-    // src/Master.algo.ts:456
+    // src/Master.algo.ts:459
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -604,7 +604,7 @@ assetAllowlistAdd:
     itxn_field XferAsset
     itxn_field AssetReceiver
     itxn_field Sender
-    // src/Master.algo.ts:452-457
+    // src/Master.algo.ts:455-460
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -616,7 +616,7 @@ assetAllowlistAdd:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:459
+    // src/Master.algo.ts:462
     // emit<AssetAllowlistAdded>({ asset: asset });
     dig 1
     itob
@@ -624,10 +624,10 @@ assetAllowlistAdd:
     swap
     concat
     log
-    // src/Master.algo.ts:461
+    // src/Master.algo.ts:464
     // this.updateSettlementAddress(asset, settlementAddress);
     callsub updateSettlementAddress
-    // src/Master.algo.ts:449
+    // src/Master.algo.ts:452
     // assetAllowlistAdd(asset: Asset, settlementAddress: Account): void {
     intc_1 // 1
     return
@@ -635,7 +635,7 @@ assetAllowlistAdd:
 
 // src/Master.algo.ts::Master.assetAllowlistRemove[routing]() -> void:
 assetAllowlistRemove:
-    // src/Master.algo.ts:470
+    // src/Master.algo.ts:473
     // assetAllowlistRemove(asset: Asset): void {
     txna ApplicationArgs 1
     dup
@@ -644,10 +644,10 @@ assetAllowlistRemove:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:471
+    // src/Master.algo.ts:474
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:474-480
+    // src/Master.algo.ts:477-483
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -656,14 +656,14 @@ assetAllowlistRemove:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:475
+    // src/Master.algo.ts:478
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Master.algo.ts:476-477
+    // src/Master.algo.ts:479-480
     // assetReceiver: Global.currentApplicationAddress,
     // assetCloseTo: Global.currentApplicationAddress,
     dupn 2
-    // src/Master.algo.ts:479
+    // src/Master.algo.ts:482
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -672,7 +672,7 @@ assetAllowlistRemove:
     itxn_field AssetCloseTo
     itxn_field AssetReceiver
     itxn_field Sender
-    // src/Master.algo.ts:474-480
+    // src/Master.algo.ts:477-483
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -685,25 +685,25 @@ assetAllowlistRemove:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:483
+    // src/Master.algo.ts:486
     // this.settlement_address(asset).delete();
     itob
-    // src/Master.algo.ts:188
+    // src/Master.algo.ts:191
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     dig 1
     concat
-    // src/Master.algo.ts:483
+    // src/Master.algo.ts:486
     // this.settlement_address(asset).delete();
     box_del
     pop
-    // src/Master.algo.ts:485
+    // src/Master.algo.ts:488
     // emit<AssetAllowlistRemoved>({ asset: asset });
     pushbytes 0x065c0374 // method "AssetAllowlistRemoved(uint64)"
     swap
     concat
     log
-    // src/Master.algo.ts:470
+    // src/Master.algo.ts:473
     // assetAllowlistRemove(asset: Asset): void {
     intc_1 // 1
     return
@@ -711,7 +711,7 @@ assetAllowlistRemove:
 
 // src/Master.algo.ts::Master.cardDebit[routing]() -> void:
 cardDebit:
-    // src/Master.algo.ts:496
+    // src/Master.algo.ts:499
     // cardDebit(card: Account, asset: Asset, amount: uint64, nonce: uint64, ref: string): void {
     txna ApplicationArgs 1
     dup
@@ -751,31 +751,31 @@ cardDebit:
     ==
     assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
     extract 2 0
-    // src/Master.algo.ts:497
+    // src/Master.algo.ts:500
     // this.whenNotPaused();
     callsub whenNotPaused
-    // src/Master.algo.ts:498
+    // src/Master.algo.ts:501
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 5
     concat
-    // src/Master.algo.ts:501
+    // src/Master.algo.ts:504
     // const nextNonce: uint64 = this.cards(card).value.nonce;
     dup
     box_get
     assert // Box must have value
     pushint 64 // 64
     extract_uint64
-    // src/Master.algo.ts:502
+    // src/Master.algo.ts:505
     // assert(nextNonce === nonce, 'NONCE_INVALID');
     dup
     dig 4
     ==
     assert // NONCE_INVALID
-    // src/Master.algo.ts:504-510
+    // src/Master.algo.ts:507-513
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -784,7 +784,7 @@ cardDebit:
     //     note: ref,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:506
+    // src/Master.algo.ts:509
     // assetReceiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
     dig 3
@@ -796,7 +796,7 @@ cardDebit:
     itxn_field AssetReceiver
     dig 6
     itxn_field Sender
-    // src/Master.algo.ts:504-510
+    // src/Master.algo.ts:507-513
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -809,7 +809,7 @@ cardDebit:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:512-518
+    // src/Master.algo.ts:515-521
     // emit<Debit>({
     //     card: card,
     //     asset: asset,
@@ -843,7 +843,7 @@ cardDebit:
     swap
     concat
     log
-    // src/Master.algo.ts:521
+    // src/Master.algo.ts:524
     // this.cards(card).value.nonce = nextNonce + 1;
     intc_1 // 1
     +
@@ -851,7 +851,7 @@ cardDebit:
     pushint 64 // 64
     swap
     box_replace
-    // src/Master.algo.ts:496
+    // src/Master.algo.ts:499
     // cardDebit(card: Account, asset: Asset, amount: uint64, nonce: uint64, ref: string): void {
     intc_1 // 1
     return
@@ -859,17 +859,17 @@ cardDebit:
 
 // src/Master.algo.ts::Master.getRefundAddress[routing]() -> void:
 getRefundAddress:
-    // src/Master.algo.ts:531
+    // src/Master.algo.ts:534
     // return this.refund_address.value;
     intc_0 // 0
-    // src/Master.algo.ts:191
+    // src/Master.algo.ts:194
     // refund_address = GlobalState<Account>({ key: 'ra' });
     bytec 9 // "ra"
-    // src/Master.algo.ts:531
+    // src/Master.algo.ts:534
     // return this.refund_address.value;
     app_global_get_ex
     assert // check GlobalState exists
-    // src/Master.algo.ts:529
+    // src/Master.algo.ts:532
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -881,7 +881,7 @@ getRefundAddress:
 
 // src/Master.algo.ts::Master.setRefundAddress[routing]() -> void:
 setRefundAddress:
-    // src/Master.algo.ts:540
+    // src/Master.algo.ts:543
     // setRefundAddress(newRefundAddress: Account): void {
     txna ApplicationArgs 1
     dup
@@ -889,17 +889,17 @@ setRefundAddress:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:541
+    // src/Master.algo.ts:544
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:191
+    // src/Master.algo.ts:194
     // refund_address = GlobalState<Account>({ key: 'ra' });
     bytec 9 // "ra"
-    // src/Master.algo.ts:543
+    // src/Master.algo.ts:546
     // this.refund_address.value = newRefundAddress;
     swap
     app_global_put
-    // src/Master.algo.ts:540
+    // src/Master.algo.ts:543
     // setRefundAddress(newRefundAddress: Account): void {
     intc_1 // 1
     return
@@ -907,7 +907,7 @@ setRefundAddress:
 
 // src/Master.algo.ts::Master.cardRefund[routing]() -> void:
 cardRefund:
-    // src/Master.algo.ts:554
+    // src/Master.algo.ts:557
     // cardRefund(card: Account, asset: Asset, amount: uint64, nonce: uint64): void {
     txna ApplicationArgs 1
     dup
@@ -936,41 +936,41 @@ cardRefund:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:555
+    // src/Master.algo.ts:558
     // this.whenNotPaused();
     callsub whenNotPaused
-    // src/Master.algo.ts:557
+    // src/Master.algo.ts:560
     // assert(Txn.sender === this.refund_address.value, 'SENDER_NOT_ALLOWED');
     txn Sender
     intc_0 // 0
-    // src/Master.algo.ts:191
+    // src/Master.algo.ts:194
     // refund_address = GlobalState<Account>({ key: 'ra' });
     bytec 9 // "ra"
-    // src/Master.algo.ts:557
+    // src/Master.algo.ts:560
     // assert(Txn.sender === this.refund_address.value, 'SENDER_NOT_ALLOWED');
     app_global_get_ex
     assert // check GlobalState exists
     ==
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 4
     concat
-    // src/Master.algo.ts:560
+    // src/Master.algo.ts:563
     // const nextNonce: uint64 = this.cards(card).value.nonce;
     dup
     box_get
     assert // Box must have value
     pushint 64 // 64
     extract_uint64
-    // src/Master.algo.ts:561
+    // src/Master.algo.ts:564
     // assert(nextNonce === nonce, 'NONCE_INVALID');
     dup
     dig 3
     ==
     assert // NONCE_INVALID
-    // src/Master.algo.ts:563-568
+    // src/Master.algo.ts:566-571
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: card,
@@ -978,7 +978,7 @@ cardRefund:
     //     assetAmount: amount,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:564
+    // src/Master.algo.ts:567
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
     dig 4
@@ -988,7 +988,7 @@ cardRefund:
     dig 6
     itxn_field AssetReceiver
     itxn_field Sender
-    // src/Master.algo.ts:563-568
+    // src/Master.algo.ts:566-571
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: card,
@@ -1000,7 +1000,7 @@ cardRefund:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:570-575
+    // src/Master.algo.ts:573-578
     // emit<Refund>({
     //     card: card,
     //     asset: asset,
@@ -1022,7 +1022,7 @@ cardRefund:
     swap
     concat
     log
-    // src/Master.algo.ts:578
+    // src/Master.algo.ts:581
     // this.cards(card).value.nonce = nextNonce + 1;
     intc_1 // 1
     +
@@ -1030,7 +1030,7 @@ cardRefund:
     pushint 64 // 64
     swap
     box_replace
-    // src/Master.algo.ts:554
+    // src/Master.algo.ts:557
     // cardRefund(card: Account, asset: Asset, amount: uint64, nonce: uint64): void {
     intc_1 // 1
     return
@@ -1038,17 +1038,17 @@ cardRefund:
 
 // src/Master.algo.ts::Master.getNextSettlementNonce[routing]() -> void:
 getNextSettlementNonce:
-    // src/Master.algo.ts:588
+    // src/Master.algo.ts:591
     // return this.settlement_nonce.value;
     intc_0 // 0
-    // src/Master.algo.ts:185
+    // src/Master.algo.ts:188
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Master.algo.ts:588
+    // src/Master.algo.ts:591
     // return this.settlement_nonce.value;
     app_global_get_ex
     assert // check GlobalState exists
-    // src/Master.algo.ts:586
+    // src/Master.algo.ts:589
     // @abimethod({ readonly: true })
     itob
     bytec_1 // 0x151f7c75
@@ -1061,7 +1061,7 @@ getNextSettlementNonce:
 
 // src/Master.algo.ts::Master.getNextCardNonce[routing]() -> void:
 getNextCardNonce:
-    // src/Master.algo.ts:597
+    // src/Master.algo.ts:600
     // @abimethod({ readonly: true })
     txna ApplicationArgs 1
     dup
@@ -1069,17 +1069,17 @@ getNextCardNonce:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     swap
     concat
-    // src/Master.algo.ts:599
+    // src/Master.algo.ts:602
     // return this.cards(card).value.nonce;
     box_get
     assert // Box must have value
     extract 64 8
-    // src/Master.algo.ts:597
+    // src/Master.algo.ts:600
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -1091,7 +1091,7 @@ getNextCardNonce:
 
 // src/Master.algo.ts::Master.getCardData[routing]() -> void:
 getCardData:
-    // src/Master.algo.ts:608
+    // src/Master.algo.ts:611
     // @abimethod({ readonly: true })
     txna ApplicationArgs 1
     dup
@@ -1099,16 +1099,16 @@ getCardData:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     swap
     concat
-    // src/Master.algo.ts:610
+    // src/Master.algo.ts:613
     // return this.cards(card).value;
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:608
+    // src/Master.algo.ts:611
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -1120,7 +1120,7 @@ getCardData:
 
 // src/Master.algo.ts::Master.getSettlementAddress[routing]() -> void:
 getSettlementAddress:
-    // src/Master.algo.ts:619
+    // src/Master.algo.ts:622
     // @abimethod({ readonly: true })
     txna ApplicationArgs 1
     dup
@@ -1129,19 +1129,19 @@ getSettlementAddress:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:621
+    // src/Master.algo.ts:624
     // return this.settlement_address(asset).value;
     itob
-    // src/Master.algo.ts:188
+    // src/Master.algo.ts:191
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     swap
     concat
-    // src/Master.algo.ts:621
+    // src/Master.algo.ts:624
     // return this.settlement_address(asset).value;
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:619
+    // src/Master.algo.ts:622
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -1153,7 +1153,7 @@ getSettlementAddress:
 
 // src/Master.algo.ts::Master.setSettlementAddress[routing]() -> void:
 setSettlementAddress:
-    // src/Master.algo.ts:631
+    // src/Master.algo.ts:634
     // setSettlementAddress(settlementAsset: Asset, newSettlementAddress: Account): void {
     txna ApplicationArgs 1
     dup
@@ -1168,13 +1168,13 @@ setSettlementAddress:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:632
+    // src/Master.algo.ts:635
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:634
+    // src/Master.algo.ts:637
     // this.updateSettlementAddress(settlementAsset, newSettlementAddress);
     callsub updateSettlementAddress
-    // src/Master.algo.ts:631
+    // src/Master.algo.ts:634
     // setSettlementAddress(settlementAsset: Asset, newSettlementAddress: Account): void {
     intc_1 // 1
     return
@@ -1182,7 +1182,7 @@ setSettlementAddress:
 
 // src/Master.algo.ts::Master.settle[routing]() -> void:
 settle:
-    // src/Master.algo.ts:645
+    // src/Master.algo.ts:648
     // settle(asset: Asset, amount: uint64, nonce: uint64): void {
     txna ApplicationArgs 1
     dup
@@ -1205,19 +1205,19 @@ settle:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:646
+    // src/Master.algo.ts:649
     // this.whenNotPaused();
     callsub whenNotPaused
-    // src/Master.algo.ts:647
+    // src/Master.algo.ts:650
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:650
+    // src/Master.algo.ts:653
     // assert(this.settlement_nonce.value === nonce, 'NONCE_INVALID');
     intc_0 // 0
-    // src/Master.algo.ts:185
+    // src/Master.algo.ts:188
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Master.algo.ts:650
+    // src/Master.algo.ts:653
     // assert(this.settlement_nonce.value === nonce, 'NONCE_INVALID');
     app_global_get_ex
     assert // check GlobalState exists
@@ -1225,7 +1225,7 @@ settle:
     dig 2
     ==
     assert // NONCE_INVALID
-    // src/Master.algo.ts:652-657
+    // src/Master.algo.ts:655-660
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: this.settlement_address(asset).value,
@@ -1233,19 +1233,19 @@ settle:
     //     assetAmount: amount,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:653
+    // src/Master.algo.ts:656
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Master.algo.ts:654
+    // src/Master.algo.ts:657
     // assetReceiver: this.settlement_address(asset).value,
     dig 4
     itob
-    // src/Master.algo.ts:188
+    // src/Master.algo.ts:191
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     dig 1
     concat
-    // src/Master.algo.ts:654
+    // src/Master.algo.ts:657
     // assetReceiver: this.settlement_address(asset).value,
     box_get
     assert // Box must have value
@@ -1257,7 +1257,7 @@ settle:
     itxn_field AssetReceiver
     uncover 2
     itxn_field Sender
-    // src/Master.algo.ts:652-657
+    // src/Master.algo.ts:655-660
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: this.settlement_address(asset).value,
@@ -1269,7 +1269,7 @@ settle:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:659-664
+    // src/Master.algo.ts:662-667
     // emit<Settlement>({
     //     recipient: this.settlement_address(asset).value,
     //     asset: asset,
@@ -1288,18 +1288,18 @@ settle:
     swap
     concat
     log
-    // src/Master.algo.ts:667
+    // src/Master.algo.ts:670
     // this.settlement_nonce.value = this.settlement_nonce.value + 1;
     intc_1 // 1
     +
-    // src/Master.algo.ts:185
+    // src/Master.algo.ts:188
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Master.algo.ts:667
+    // src/Master.algo.ts:670
     // this.settlement_nonce.value = this.settlement_nonce.value + 1;
     swap
     app_global_put
-    // src/Master.algo.ts:645
+    // src/Master.algo.ts:648
     // settle(asset: Asset, amount: uint64, nonce: uint64): void {
     intc_1 // 1
     return
@@ -1307,7 +1307,7 @@ settle:
 
 // src/Master.algo.ts::Master.cardEnableAsset[routing]() -> void:
 cardEnableAsset:
-    // src/Master.algo.ts:678
+    // src/Master.algo.ts:681
     // cardEnableAsset(card: Account, asset: Asset): void {
     txna ApplicationArgs 1
     dup
@@ -1322,22 +1322,22 @@ cardEnableAsset:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:679
+    // src/Master.algo.ts:682
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Master.algo.ts:681-684
+    // src/Master.algo.ts:684-687
     // itxn.payment({
     //     receiver: card,
     //     amount: Global.assetOptInMinBalance,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:683
+    // src/Master.algo.ts:686
     // amount: Global.assetOptInMinBalance,
     global AssetOptInMinBalance
     itxn_field Amount
     dig 1
     itxn_field Receiver
-    // src/Master.algo.ts:681-684
+    // src/Master.algo.ts:684-687
     // itxn.payment({
     //     receiver: card,
     //     amount: Global.assetOptInMinBalance,
@@ -1347,10 +1347,10 @@ cardEnableAsset:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:686
+    // src/Master.algo.ts:689
     // this.cardAssetOptIn(card, asset);
     callsub cardAssetOptIn
-    // src/Master.algo.ts:678
+    // src/Master.algo.ts:681
     // cardEnableAsset(card: Account, asset: Asset): void {
     intc_1 // 1
     return
@@ -1358,7 +1358,7 @@ cardEnableAsset:
 
 // src/Master.algo.ts::Master.cardDisableAsset[routing]() -> void:
 cardDisableAsset:
-    // src/Master.algo.ts:696
+    // src/Master.algo.ts:699
     // cardDisableAsset(card: Account, asset: Asset): void {
     txna ApplicationArgs 1
     dup
@@ -1373,7 +1373,7 @@ cardDisableAsset:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:697
+    // src/Master.algo.ts:700
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     callsub isOwner
     bnz cardDisableAsset_bool_true@3
@@ -1385,10 +1385,10 @@ cardDisableAsset_bool_true@3:
     intc_1 // 1
 
 cardDisableAsset_bool_merge@5:
-    // src/Master.algo.ts:697
+    // src/Master.algo.ts:700
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:228-234
+    // src/Master.algo.ts:231-237
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -1397,7 +1397,7 @@ cardDisableAsset_bool_merge@5:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:233
+    // src/Master.algo.ts:236
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -1410,7 +1410,7 @@ cardDisableAsset_bool_merge@5:
     itxn_field AssetReceiver
     dup
     itxn_field Sender
-    // src/Master.algo.ts:228-234
+    // src/Master.algo.ts:231-237
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -1423,7 +1423,7 @@ cardDisableAsset_bool_merge@5:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:236-239
+    // src/Master.algo.ts:239-242
     // emit<CardAssetDisabled>({
     //     card: card,
     //     asset: asset,
@@ -1435,7 +1435,7 @@ cardDisableAsset_bool_merge@5:
     swap
     concat
     log
-    // src/Master.algo.ts:696
+    // src/Master.algo.ts:699
     // cardDisableAsset(card: Account, asset: Asset): void {
     intc_1 // 1
     return
@@ -1447,7 +1447,7 @@ cardDisableAsset_bool_false@4:
 
 // src/Master.algo.ts::Master.withdrawalRequest[routing]() -> void:
 withdrawalRequest:
-    // src/Master.algo.ts:708
+    // src/Master.algo.ts:711
     // @abimethod({ allowActions: ['NoOp'] })
     txna ApplicationArgs 1
     dup
@@ -1469,42 +1469,42 @@ withdrawalRequest:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:710
+    // src/Master.algo.ts:713
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     dig 2
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 3
     concat
-    // src/Master.algo.ts:711
+    // src/Master.algo.ts:714
     // const cardData = clone(this.cards(card).value);
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:712
+    // src/Master.algo.ts:715
     // const [balance, _optedIn] = op.AssetHolding.assetBalance(card, asset);
     dig 3
     dig 3
     asset_holding_get AssetBalance
     pop
-    // src/Master.algo.ts:713
+    // src/Master.algo.ts:716
     // assert(amount <= balance, 'INSUFFICIENT_BALANCE');
     dig 2
     >=
     assert // INSUFFICIENT_BALANCE
-    // src/Master.algo.ts:717
+    // src/Master.algo.ts:720
     // recipient: Txn.sender,
     txn Sender
-    // src/Master.algo.ts:720
+    // src/Master.algo.ts:723
     // createdAt: Global.latestTimestamp,
     global LatestTimestamp
-    // src/Master.algo.ts:721
+    // src/Master.algo.ts:724
     // nonce: cardData.withdrawalNonce,
     uncover 2
     extract 72 8
-    // src/Master.algo.ts:715-722
+    // src/Master.algo.ts:718-725
     // const withdrawal: WithdrawalRequest = {
     //     card: card,
     //     recipient: Txn.sender,
@@ -1527,26 +1527,26 @@ withdrawalRequest:
     concat
     swap
     concat
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:724
+    // src/Master.algo.ts:727
     // this.withdrawals(Txn.sender).value = clone(withdrawal);
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:724
+    // src/Master.algo.ts:727
     // this.withdrawals(Txn.sender).value = clone(withdrawal);
     dig 1
     box_put
-    // src/Master.algo.ts:726
+    // src/Master.algo.ts:729
     // emit<WithdrawalRequest>(withdrawal);
     pushbytes 0xd85f620a // method "WithdrawalRequest(address,address,uint64,uint64,uint64,uint64)"
     dig 1
     concat
     log
-    // src/Master.algo.ts:708
+    // src/Master.algo.ts:711
     // @abimethod({ allowActions: ['NoOp'] })
     bytec_1 // 0x151f7c75
     swap
@@ -1558,7 +1558,7 @@ withdrawalRequest:
 
 // src/Master.algo.ts::Master.withdrawalCancel[routing]() -> void:
 withdrawalCancel:
-    // src/Master.algo.ts:735
+    // src/Master.algo.ts:738
     // withdrawalCancel(card: Account): void {
     txna ApplicationArgs 1
     dup
@@ -1566,51 +1566,51 @@ withdrawalCancel:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Master.algo.ts:736
+    // src/Master.algo.ts:739
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:737
+    // src/Master.algo.ts:740
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:737
+    // src/Master.algo.ts:740
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     box_len
     bury 1
     assert // WITHDRAWAL_REQUEST_NOT_FOUND
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:738
+    // src/Master.algo.ts:741
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:738
+    // src/Master.algo.ts:741
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:739
+    // src/Master.algo.ts:742
     // this.withdrawals(Txn.sender).delete();
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:739
+    // src/Master.algo.ts:742
     // this.withdrawals(Txn.sender).delete();
     box_del
     pop
-    // src/Master.algo.ts:740
+    // src/Master.algo.ts:743
     // emit<WithdrawalRequestCancelled>(withdrawal);
     dup
     extract 0 32
@@ -1639,7 +1639,7 @@ withdrawalCancel:
     swap
     concat
     log
-    // src/Master.algo.ts:735
+    // src/Master.algo.ts:738
     // withdrawalCancel(card: Account): void {
     intc_1 // 1
     return
@@ -1647,7 +1647,7 @@ withdrawalCancel:
 
 // src/Master.algo.ts::Master.withdraw[routing]() -> void:
 withdraw:
-    // src/Master.algo.ts:747
+    // src/Master.algo.ts:750
     // @abimethod({ allowActions: ['NoOp'] })
     txna ApplicationArgs 1
     dup
@@ -1662,48 +1662,48 @@ withdraw:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Master.algo.ts:749
+    // src/Master.algo.ts:752
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     dig 1
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:750
+    // src/Master.algo.ts:753
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:750
+    // src/Master.algo.ts:753
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     box_len
     bury 1
     assert // WITHDRAWAL_REQUEST_NOT_FOUND
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 2
     concat
-    // src/Master.algo.ts:751
+    // src/Master.algo.ts:754
     // const cardData = clone(this.cards(card).value);
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:752
+    // src/Master.algo.ts:755
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:752
+    // src/Master.algo.ts:755
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:753
+    // src/Master.algo.ts:756
     // assert(amount <= withdrawal.amount, 'AMOUNT_INVALID');
     dup
     pushint 72 // 72
@@ -1711,7 +1711,7 @@ withdraw:
     dig 3
     >=
     assert // AMOUNT_INVALID
-    // src/Master.algo.ts:754
+    // src/Master.algo.ts:757
     // assert(cardData.withdrawalNonce === withdrawal.nonce, 'NONCE_INVALID');
     swap
     pushint 72 // 72
@@ -1723,32 +1723,32 @@ withdraw:
     dig 1
     ==
     assert // NONCE_INVALID
-    // src/Master.algo.ts:756
+    // src/Master.algo.ts:759
     // const releaseTime: uint64 = withdrawal.createdAt + this.withdrawal_wait_time.value;
     dig 1
     pushint 80 // 80
     extract_uint64
     intc_0 // 0
-    // src/Master.algo.ts:175
+    // src/Master.algo.ts:178
     // withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
     bytec 10 // "wwt"
-    // src/Master.algo.ts:756
+    // src/Master.algo.ts:759
     // const releaseTime: uint64 = withdrawal.createdAt + this.withdrawal_wait_time.value;
     app_global_get_ex
     assert // check GlobalState exists
     dig 1
     +
-    // src/Master.algo.ts:757
+    // src/Master.algo.ts:760
     // assert(Global.latestTimestamp >= releaseTime, 'WITHDRAWAL_TIME_INVALID');
     global LatestTimestamp
     <=
     assert // WITHDRAWAL_TIME_INVALID
-    // src/Master.algo.ts:762
+    // src/Master.algo.ts:765
     // withdrawal.asset,
     uncover 2
     pushint 64 // 64
     extract_uint64
-    // src/Master.algo.ts:760-767
+    // src/Master.algo.ts:763-770
     // this.withdrawFunds(
     //     card,
     //     withdrawal.asset,
@@ -1762,10 +1762,10 @@ withdraw:
     uncover 4
     uncover 3
     uncover 4
-    // src/Master.algo.ts:766
+    // src/Master.algo.ts:769
     // WithdrawalTypePermissionLess
     bytec 12 // "permissionless"
-    // src/Master.algo.ts:760-767
+    // src/Master.algo.ts:763-770
     // this.withdrawFunds(
     //     card,
     //     withdrawal.asset,
@@ -1775,20 +1775,20 @@ withdraw:
     //     WithdrawalTypePermissionLess
     // );
     callsub withdrawFunds
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:768
+    // src/Master.algo.ts:771
     // this.withdrawals(Txn.sender).delete();
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:768
+    // src/Master.algo.ts:771
     // this.withdrawals(Txn.sender).delete();
     box_del
     pop
-    // src/Master.algo.ts:747
+    // src/Master.algo.ts:750
     // @abimethod({ allowActions: ['NoOp'] })
     intc_1 // 1
     return
@@ -1796,7 +1796,7 @@ withdraw:
 
 // src/Master.algo.ts::Master.withdrawPermissioned[routing]() -> void:
 withdrawPermissioned:
-    // src/Master.algo.ts:779-786
+    // src/Master.algo.ts:782-789
     // withdrawPermissioned(
     //     card: Account,
     //     asset: Asset,
@@ -1853,27 +1853,27 @@ withdrawPermissioned:
     pushint 64 // 64
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 64>
-    // src/Master.algo.ts:787
+    // src/Master.algo.ts:790
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     dig 2
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 3
     concat
-    // src/Master.algo.ts:788
+    // src/Master.algo.ts:791
     // const cardData = clone(this.cards(card).value);
     box_get
     assert // Box must have value
-    // src/Master.algo.ts:790
+    // src/Master.algo.ts:793
     // assert(Global.latestTimestamp < expiresAt, 'WITHDRAWAL_TIME_INVALID');
     global LatestTimestamp
     dig 3
     <
     assert // WITHDRAWAL_TIME_INVALID
-    // src/Master.algo.ts:791
+    // src/Master.algo.ts:794
     // assert(cardData.withdrawalNonce === nonce, 'NONCE_INVALID');
     pushint 72 // 72
     extract_uint64
@@ -1882,13 +1882,13 @@ withdrawPermissioned:
     dig 1
     ==
     assert // NONCE_INVALID
-    // src/Master.algo.ts:795
+    // src/Master.algo.ts:798
     // recipient: Txn.sender,
     txn Sender
-    // src/Master.algo.ts:800
+    // src/Master.algo.ts:803
     // genesisHash: Global.genesisHash,
     global GenesisHash
-    // src/Master.algo.ts:793-801
+    // src/Master.algo.ts:796-804
     // const withdrawal: PermissionedWithdrawal = {
     //     card,
     //     recipient: Txn.sender,
@@ -1915,7 +1915,7 @@ withdrawPermissioned:
     concat
     swap
     concat
-    // src/Master.algo.ts:803
+    // src/Master.algo.ts:806
     // const withdrawal_hash = op.sha256(arc4.encodeArc4(withdrawal));
     sha256
 
@@ -1939,13 +1939,13 @@ withdrawPermissioned_while_top@5:
     b withdrawPermissioned_while_top@5
 
 withdrawPermissioned_after_while@10:
-    // src/Master.algo.ts:809
+    // src/Master.algo.ts:812
     // op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
     intc_0 // 0
-    // src/Master.algo.ts:178
+    // src/Master.algo.ts:181
     // permissioned_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
     bytec 11 // "pwpk"
-    // src/Master.algo.ts:809
+    // src/Master.algo.ts:812
     // op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
     app_global_get_ex
     assert // check GlobalState exists
@@ -1953,13 +1953,13 @@ withdrawPermissioned_after_while@10:
     dig 4
     uncover 2
     ed25519verify_bare
-    // src/Master.algo.ts:808-811
+    // src/Master.algo.ts:811-814
     // assert(
     //     op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
     //     'SIGNATURE_INVALID'
     // );
     assert // SIGNATURE_INVALID
-    // src/Master.algo.ts:814
+    // src/Master.algo.ts:817
     // this.withdrawFunds(card, asset, amount, expiresAt, cardData.withdrawalNonce, WithdrawalTypeApproved);
     dig 6
     dig 6
@@ -1968,36 +1968,36 @@ withdrawPermissioned_after_while@10:
     dig 5
     bytec 14 // "approved"
     callsub withdrawFunds
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:819
+    // src/Master.algo.ts:822
     // if (this.withdrawals(Txn.sender).exists) {
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:819
+    // src/Master.algo.ts:822
     // if (this.withdrawals(Txn.sender).exists) {
     box_len
     bury 1
     bz withdrawPermissioned_after_if_else@3
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Master.algo.ts:820
+    // src/Master.algo.ts:823
     // this.withdrawals(Txn.sender).delete();
     txn Sender
-    // src/Master.algo.ts:182
+    // src/Master.algo.ts:185
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Master.algo.ts:820
+    // src/Master.algo.ts:823
     // this.withdrawals(Txn.sender).delete();
     box_del
     pop
 
 withdrawPermissioned_after_if_else@3:
-    // src/Master.algo.ts:779-786
+    // src/Master.algo.ts:782-789
     // withdrawPermissioned(
     //     card: Account,
     //     asset: Asset,
@@ -2006,6 +2006,154 @@ withdrawPermissioned_after_if_else@3:
     //     nonce: uint64,
     //     signature: bytes<64>
     // ): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Ownable.algo.ts::Ownable.owner[routing]() -> void:
+owner:
+    // src/roles/Ownable.algo.ts:67
+    // return this._owner.value;
+    intc_0 // 0
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_3 // "_owner"
+    // src/roles/Ownable.algo.ts:67
+    // return this._owner.value;
+    app_global_get_ex
+    assert // check GlobalState exists
+    // src/roles/Ownable.algo.ts:65
+    // @abimethod({ readonly: true })
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+
+// src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]() -> void:
+transferOwnership:
+    // src/roles/Ownable.algo.ts:92
+    // transferOwnership(newOwner: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_3 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Ownable.algo.ts:93
+    // this.onlyOwner();
+    callsub onlyOwner
+    // src/roles/Ownable.algo.ts:95
+    // this._transferOwnership(newOwner);
+    callsub _transferOwnership
+    // src/roles/Ownable.algo.ts:92
+    // transferOwnership(newOwner: Account): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.pauser[routing]() -> void:
+pauser:
+    // src/roles/Pausable.algo.ts:58
+    // return this._pauser.value;
+    intc_0 // 0
+    // src/roles/Pausable.algo.ts:33
+    // _pauser = GlobalState<Account>();
+    bytec 5 // "_pauser"
+    // src/roles/Pausable.algo.ts:58
+    // return this._pauser.value;
+    app_global_get_ex
+    assert // check GlobalState exists
+    // src/roles/Pausable.algo.ts:57
+    // pauser(): Account {
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.pause[routing]() -> void:
+pause:
+    // src/roles/Pausable.algo.ts:66
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:35
+    // paused = GlobalState<boolean>();
+    bytec 7 // "paused"
+    // src/roles/Pausable.algo.ts:68
+    // this.paused.value = true;
+    intc_1 // 1
+    app_global_put
+    // src/roles/Pausable.algo.ts:69
+    // emit<Pause>({});
+    pushbytes 0xcf23a30f
+    log
+    // src/roles/Pausable.algo.ts:65
+    // pause(): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.unpause[routing]() -> void:
+unpause:
+    // src/roles/Pausable.algo.ts:76
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:35
+    // paused = GlobalState<boolean>();
+    bytec 7 // "paused"
+    // src/roles/Pausable.algo.ts:78
+    // this.paused.value = false;
+    intc_0 // 0
+    app_global_put
+    // src/roles/Pausable.algo.ts:79
+    // emit<Unpause>({});
+    pushbytes 0xb163ee0b
+    log
+    // src/roles/Pausable.algo.ts:75
+    // unpause(): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]() -> void:
+updatePauser:
+    // src/roles/Pausable.algo.ts:85
+    // updatePauser(_newPauser: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_3 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Pausable.algo.ts:86
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:88
+    // assert(_newPauser !== Global.zeroAddress);
+    dup
+    global ZeroAddress
+    !=
+    assert
+    // src/roles/Pausable.algo.ts:33
+    // _pauser = GlobalState<Account>();
+    bytec 5 // "_pauser"
+    // src/roles/Pausable.algo.ts:89
+    // this._pauser.value = _newPauser;
+    dig 1
+    app_global_put
+    // src/roles/Pausable.algo.ts:90
+    // emit<PauserChanged>({ newAddress: this._pauser.value });
+    pushbytes 0xcc40923c // method "PauserChanged(address)"
+    swap
+    concat
+    log
+    // src/roles/Pausable.algo.ts:85
+    // updatePauser(_newPauser: Account): void {
     intc_1 // 1
     return
 
@@ -2083,171 +2231,23 @@ recoverAsset_else_body@4:
     b recoverAsset_after_if_else@6
 
 
-// src/roles/Pausable.algo.ts::Pausable.pauser[routing]() -> void:
-pauser:
-    // src/roles/Pausable.algo.ts:59
-    // return this._pauser.value;
-    intc_0 // 0
-    // src/roles/Pausable.algo.ts:34
-    // _pauser = GlobalState<Account>();
-    bytec 5 // "_pauser"
-    // src/roles/Pausable.algo.ts:59
-    // return this._pauser.value;
-    app_global_get_ex
-    assert // check GlobalState exists
-    // src/roles/Pausable.algo.ts:58
-    // pauser(): Account {
-    bytec_1 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.pause[routing]() -> void:
-pause:
-    // src/roles/Pausable.algo.ts:67
-    // this.onlyPauser();
-    callsub onlyPauser
-    // src/roles/Pausable.algo.ts:36
-    // paused = GlobalState<boolean>();
-    bytec 7 // "paused"
-    // src/roles/Pausable.algo.ts:69
-    // this.paused.value = true;
-    intc_1 // 1
-    app_global_put
-    // src/roles/Pausable.algo.ts:70
-    // emit<Pause>({});
-    pushbytes 0xcf23a30f
-    log
-    // src/roles/Pausable.algo.ts:66
-    // pause(): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.unpause[routing]() -> void:
-unpause:
-    // src/roles/Pausable.algo.ts:77
-    // this.onlyPauser();
-    callsub onlyPauser
-    // src/roles/Pausable.algo.ts:36
-    // paused = GlobalState<boolean>();
-    bytec 7 // "paused"
-    // src/roles/Pausable.algo.ts:79
-    // this.paused.value = false;
-    intc_0 // 0
-    app_global_put
-    // src/roles/Pausable.algo.ts:80
-    // emit<Unpause>({});
-    pushbytes 0xb163ee0b
-    log
-    // src/roles/Pausable.algo.ts:76
-    // unpause(): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]() -> void:
-updatePauser:
-    // src/roles/Pausable.algo.ts:86
-    // updatePauser(_newPauser: Account): void {
-    txna ApplicationArgs 1
-    dup
-    len
-    intc_3 // 32
-    ==
-    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/roles/Pausable.algo.ts:87
-    // this.onlyPauser();
-    callsub onlyPauser
-    // src/roles/Pausable.algo.ts:89
-    // assert(_newPauser !== Global.zeroAddress);
-    dup
-    global ZeroAddress
-    !=
-    assert
-    // src/roles/Pausable.algo.ts:34
-    // _pauser = GlobalState<Account>();
-    bytec 5 // "_pauser"
-    // src/roles/Pausable.algo.ts:90
-    // this._pauser.value = _newPauser;
-    dig 1
-    app_global_put
-    // src/roles/Pausable.algo.ts:91
-    // emit<PauserChanged>({ newAddress: this._pauser.value });
-    pushbytes 0xcc40923c // method "PauserChanged(address)"
-    swap
-    concat
-    log
-    // src/roles/Pausable.algo.ts:86
-    // updatePauser(_newPauser: Account): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Ownable.algo.ts::Ownable.owner[routing]() -> void:
-owner:
-    // src/roles/Ownable.algo.ts:67
-    // return this._owner.value;
-    intc_0 // 0
-    // src/roles/Ownable.algo.ts:46
-    // _owner = GlobalState<Account>();
-    bytec_3 // "_owner"
-    // src/roles/Ownable.algo.ts:67
-    // return this._owner.value;
-    app_global_get_ex
-    assert // check GlobalState exists
-    // src/roles/Ownable.algo.ts:65
-    // @abimethod({ readonly: true })
-    bytec_1 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_1 // 1
-    return
-
-
-// src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]() -> void:
-transferOwnership:
-    // src/roles/Ownable.algo.ts:92
-    // transferOwnership(newOwner: Account): void {
-    txna ApplicationArgs 1
-    dup
-    len
-    intc_3 // 32
-    ==
-    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/roles/Ownable.algo.ts:93
-    // this.onlyOwner();
-    callsub onlyOwner
-    // src/roles/Ownable.algo.ts:95
-    // this._transferOwnership(newOwner);
-    callsub _transferOwnership
-    // src/roles/Ownable.algo.ts:92
-    // transferOwnership(newOwner: Account): void {
-    intc_1 // 1
-    return
-
-
 // src/Master.algo.ts::Master.isCardOwner(card: bytes) -> uint64:
 isCardOwner:
-    // src/Master.algo.ts:199
+    // src/Master.algo.ts:202
     // private isCardOwner(card: Account): boolean {
     proto 1 1
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     frame_dig -1
     concat
-    // src/Master.algo.ts:200
+    // src/Master.algo.ts:203
     // assert(this.cards(card).exists, 'CARD_NOT_FOUND');
     dup
     box_len
     bury 1
     assert // CARD_NOT_FOUND
-    // src/Master.algo.ts:201
+    // src/Master.algo.ts:204
     // return this.cards(card).value.owner === Txn.sender;
     box_get
     pop
@@ -2259,19 +2259,19 @@ isCardOwner:
 
 // src/Master.algo.ts::Master.cardAssetOptIn(card: bytes, asset: uint64) -> void:
 cardAssetOptIn:
-    // src/Master.algo.ts:209
+    // src/Master.algo.ts:212
     // private cardAssetOptIn(card: Account, asset: Asset): void {
     proto 2 0
-    // src/Master.algo.ts:211
+    // src/Master.algo.ts:214
     // const [_assetBal, optedIn] = op.AssetHolding.assetBalance(Global.currentApplicationAddress, asset);
     global CurrentApplicationAddress
     frame_dig -1
     asset_holding_get AssetBalance
     bury 1
-    // src/Master.algo.ts:212
+    // src/Master.algo.ts:215
     // assert(optedIn, 'ASSET_NOT_OPTED_IN');
     assert // ASSET_NOT_OPTED_IN
-    // src/Master.algo.ts:214-219
+    // src/Master.algo.ts:217-222
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -2279,7 +2279,7 @@ cardAssetOptIn:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:218
+    // src/Master.algo.ts:221
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -2289,7 +2289,7 @@ cardAssetOptIn:
     itxn_field AssetReceiver
     frame_dig -2
     itxn_field Sender
-    // src/Master.algo.ts:214-219
+    // src/Master.algo.ts:217-222
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -2301,7 +2301,7 @@ cardAssetOptIn:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:221-224
+    // src/Master.algo.ts:224-227
     // emit<CardAssetEnabled>({
     //     card: card,
     //     asset: asset,
@@ -2320,7 +2320,7 @@ cardAssetOptIn:
 
 // src/Master.algo.ts::Master.withdrawFunds(card: bytes, asset: uint64, amount: uint64, timestamp: uint64, nonce: uint64, withdrawalType: bytes) -> void:
 withdrawFunds:
-    // src/Master.algo.ts:242-249
+    // src/Master.algo.ts:245-252
     // private withdrawFunds(
     //     card: Account,
     //     asset: Asset,
@@ -2330,11 +2330,11 @@ withdrawFunds:
     //     withdrawalType: string
     // ): void {
     proto 6 0
-    // src/Master.algo.ts:251
+    // src/Master.algo.ts:254
     // if (amount > 0) {
     frame_dig -4
     bz withdrawFunds_after_if_else@3
-    // src/Master.algo.ts:252-257
+    // src/Master.algo.ts:255-260
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Txn.sender,
@@ -2342,7 +2342,7 @@ withdrawFunds:
     //     assetAmount: amount,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:254
+    // src/Master.algo.ts:257
     // assetReceiver: Txn.sender,
     txn Sender
     frame_dig -4
@@ -2352,7 +2352,7 @@ withdrawFunds:
     itxn_field AssetReceiver
     frame_dig -6
     itxn_field Sender
-    // src/Master.algo.ts:252-257
+    // src/Master.algo.ts:255-260
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Txn.sender,
@@ -2366,10 +2366,10 @@ withdrawFunds:
     itxn_submit
 
 withdrawFunds_after_if_else@3:
-    // src/Master.algo.ts:263
+    // src/Master.algo.ts:266
     // recipient: Txn.sender,
     txn Sender
-    // src/Master.algo.ts:266
+    // src/Master.algo.ts:269
     // createdAt: withdrawalType === WithdrawalTypePermissionLess ? timestamp : 0,
     frame_dig -1
     bytec 12 // "permissionless"
@@ -2378,7 +2378,7 @@ withdrawFunds_after_if_else@3:
     frame_dig -3
     uncover 2
     select
-    // src/Master.algo.ts:267
+    // src/Master.algo.ts:270
     // expiresAt: withdrawalType === WithdrawalTypeApproved ? timestamp : 0,
     frame_dig -1
     bytec 14 // "approved"
@@ -2387,7 +2387,7 @@ withdrawFunds_after_if_else@3:
     frame_dig -3
     uncover 2
     select
-    // src/Master.algo.ts:261-270
+    // src/Master.algo.ts:264-273
     // emit<Withdrawal>({
     //     card: card,
     //     recipient: Txn.sender,
@@ -2431,17 +2431,17 @@ withdrawFunds_after_if_else@3:
     swap
     concat
     log
-    // src/Master.algo.ts:272
+    // src/Master.algo.ts:275
     // this.cards(card).value.withdrawalNonce = nonce + 1;
     frame_dig -2
     intc_1 // 1
     +
-    // src/Master.algo.ts:170
+    // src/Master.algo.ts:173
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     frame_dig -6
     concat
-    // src/Master.algo.ts:272
+    // src/Master.algo.ts:275
     // this.cards(card).value.withdrawalNonce = nonce + 1;
     swap
     itob
@@ -2453,41 +2453,41 @@ withdrawFunds_after_if_else@3:
 
 // src/Master.algo.ts::Master.updateSettlementAddress(asset: uint64, newSettlementAddress: bytes) -> void:
 updateSettlementAddress:
-    // src/Master.algo.ts:275
+    // src/Master.algo.ts:278
     // private updateSettlementAddress(asset: Asset, newSettlementAddress: Account): void {
     proto 2 0
-    // src/Master.algo.ts:276
+    // src/Master.algo.ts:279
     // const oldSettlementAddress = this.settlement_address(asset).exists
     frame_dig -2
     itob
-    // src/Master.algo.ts:188
+    // src/Master.algo.ts:191
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     swap
     concat
     dup
-    // src/Master.algo.ts:276
+    // src/Master.algo.ts:279
     // const oldSettlementAddress = this.settlement_address(asset).exists
     box_len
     bury 1
-    // src/Master.algo.ts:276-278
+    // src/Master.algo.ts:279-281
     // const oldSettlementAddress = this.settlement_address(asset).exists
     //     ? this.settlement_address(asset).value
     //     : Global.zeroAddress;
     bz updateSettlementAddress_ternary_false@2
-    // src/Master.algo.ts:277
+    // src/Master.algo.ts:280
     // ? this.settlement_address(asset).value
     frame_dig 0
     box_get
     assert // Box must have value
 
 updateSettlementAddress_ternary_merge@3:
-    // src/Master.algo.ts:279
+    // src/Master.algo.ts:282
     // this.settlement_address(asset).value = newSettlementAddress;
     frame_dig 0
     frame_dig -1
     box_put
-    // src/Master.algo.ts:281-284
+    // src/Master.algo.ts:284-287
     // emit<SettlementAddressChanged>({
     //     oldSettlementAddress: oldSettlementAddress,
     //     newSettlementAddress: newSettlementAddress,
@@ -2501,45 +2501,10 @@ updateSettlementAddress_ternary_merge@3:
     retsub
 
 updateSettlementAddress_ternary_false@2:
-    // src/Master.algo.ts:278
+    // src/Master.algo.ts:281
     // : Global.zeroAddress;
     global ZeroAddress
     b updateSettlementAddress_ternary_merge@3
-
-
-// src/roles/Pausable.algo.ts::Pausable.whenNotPaused() -> void:
-whenNotPaused:
-    // src/roles/Pausable.algo.ts:43
-    // assert(!this.paused.value);
-    intc_0 // 0
-    // src/roles/Pausable.algo.ts:36
-    // paused = GlobalState<boolean>();
-    bytec 7 // "paused"
-    // src/roles/Pausable.algo.ts:43
-    // assert(!this.paused.value);
-    app_global_get_ex
-    assert // check GlobalState exists
-    !
-    assert
-    retsub
-
-
-// src/roles/Pausable.algo.ts::Pausable.onlyPauser() -> void:
-onlyPauser:
-    // src/roles/Pausable.algo.ts:50
-    // assert(Txn.sender === this._pauser.value);
-    txn Sender
-    intc_0 // 0
-    // src/roles/Pausable.algo.ts:34
-    // _pauser = GlobalState<Account>();
-    bytec 5 // "_pauser"
-    // src/roles/Pausable.algo.ts:50
-    // assert(Txn.sender === this._pauser.value);
-    app_global_get_ex
-    assert // check GlobalState exists
-    ==
-    assert
-    retsub
 
 
 // src/roles/Ownable.algo.ts::Ownable.onlyOwner() -> void:
@@ -2628,3 +2593,38 @@ _transferOwnership_ternary_false@2:
     // const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
     global ZeroAddress
     b _transferOwnership_ternary_merge@3
+
+
+// src/roles/Pausable.algo.ts::Pausable.whenNotPaused() -> void:
+whenNotPaused:
+    // src/roles/Pausable.algo.ts:42
+    // assert(!this.paused.value);
+    intc_0 // 0
+    // src/roles/Pausable.algo.ts:35
+    // paused = GlobalState<boolean>();
+    bytec 7 // "paused"
+    // src/roles/Pausable.algo.ts:42
+    // assert(!this.paused.value);
+    app_global_get_ex
+    assert // check GlobalState exists
+    !
+    assert
+    retsub
+
+
+// src/roles/Pausable.algo.ts::Pausable.onlyPauser() -> void:
+onlyPauser:
+    // src/roles/Pausable.algo.ts:49
+    // assert(Txn.sender === this._pauser.value);
+    txn Sender
+    intc_0 // 0
+    // src/roles/Pausable.algo.ts:33
+    // _pauser = GlobalState<Account>();
+    bytec 5 // "_pauser"
+    // src/roles/Pausable.algo.ts:49
+    // assert(Txn.sender === this._pauser.value);
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert
+    retsub

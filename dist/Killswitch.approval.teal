@@ -5,21 +5,21 @@
 main:
     intcblock 0 1 32 8
     bytecblock "_owner" "_pauser" "paused" 0x151f7c75 "ma"
-    // src/Killswitch.algo.ts:40
-    // export class Killswitch extends Recoverable {
+    // src/Killswitch.algo.ts:43
+    // export class Killswitch extends classes(Ownable, Pausable, Recoverable) {
     txn OnCompletion
     !
     assert // OnCompletion must be NoOp
     txn ApplicationID
-    bz main_create_NoOp@14
-    pushbytess 0x73bc6501 0xb566a243 0xb9c21155 0x785a1bf9 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0xb1bbb0a8 0xe17bafb4 // method "authorize(address)void", method "enable(address)void", method "kill()void", method "recoverAsset(uint64,uint64,address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "owner()address", method "transferOwnership(address)void"
+    bz main_create_NoOp@16
+    pushbytess 0x73bc6501 0xb566a243 0xb9c21155 0xb1bbb0a8 0xe17bafb4 0xb0d953b3 0x0178f94b 0x1b529de8 0x0cadd163 0x785a1bf9 // method "authorize(address)void", method "enable(address)void", method "kill()void", method "owner()address", method "transferOwnership(address)void", method "pauser()address", method "pause()void", method "unpause()void", method "updatePauser(address)void", method "recoverAsset(uint64,uint64,address)void"
     txna ApplicationArgs 0
-    match authorize enable kill recoverAsset pauser pause unpause updatePauser owner transferOwnership
+    match authorize enable kill owner transferOwnership pauser pause unpause updatePauser recoverAsset
     err
 
-main_create_NoOp@14:
-    // src/Killswitch.algo.ts:40
-    // export class Killswitch extends Recoverable {
+main_create_NoOp@16:
+    // src/Killswitch.algo.ts:43
+    // export class Killswitch extends classes(Ownable, Pausable, Recoverable) {
     pushbytes 0x76fe6844 // method "deploy(address,uint64)address"
     txna ApplicationArgs 0
     match deploy
@@ -28,7 +28,7 @@ main_create_NoOp@14:
 
 // src/Killswitch.algo.ts::Killswitch.deploy[routing]() -> void:
 deploy:
-    // src/Killswitch.algo.ts:54
+    // src/Killswitch.algo.ts:57
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     txna ApplicationArgs 1
     dup
@@ -43,38 +43,38 @@ deploy:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Killswitch.algo.ts:56
+    // src/Killswitch.algo.ts:59
     // this._transferOwnership(owner);
     swap
     callsub _transferOwnership
-    // src/roles/Pausable.algo.ts:34
+    // src/roles/Pausable.algo.ts:33
     // _pauser = GlobalState<Account>();
     bytec_1 // "_pauser"
-    // src/Killswitch.algo.ts:57
+    // src/Killswitch.algo.ts:60
     // this._pauser.value = Txn.sender;
     txn Sender
     app_global_put
-    // src/roles/Pausable.algo.ts:36
+    // src/roles/Pausable.algo.ts:35
     // paused = GlobalState<boolean>();
     bytec_2 // "paused"
-    // src/Killswitch.algo.ts:58
+    // src/Killswitch.algo.ts:61
     // this.paused.value = false;
     intc_0 // 0
     app_global_put
-    // src/Killswitch.algo.ts:45
+    // src/Killswitch.algo.ts:48
     // master_app = GlobalState<Application>({ key: 'ma' });
     bytec 4 // "ma"
-    // src/Killswitch.algo.ts:59
+    // src/Killswitch.algo.ts:62
     // this.master_app.value = master;
     swap
     app_global_put
-    // src/Killswitch.algo.ts:54
+    // src/Killswitch.algo.ts:57
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     bytec_3 // 0x151f7c75
-    // src/Killswitch.algo.ts:60
+    // src/Killswitch.algo.ts:63
     // return Global.currentApplicationAddress;
     global CurrentApplicationAddress
-    // src/Killswitch.algo.ts:54
+    // src/Killswitch.algo.ts:57
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     concat
     log
@@ -84,7 +84,7 @@ deploy:
 
 // src/Killswitch.algo.ts::Killswitch.authorize[routing]() -> void:
 authorize:
-    // src/Killswitch.algo.ts:68
+    // src/Killswitch.algo.ts:71
     // authorize(account: Account): void {
     txna ApplicationArgs 1
     dup
@@ -92,24 +92,24 @@ authorize:
     intc_2 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/roles/Pausable.algo.ts:43
+    // src/roles/Pausable.algo.ts:42
     // assert(!this.paused.value);
     intc_0 // 0
-    // src/roles/Pausable.algo.ts:36
+    // src/roles/Pausable.algo.ts:35
     // paused = GlobalState<boolean>();
     bytec_2 // "paused"
-    // src/roles/Pausable.algo.ts:43
+    // src/roles/Pausable.algo.ts:42
     // assert(!this.paused.value);
     app_global_get_ex
     assert // check GlobalState exists
     !
     assert
-    // src/Killswitch.algo.ts:70
+    // src/Killswitch.algo.ts:73
     // assert(this.accounts(account).exists, 'REFUSED');
     box_len
     bury 1
     assert // REFUSED
-    // src/Killswitch.algo.ts:68
+    // src/Killswitch.algo.ts:71
     // authorize(account: Account): void {
     intc_1 // 1
     return
@@ -117,7 +117,7 @@ authorize:
 
 // src/Killswitch.algo.ts::Killswitch.enable[routing]() -> void:
 enable:
-    // src/Killswitch.algo.ts:82
+    // src/Killswitch.algo.ts:85
     // enable(card: Account): void {
     txna ApplicationArgs 1
     dup
@@ -125,30 +125,30 @@ enable:
     intc_2 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Killswitch.algo.ts:83
+    // src/Killswitch.algo.ts:86
     // assert(!this.accounts(Txn.sender).exists, 'ALREADY_ENABLED');
     txn Sender
     box_len
     bury 1
     !
     assert // ALREADY_ENABLED
-    // src/Killswitch.algo.ts:85-88
+    // src/Killswitch.algo.ts:88-91
     // const cardData = arc4.abiCall<typeof Master.prototype.getCardData>({
     //     appId: this.master_app.value,
     //     args: [card],
     // }).returnValue;
     itxn_begin
-    // src/Killswitch.algo.ts:86
+    // src/Killswitch.algo.ts:89
     // appId: this.master_app.value,
     intc_0 // 0
-    // src/Killswitch.algo.ts:45
+    // src/Killswitch.algo.ts:48
     // master_app = GlobalState<Application>({ key: 'ma' });
     bytec 4 // "ma"
-    // src/Killswitch.algo.ts:86
+    // src/Killswitch.algo.ts:89
     // appId: this.master_app.value,
     app_global_get_ex
     assert // check GlobalState exists
-    // src/Killswitch.algo.ts:85-88
+    // src/Killswitch.algo.ts:88-91
     // const cardData = arc4.abiCall<typeof Master.prototype.getCardData>({
     //     appId: this.master_app.value,
     //     args: [card],
@@ -174,19 +174,19 @@ enable:
     pushint 80 // 80
     ==
     assert // invalid number of bytes for CardData
-    // src/Killswitch.algo.ts:89
+    // src/Killswitch.algo.ts:92
     // assert(cardData.owner === Txn.sender, 'NOT_CARD_OWNER');
     extract 4 32
     txn Sender
     ==
     assert // NOT_CARD_OWNER
-    // src/Killswitch.algo.ts:91
+    // src/Killswitch.algo.ts:94
     // this.accounts(Txn.sender).create();
     txn Sender
     intc_3 // 8
     box_create
     pop
-    // src/Killswitch.algo.ts:82
+    // src/Killswitch.algo.ts:85
     // enable(card: Account): void {
     intc_1 // 1
     return
@@ -194,19 +194,167 @@ enable:
 
 // src/Killswitch.algo.ts::Killswitch.kill[routing]() -> void:
 kill:
-    // src/Killswitch.algo.ts:98
+    // src/Killswitch.algo.ts:101
     // assert(this.accounts(Txn.sender).exists, 'ALREADY_DISABLED');
     txn Sender
     box_len
     bury 1
     assert // ALREADY_DISABLED
-    // src/Killswitch.algo.ts:99
+    // src/Killswitch.algo.ts:102
     // this.accounts(Txn.sender).delete();
     txn Sender
     box_del
     pop
-    // src/Killswitch.algo.ts:97
+    // src/Killswitch.algo.ts:100
     // kill(): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Ownable.algo.ts::Ownable.owner[routing]() -> void:
+owner:
+    // src/roles/Ownable.algo.ts:67
+    // return this._owner.value;
+    intc_0 // 0
+    // src/roles/Ownable.algo.ts:46
+    // _owner = GlobalState<Account>();
+    bytec_0 // "_owner"
+    // src/roles/Ownable.algo.ts:67
+    // return this._owner.value;
+    app_global_get_ex
+    assert // check GlobalState exists
+    // src/roles/Ownable.algo.ts:65
+    // @abimethod({ readonly: true })
+    bytec_3 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+
+// src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]() -> void:
+transferOwnership:
+    // src/roles/Ownable.algo.ts:92
+    // transferOwnership(newOwner: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Ownable.algo.ts:93
+    // this.onlyOwner();
+    callsub onlyOwner
+    // src/roles/Ownable.algo.ts:95
+    // this._transferOwnership(newOwner);
+    callsub _transferOwnership
+    // src/roles/Ownable.algo.ts:92
+    // transferOwnership(newOwner: Account): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.pauser[routing]() -> void:
+pauser:
+    // src/roles/Pausable.algo.ts:58
+    // return this._pauser.value;
+    intc_0 // 0
+    // src/roles/Pausable.algo.ts:33
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/roles/Pausable.algo.ts:58
+    // return this._pauser.value;
+    app_global_get_ex
+    assert // check GlobalState exists
+    // src/roles/Pausable.algo.ts:57
+    // pauser(): Account {
+    bytec_3 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.pause[routing]() -> void:
+pause:
+    // src/roles/Pausable.algo.ts:66
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:35
+    // paused = GlobalState<boolean>();
+    bytec_2 // "paused"
+    // src/roles/Pausable.algo.ts:68
+    // this.paused.value = true;
+    intc_1 // 1
+    app_global_put
+    // src/roles/Pausable.algo.ts:69
+    // emit<Pause>({});
+    pushbytes 0xcf23a30f
+    log
+    // src/roles/Pausable.algo.ts:65
+    // pause(): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.unpause[routing]() -> void:
+unpause:
+    // src/roles/Pausable.algo.ts:76
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:35
+    // paused = GlobalState<boolean>();
+    bytec_2 // "paused"
+    // src/roles/Pausable.algo.ts:78
+    // this.paused.value = false;
+    intc_0 // 0
+    app_global_put
+    // src/roles/Pausable.algo.ts:79
+    // emit<Unpause>({});
+    pushbytes 0xb163ee0b
+    log
+    // src/roles/Pausable.algo.ts:75
+    // unpause(): void {
+    intc_1 // 1
+    return
+
+
+// src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]() -> void:
+updatePauser:
+    // src/roles/Pausable.algo.ts:85
+    // updatePauser(_newPauser: Account): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // src/roles/Pausable.algo.ts:86
+    // this.onlyPauser();
+    callsub onlyPauser
+    // src/roles/Pausable.algo.ts:88
+    // assert(_newPauser !== Global.zeroAddress);
+    dup
+    global ZeroAddress
+    !=
+    assert
+    // src/roles/Pausable.algo.ts:33
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/roles/Pausable.algo.ts:89
+    // this._pauser.value = _newPauser;
+    dig 1
+    app_global_put
+    // src/roles/Pausable.algo.ts:90
+    // emit<PauserChanged>({ newAddress: this._pauser.value });
+    pushbytes 0xcc40923c // method "PauserChanged(address)"
+    swap
+    concat
+    log
+    // src/roles/Pausable.algo.ts:85
+    // updatePauser(_newPauser: Account): void {
     intc_1 // 1
     return
 
@@ -284,172 +432,6 @@ recoverAsset_else_body@4:
     b recoverAsset_after_if_else@6
 
 
-// src/roles/Pausable.algo.ts::Pausable.pauser[routing]() -> void:
-pauser:
-    // src/roles/Pausable.algo.ts:59
-    // return this._pauser.value;
-    intc_0 // 0
-    // src/roles/Pausable.algo.ts:34
-    // _pauser = GlobalState<Account>();
-    bytec_1 // "_pauser"
-    // src/roles/Pausable.algo.ts:59
-    // return this._pauser.value;
-    app_global_get_ex
-    assert // check GlobalState exists
-    // src/roles/Pausable.algo.ts:58
-    // pauser(): Account {
-    bytec_3 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.pause[routing]() -> void:
-pause:
-    // src/roles/Pausable.algo.ts:67
-    // this.onlyPauser();
-    callsub onlyPauser
-    // src/roles/Pausable.algo.ts:36
-    // paused = GlobalState<boolean>();
-    bytec_2 // "paused"
-    // src/roles/Pausable.algo.ts:69
-    // this.paused.value = true;
-    intc_1 // 1
-    app_global_put
-    // src/roles/Pausable.algo.ts:70
-    // emit<Pause>({});
-    pushbytes 0xcf23a30f
-    log
-    // src/roles/Pausable.algo.ts:66
-    // pause(): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.unpause[routing]() -> void:
-unpause:
-    // src/roles/Pausable.algo.ts:77
-    // this.onlyPauser();
-    callsub onlyPauser
-    // src/roles/Pausable.algo.ts:36
-    // paused = GlobalState<boolean>();
-    bytec_2 // "paused"
-    // src/roles/Pausable.algo.ts:79
-    // this.paused.value = false;
-    intc_0 // 0
-    app_global_put
-    // src/roles/Pausable.algo.ts:80
-    // emit<Unpause>({});
-    pushbytes 0xb163ee0b
-    log
-    // src/roles/Pausable.algo.ts:76
-    // unpause(): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.updatePauser[routing]() -> void:
-updatePauser:
-    // src/roles/Pausable.algo.ts:86
-    // updatePauser(_newPauser: Account): void {
-    txna ApplicationArgs 1
-    dup
-    len
-    intc_2 // 32
-    ==
-    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/roles/Pausable.algo.ts:87
-    // this.onlyPauser();
-    callsub onlyPauser
-    // src/roles/Pausable.algo.ts:89
-    // assert(_newPauser !== Global.zeroAddress);
-    dup
-    global ZeroAddress
-    !=
-    assert
-    // src/roles/Pausable.algo.ts:34
-    // _pauser = GlobalState<Account>();
-    bytec_1 // "_pauser"
-    // src/roles/Pausable.algo.ts:90
-    // this._pauser.value = _newPauser;
-    dig 1
-    app_global_put
-    // src/roles/Pausable.algo.ts:91
-    // emit<PauserChanged>({ newAddress: this._pauser.value });
-    pushbytes 0xcc40923c // method "PauserChanged(address)"
-    swap
-    concat
-    log
-    // src/roles/Pausable.algo.ts:86
-    // updatePauser(_newPauser: Account): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Ownable.algo.ts::Ownable.owner[routing]() -> void:
-owner:
-    // src/roles/Ownable.algo.ts:67
-    // return this._owner.value;
-    intc_0 // 0
-    // src/roles/Ownable.algo.ts:46
-    // _owner = GlobalState<Account>();
-    bytec_0 // "_owner"
-    // src/roles/Ownable.algo.ts:67
-    // return this._owner.value;
-    app_global_get_ex
-    assert // check GlobalState exists
-    // src/roles/Ownable.algo.ts:65
-    // @abimethod({ readonly: true })
-    bytec_3 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_1 // 1
-    return
-
-
-// src/roles/Ownable.algo.ts::Ownable.transferOwnership[routing]() -> void:
-transferOwnership:
-    // src/roles/Ownable.algo.ts:92
-    // transferOwnership(newOwner: Account): void {
-    txna ApplicationArgs 1
-    dup
-    len
-    intc_2 // 32
-    ==
-    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/roles/Ownable.algo.ts:93
-    // this.onlyOwner();
-    callsub onlyOwner
-    // src/roles/Ownable.algo.ts:95
-    // this._transferOwnership(newOwner);
-    callsub _transferOwnership
-    // src/roles/Ownable.algo.ts:92
-    // transferOwnership(newOwner: Account): void {
-    intc_1 // 1
-    return
-
-
-// src/roles/Pausable.algo.ts::Pausable.onlyPauser() -> void:
-onlyPauser:
-    // src/roles/Pausable.algo.ts:50
-    // assert(Txn.sender === this._pauser.value);
-    txn Sender
-    intc_0 // 0
-    // src/roles/Pausable.algo.ts:34
-    // _pauser = GlobalState<Account>();
-    bytec_1 // "_pauser"
-    // src/roles/Pausable.algo.ts:50
-    // assert(Txn.sender === this._pauser.value);
-    app_global_get_ex
-    assert // check GlobalState exists
-    ==
-    assert
-    retsub
-
-
 // src/roles/Ownable.algo.ts::Ownable.onlyOwner() -> void:
 onlyOwner:
     // src/roles/Ownable.algo.ts:53
@@ -519,3 +501,21 @@ _transferOwnership_ternary_false@2:
     // const previousOwner = this._owner.hasValue ? this._owner.value : Global.zeroAddress;
     global ZeroAddress
     b _transferOwnership_ternary_merge@3
+
+
+// src/roles/Pausable.algo.ts::Pausable.onlyPauser() -> void:
+onlyPauser:
+    // src/roles/Pausable.algo.ts:49
+    // assert(Txn.sender === this._pauser.value);
+    txn Sender
+    intc_0 // 0
+    // src/roles/Pausable.algo.ts:33
+    // _pauser = GlobalState<Account>();
+    bytec_1 // "_pauser"
+    // src/roles/Pausable.algo.ts:49
+    // assert(Txn.sender === this._pauser.value);
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert
+    retsub
