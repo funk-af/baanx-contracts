@@ -543,11 +543,15 @@ describe('Baanx', () => {
         const { algorand } = fixture.context;
         const algod = algorand.client.algod;
 
+        const suggestedParams = await algod.getTransactionParams().do();
+        const genesisHashHex = Buffer.from(suggestedParams.genesisHash!).toString('hex');
+
         const tealTemplate = readFileSync(join(__dirname, '../dist/AutoDraw.teal'), 'utf-8');
         const teal = tealTemplate
             .replace('TMPL_ASSET', String(fakeUSDC))
             .replace('TMPL_KILLSWITCH_APP', String(ksClient.appId))
-            .replace('TMPL_MASTER_APP', String(appClient.appId));
+            .replace('TMPL_MASTER_APP', String(appClient.appId))
+            .replace('TMPL_GENESIS_HASH', `0x${genesisHashHex}`);
 
         const compiled = await algod.compile(teal).do();
         const program = Buffer.from(compiled.result, 'base64');

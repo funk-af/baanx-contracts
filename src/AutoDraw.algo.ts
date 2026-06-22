@@ -27,6 +27,7 @@
 import {
     Application,
     Asset,
+    bytes,
     Bytes,
     Global,
     gtxn,
@@ -46,6 +47,7 @@ export class AutoDraw extends LogicSig {
             // Safety checks
             Txn.rekeyTo === Global.zeroAddress &&
             Txn.assetCloseTo === Global.zeroAddress &&
+            Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
             // Enforce this transaction is an axfer with criteria
             Txn.typeEnum === TransactionType.AssetTransfer &&
             Txn.xferAsset === ASSET &&

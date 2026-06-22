@@ -3,8 +3,8 @@
   "sources": [
     "../src/AutoDraw.algo.ts"
   ],
-  "mappings": "AAyC+C;;AAAiB;AAAjB;AACC;;AAAiB;AAAjB;AAIpC;;AAAgB;;AAAhB;AAAA;;;AACA;;AAAqB;;AAArB;AADA;;;AAGA;;AAAiB;;AAAjB;AAHA;;;AAIA;;AAAkB;;AAAlB;AAJA;;;AAKA;;AALA;;;AAOA;;AAAA;;AAAuB;AAAvB;AAPA;;;AAQA;;AAAA;;AAAwB;;AAAxB;AARA;;;AASA;;AAAsB;AAAtB;;AAA6B;;;;;;AAA7B;AATA;;;AAUA;;AAAsB;AAAtB;;AAA6B;;AAA7B;AAVA;;;AAYA;AAAA;;AAAwB;AAAxB;AAZA;;;AAaA;AAAA;;AAAyB;;AAAzB;AAbA;;;AAcA;AAAuB;AAAvB;;AAA8B;;;;;;AAA9B;AAdA;;;AAeA;;AAA4B;;AAAuB;AAAvB;;AAA5B;AAfA;;;AAgBA;;AAA6B;;AAAuB;AAAvB;;AAAR;AAArB;AAhBA;;;AAiBA;;AAA2B;;AAAuB;;AAAvB;;AAAR;AAAnB;AAjBA;;;;AAFJ;;AAAA",
-  "op_pc_offset": 1,
+  "mappings": "AA0C+C;;AAAiB;AAAjB;AACC;;AAAiB;AAAjB;AAIpC;;AAAgB;;AAAhB;AAAA;;;AACA;;AAAqB;;AAArB;AADA;;;AAEA;;AAAuB;AAAvB;AAFA;;;AAIA;;AAAiB;;AAAjB;AAJA;;;AAKA;;AAAkB;;AAAlB;AALA;;;AAMA;;AANA;;;AAQA;;AAAA;;AAAuB;AAAvB;AARA;;;AASA;;AAAA;;AAAwB;;AAAxB;AATA;;;AAUA;;AAAsB;AAAtB;;AAA6B;;;;;;AAA7B;AAVA;;;AAWA;;AAAsB;AAAtB;;AAA6B;;AAA7B;AAXA;;;AAaA;AAAA;;AAAwB;AAAxB;AAbA;;;AAcA;AAAA;;AAAyB;;AAAzB;AAdA;;;AAeA;AAAuB;AAAvB;;AAA8B;;;;;;AAA9B;AAfA;;;AAgBA;;AAA4B;;AAAuB;AAAvB;;AAA5B;AAhBA;;;AAiBA;;AAA6B;;AAAuB;AAAvB;;AAAR;AAArB;AAjBA;;;AAkBA;;AAA2B;;AAAuB;;AAAvB;;AAAR;AAAnB;AAlBA;;;;AAFJ;;AAAA",
+  "op_pc_offset": 2,
   "pc_events": {
     "0": {
       "op": "txn GroupIndex",
@@ -112,7 +112,7 @@
       ]
     },
     "13": {
-      "op": "bz main_bool_false@16",
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -160,14 +160,14 @@
       ]
     },
     "21": {
-      "op": "bz main_bool_false@16",
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
     "24": {
-      "op": "txn TypeEnum",
+      "op": "global GenesisHash",
       "defined_out": [
         "tmp%8#0",
         "txnKillswitch#0",
@@ -180,9 +180,9 @@
       ]
     },
     "26": {
-      "op": "pushint 4 // 4",
+      "op": "bytec_0 // TMPL_GENESIS_HASH",
       "defined_out": [
-        "4",
+        "TMPL_GENESIS_HASH",
         "tmp%8#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -191,10 +191,10 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%8#0",
-        "4"
+        "TMPL_GENESIS_HASH"
       ]
     },
-    "28": {
+    "27": {
       "op": "==",
       "defined_out": [
         "tmp%9#0",
@@ -207,15 +207,15 @@
         "tmp%9#0"
       ]
     },
-    "29": {
-      "op": "bz main_bool_false@16",
+    "28": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "32": {
-      "op": "txn XferAsset",
+    "31": {
+      "op": "txn TypeEnum",
       "defined_out": [
         "tmp%10#0",
         "txnKillswitch#0",
@@ -227,10 +227,10 @@
         "tmp%10#0"
       ]
     },
-    "34": {
-      "op": "intc 4 // TMPL_ASSET",
+    "33": {
+      "op": "pushint 4 // 4",
       "defined_out": [
-        "TMPL_ASSET",
+        "4",
         "tmp%10#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -239,10 +239,10 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%10#0",
-        "TMPL_ASSET"
+        "4"
       ]
     },
-    "36": {
+    "35": {
       "op": "==",
       "defined_out": [
         "tmp%11#0",
@@ -255,15 +255,15 @@
         "tmp%11#0"
       ]
     },
-    "37": {
-      "op": "bz main_bool_false@16",
+    "36": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "40": {
-      "op": "txn Fee",
+    "39": {
+      "op": "txn XferAsset",
       "defined_out": [
         "tmp%12#0",
         "txnKillswitch#0",
@@ -275,23 +275,43 @@
         "tmp%12#0"
       ]
     },
-    "42": {
-      "op": "bnz main_bool_false@16",
+    "41": {
+      "op": "intc 4 // TMPL_ASSET",
+      "defined_out": [
+        "TMPL_ASSET",
+        "tmp%12#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%12#0",
+        "TMPL_ASSET"
+      ]
+    },
+    "43": {
+      "op": "==",
+      "defined_out": [
+        "tmp%13#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%13#0"
+      ]
+    },
+    "44": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "45": {
-      "op": "dig 1",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "txnKillswitch#0"
-      ]
-    },
     "47": {
-      "op": "gtxns TypeEnum",
+      "op": "txn Fee",
       "defined_out": [
         "tmp%14#0",
         "txnKillswitch#0",
@@ -304,41 +324,13 @@
       ]
     },
     "49": {
-      "op": "intc_3 // 6",
-      "defined_out": [
-        "6",
-        "tmp%14#0",
-        "txnKillswitch#0",
-        "txnMasterDebit#0"
-      ],
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "tmp%14#0",
-        "6"
-      ]
-    },
-    "50": {
-      "op": "==",
-      "defined_out": [
-        "tmp%15#0",
-        "txnKillswitch#0",
-        "txnMasterDebit#0"
-      ],
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "tmp%15#0"
-      ]
-    },
-    "51": {
-      "op": "bz main_bool_false@16",
+      "op": "bnz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "54": {
+    "52": {
       "op": "dig 1",
       "stack_out": [
         "txnKillswitch#0",
@@ -346,8 +338,8 @@
         "txnKillswitch#0"
       ]
     },
-    "56": {
-      "op": "gtxns ApplicationID",
+    "54": {
+      "op": "gtxns TypeEnum",
       "defined_out": [
         "tmp%16#0",
         "txnKillswitch#0",
@@ -359,10 +351,10 @@
         "tmp%16#0"
       ]
     },
-    "58": {
-      "op": "intc 5 // TMPL_KILLSWITCH_APP",
+    "56": {
+      "op": "intc_3 // 6",
       "defined_out": [
-        "TMPL_KILLSWITCH_APP",
+        "6",
         "tmp%16#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -371,10 +363,10 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%16#0",
-        "TMPL_KILLSWITCH_APP"
+        "6"
       ]
     },
-    "60": {
+    "57": {
       "op": "==",
       "defined_out": [
         "tmp%17#0",
@@ -387,14 +379,14 @@
         "tmp%17#0"
       ]
     },
-    "61": {
-      "op": "bz main_bool_false@16",
+    "58": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "64": {
+    "61": {
       "op": "dig 1",
       "stack_out": [
         "txnKillswitch#0",
@@ -402,17 +394,8 @@
         "txnKillswitch#0"
       ]
     },
-    "66": {
-      "op": "intc_1 // 0",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "txnKillswitch#0",
-        "0"
-      ]
-    },
-    "67": {
-      "op": "gtxnsas ApplicationArgs",
+    "63": {
+      "op": "gtxns ApplicationID",
       "defined_out": [
         "tmp%18#0",
         "txnKillswitch#0",
@@ -424,10 +407,10 @@
         "tmp%18#0"
       ]
     },
-    "69": {
-      "op": "pushbytes 0x73bc6501",
+    "65": {
+      "op": "intc 5 // TMPL_KILLSWITCH_APP",
       "defined_out": [
-        "0x73bc6501",
+        "TMPL_KILLSWITCH_APP",
         "tmp%18#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -436,10 +419,10 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%18#0",
-        "0x73bc6501"
+        "TMPL_KILLSWITCH_APP"
       ]
     },
-    "75": {
+    "67": {
       "op": "==",
       "defined_out": [
         "tmp%19#0",
@@ -452,14 +435,14 @@
         "tmp%19#0"
       ]
     },
-    "76": {
-      "op": "bz main_bool_false@16",
+    "68": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "79": {
+    "71": {
       "op": "dig 1",
       "stack_out": [
         "txnKillswitch#0",
@@ -467,16 +450,16 @@
         "txnKillswitch#0"
       ]
     },
-    "81": {
-      "op": "intc_0 // 1",
+    "73": {
+      "op": "intc_1 // 0",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "txnKillswitch#0",
-        "1"
+        "0"
       ]
     },
-    "82": {
+    "74": {
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "tmp%20#0",
@@ -489,10 +472,10 @@
         "tmp%20#0"
       ]
     },
-    "84": {
-      "op": "txn Sender",
+    "76": {
+      "op": "pushbytes 0x73bc6501",
       "defined_out": [
-        "reinterpret_bytes[32]%0#0",
+        "0x73bc6501",
         "tmp%20#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -501,10 +484,10 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%20#0",
-        "reinterpret_bytes[32]%0#0"
+        "0x73bc6501"
       ]
     },
-    "86": {
+    "82": {
       "op": "==",
       "defined_out": [
         "tmp%21#0",
@@ -517,23 +500,32 @@
         "tmp%21#0"
       ]
     },
-    "87": {
-      "op": "bz main_bool_false@16",
+    "83": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "90": {
-      "op": "dup",
+    "86": {
+      "op": "dig 1",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "txnMasterDebit#0"
+        "txnKillswitch#0"
       ]
     },
-    "91": {
-      "op": "gtxns TypeEnum",
+    "88": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "txnKillswitch#0",
+        "1"
+      ]
+    },
+    "89": {
+      "op": "gtxnsas ApplicationArgs",
       "defined_out": [
         "tmp%22#0",
         "txnKillswitch#0",
@@ -545,16 +537,22 @@
         "tmp%22#0"
       ]
     },
-    "93": {
-      "op": "intc_3 // 6",
+    "91": {
+      "op": "txn Sender",
+      "defined_out": [
+        "reinterpret_bytes[32]%0#0",
+        "tmp%22#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%22#0",
-        "6"
+        "reinterpret_bytes[32]%0#0"
       ]
     },
-    "94": {
+    "93": {
       "op": "==",
       "defined_out": [
         "tmp%23#0",
@@ -567,14 +565,14 @@
         "tmp%23#0"
       ]
     },
-    "95": {
-      "op": "bz main_bool_false@16",
+    "94": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "98": {
+    "97": {
       "op": "dup",
       "stack_out": [
         "txnKillswitch#0",
@@ -582,8 +580,8 @@
         "txnMasterDebit#0"
       ]
     },
-    "99": {
-      "op": "gtxns ApplicationID",
+    "98": {
+      "op": "gtxns TypeEnum",
       "defined_out": [
         "tmp%24#0",
         "txnKillswitch#0",
@@ -595,22 +593,16 @@
         "tmp%24#0"
       ]
     },
-    "101": {
-      "op": "intc 6 // TMPL_MASTER_APP",
-      "defined_out": [
-        "TMPL_MASTER_APP",
-        "tmp%24#0",
-        "txnKillswitch#0",
-        "txnMasterDebit#0"
-      ],
+    "100": {
+      "op": "intc_3 // 6",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%24#0",
-        "TMPL_MASTER_APP"
+        "6"
       ]
     },
-    "103": {
+    "101": {
       "op": "==",
       "defined_out": [
         "tmp%25#0",
@@ -623,14 +615,14 @@
         "tmp%25#0"
       ]
     },
-    "104": {
-      "op": "bz main_bool_false@16",
+    "102": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "107": {
+    "105": {
       "op": "dup",
       "stack_out": [
         "txnKillswitch#0",
@@ -638,17 +630,8 @@
         "txnMasterDebit#0"
       ]
     },
-    "108": {
-      "op": "intc_1 // 0",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "txnMasterDebit#0",
-        "0"
-      ]
-    },
-    "109": {
-      "op": "gtxnsas ApplicationArgs",
+    "106": {
+      "op": "gtxns ApplicationID",
       "defined_out": [
         "tmp%26#0",
         "txnKillswitch#0",
@@ -660,10 +643,10 @@
         "tmp%26#0"
       ]
     },
-    "111": {
-      "op": "pushbytes 0xd3c7a652",
+    "108": {
+      "op": "intc 6 // TMPL_MASTER_APP",
       "defined_out": [
-        "0xd3c7a652",
+        "TMPL_MASTER_APP",
         "tmp%26#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -672,10 +655,10 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%26#0",
-        "0xd3c7a652"
+        "TMPL_MASTER_APP"
       ]
     },
-    "117": {
+    "110": {
       "op": "==",
       "defined_out": [
         "tmp%27#0",
@@ -688,49 +671,33 @@
         "tmp%27#0"
       ]
     },
-    "118": {
-      "op": "bz main_bool_false@16",
+    "111": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "121": {
-      "op": "txn AssetReceiver",
-      "defined_out": [
-        "reinterpret_bytes[32]%1#0",
-        "txnKillswitch#0",
-        "txnMasterDebit#0"
-      ],
+    "114": {
+      "op": "dup",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "reinterpret_bytes[32]%1#0"
-      ]
-    },
-    "123": {
-      "op": "dig 1",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "reinterpret_bytes[32]%1#0",
         "txnMasterDebit#0"
       ]
     },
-    "125": {
-      "op": "intc_0 // 1",
+    "115": {
+      "op": "intc_1 // 0",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "reinterpret_bytes[32]%1#0",
         "txnMasterDebit#0",
-        "1"
+        "0"
       ]
     },
-    "126": {
+    "116": {
       "op": "gtxnsas ApplicationArgs",
       "defined_out": [
-        "reinterpret_bytes[32]%1#0",
         "tmp%28#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -738,11 +705,25 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "reinterpret_bytes[32]%1#0",
         "tmp%28#0"
       ]
     },
-    "128": {
+    "118": {
+      "op": "pushbytes 0xd3c7a652",
+      "defined_out": [
+        "0xd3c7a652",
+        "tmp%28#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%28#0",
+        "0xd3c7a652"
+      ]
+    },
+    "124": {
       "op": "==",
       "defined_out": [
         "tmp%29#0",
@@ -755,16 +736,49 @@
         "tmp%29#0"
       ]
     },
-    "129": {
-      "op": "bz main_bool_false@16",
+    "125": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "132": {
-      "op": "txn XferAsset",
+    "128": {
+      "op": "txn AssetReceiver",
       "defined_out": [
+        "reinterpret_bytes[32]%1#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "reinterpret_bytes[32]%1#0"
+      ]
+    },
+    "130": {
+      "op": "dig 1",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "reinterpret_bytes[32]%1#0",
+        "txnMasterDebit#0"
+      ]
+    },
+    "132": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "reinterpret_bytes[32]%1#0",
+        "txnMasterDebit#0",
+        "1"
+      ]
+    },
+    "133": {
+      "op": "gtxnsas ApplicationArgs",
+      "defined_out": [
+        "reinterpret_bytes[32]%1#0",
         "tmp%30#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -772,32 +786,13 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
+        "reinterpret_bytes[32]%1#0",
         "tmp%30#0"
       ]
     },
-    "134": {
-      "op": "dig 1",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "tmp%30#0",
-        "txnMasterDebit#0"
-      ]
-    },
-    "136": {
-      "op": "intc_2 // 2",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "tmp%30#0",
-        "txnMasterDebit#0",
-        "2"
-      ]
-    },
-    "137": {
-      "op": "gtxnsas ApplicationArgs",
+    "135": {
+      "op": "==",
       "defined_out": [
-        "tmp%30#0",
         "tmp%31#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -805,14 +800,19 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "tmp%30#0",
         "tmp%31#0"
       ]
     },
+    "136": {
+      "op": "bz main_bool_false@17",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ]
+    },
     "139": {
-      "op": "btoi",
+      "op": "txn XferAsset",
       "defined_out": [
-        "tmp%30#0",
         "tmp%32#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -820,13 +820,32 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "tmp%30#0",
         "tmp%32#0"
       ]
     },
-    "140": {
-      "op": "==",
+    "141": {
+      "op": "dig 1",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%32#0",
+        "txnMasterDebit#0"
+      ]
+    },
+    "143": {
+      "op": "intc_2 // 2",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%32#0",
+        "txnMasterDebit#0",
+        "2"
+      ]
+    },
+    "144": {
+      "op": "gtxnsas ApplicationArgs",
       "defined_out": [
+        "tmp%32#0",
         "tmp%33#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -834,19 +853,14 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
+        "tmp%32#0",
         "tmp%33#0"
       ]
     },
-    "141": {
-      "op": "bz main_bool_false@16",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0"
-      ]
-    },
-    "144": {
-      "op": "txn AssetAmount",
+    "146": {
+      "op": "btoi",
       "defined_out": [
+        "tmp%32#0",
         "tmp%34#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -854,38 +868,13 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
+        "tmp%32#0",
         "tmp%34#0"
       ]
     },
-    "146": {
-      "op": "dig 1",
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "tmp%34#0",
-        "txnMasterDebit#0"
-      ]
-    },
-    "148": {
-      "op": "pushint 3 // 3",
+    "147": {
+      "op": "==",
       "defined_out": [
-        "3",
-        "tmp%34#0",
-        "txnKillswitch#0",
-        "txnMasterDebit#0"
-      ],
-      "stack_out": [
-        "txnKillswitch#0",
-        "txnMasterDebit#0",
-        "tmp%34#0",
-        "txnMasterDebit#0",
-        "3"
-      ]
-    },
-    "150": {
-      "op": "gtxnsas ApplicationArgs",
-      "defined_out": [
-        "tmp%34#0",
         "tmp%35#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -893,14 +882,19 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "tmp%34#0",
         "tmp%35#0"
       ]
     },
-    "152": {
-      "op": "btoi",
+    "148": {
+      "op": "bz main_bool_false@17",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ]
+    },
+    "151": {
+      "op": "txn AssetAmount",
       "defined_out": [
-        "tmp%34#0",
         "tmp%36#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -908,13 +902,38 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
-        "tmp%34#0",
         "tmp%36#0"
       ]
     },
     "153": {
-      "op": "<=",
+      "op": "dig 1",
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%36#0",
+        "txnMasterDebit#0"
+      ]
+    },
+    "155": {
+      "op": "pushint 3 // 3",
       "defined_out": [
+        "3",
+        "tmp%36#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%36#0",
+        "txnMasterDebit#0",
+        "3"
+      ]
+    },
+    "157": {
+      "op": "gtxnsas ApplicationArgs",
+      "defined_out": [
+        "tmp%36#0",
         "tmp%37#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -922,17 +941,46 @@
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0",
+        "tmp%36#0",
         "tmp%37#0"
       ]
     },
-    "154": {
-      "op": "bz main_bool_false@16",
+    "159": {
+      "op": "btoi",
+      "defined_out": [
+        "tmp%36#0",
+        "tmp%38#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%36#0",
+        "tmp%38#0"
+      ]
+    },
+    "160": {
+      "op": "<=",
+      "defined_out": [
+        "tmp%39#0",
+        "txnKillswitch#0",
+        "txnMasterDebit#0"
+      ],
+      "stack_out": [
+        "txnKillswitch#0",
+        "txnMasterDebit#0",
+        "tmp%39#0"
+      ]
+    },
+    "161": {
+      "op": "bz main_bool_false@17",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "157": {
+    "164": {
       "op": "intc_0 // 1",
       "defined_out": [
         "and_result%0#0",
@@ -945,15 +993,15 @@
         "and_result%0#0"
       ]
     },
-    "158": {
+    "165": {
       "op": "return",
       "stack_out": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
       ]
     },
-    "159": {
-      "block": "main_bool_false@16",
+    "166": {
+      "block": "main_bool_false@17",
       "stack_in": [
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -968,7 +1016,7 @@
         "and_result%0#0"
       ]
     },
-    "160": {
+    "167": {
       "op": "return",
       "stack_out": [
         "txnKillswitch#0",

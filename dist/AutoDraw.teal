@@ -4,93 +4,109 @@
 // src/AutoDraw.algo.ts::program() -> uint64:
 main:
     intcblock 1 0 2 6 TMPL_ASSET TMPL_KILLSWITCH_APP TMPL_MASTER_APP
-    // src/AutoDraw.algo.ts:42
+    bytecblock TMPL_GENESIS_HASH
+    // src/AutoDraw.algo.ts:43
     // const txnKillswitch = gtxn.Transaction(Txn.groupIndex + 1);
     txn GroupIndex
     intc_0 // 1
     +
-    // src/AutoDraw.algo.ts:43
+    // src/AutoDraw.algo.ts:44
     // const txnMasterDebit = gtxn.Transaction(Txn.groupIndex + 2);
     txn GroupIndex
     intc_2 // 2
     +
-    // src/AutoDraw.algo.ts:47
+    // src/AutoDraw.algo.ts:48
     // Txn.rekeyTo === Global.zeroAddress &&
     txn RekeyTo
     global ZeroAddress
     ==
-    // src/AutoDraw.algo.ts:47-48
+    // src/AutoDraw.algo.ts:48-49
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:48
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:49
     // Txn.assetCloseTo === Global.zeroAddress &&
     txn AssetCloseTo
     global ZeroAddress
     ==
-    // src/AutoDraw.algo.ts:47-48
+    // src/AutoDraw.algo.ts:48-49
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
-    bz main_bool_false@16
+    bz main_bool_false@17
     // src/AutoDraw.algo.ts:50
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
+    global GenesisHash
+    bytec_0 // TMPL_GENESIS_HASH
+    ==
+    // src/AutoDraw.algo.ts:48-50
+    // Txn.rekeyTo === Global.zeroAddress &&
+    // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:52
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     txn TypeEnum
     pushint 4 // 4
     ==
-    // src/AutoDraw.algo.ts:47-50
+    // src/AutoDraw.algo.ts:48-52
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:51
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:53
     // Txn.xferAsset === ASSET &&
     txn XferAsset
     intc 4 // TMPL_ASSET
     ==
-    // src/AutoDraw.algo.ts:47-51
+    // src/AutoDraw.algo.ts:48-53
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:52
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:54
     // Txn.fee === 0 &&
     txn Fee
-    // src/AutoDraw.algo.ts:47-52
+    // src/AutoDraw.algo.ts:48-54
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
-    bnz main_bool_false@16
-    // src/AutoDraw.algo.ts:54
+    bnz main_bool_false@17
+    // src/AutoDraw.algo.ts:56
     // txnKillswitch.type === TransactionType.ApplicationCall &&
     dig 1
     gtxns TypeEnum
     intc_3 // 6
     ==
-    // src/AutoDraw.algo.ts:47-54
+    // src/AutoDraw.algo.ts:48-56
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
     // Txn.fee === 0 &&
     // // Enforce the next transaction is a Killswitch call
     // txnKillswitch.type === TransactionType.ApplicationCall &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:55
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:57
     // txnKillswitch.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
     dig 1
     gtxns ApplicationID
     intc 5 // TMPL_KILLSWITCH_APP
     ==
-    // src/AutoDraw.algo.ts:47-55
+    // src/AutoDraw.algo.ts:48-57
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -98,17 +114,18 @@ main:
     // // Enforce the next transaction is a Killswitch call
     // txnKillswitch.type === TransactionType.ApplicationCall &&
     // txnKillswitch.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:56
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:58
     // txnKillswitch.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
     dig 1
     intc_1 // 0
     gtxnsas ApplicationArgs
     pushbytes 0x73bc6501
     ==
-    // src/AutoDraw.algo.ts:47-56
+    // src/AutoDraw.algo.ts:48-58
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -117,17 +134,18 @@ main:
     // txnKillswitch.type === TransactionType.ApplicationCall &&
     // txnKillswitch.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
     // txnKillswitch.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:57
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:59
     // txnKillswitch.appArgs(1) === Txn.sender.bytes &&
     dig 1
     intc_0 // 1
     gtxnsas ApplicationArgs
     txn Sender
     ==
-    // src/AutoDraw.algo.ts:47-57
+    // src/AutoDraw.algo.ts:48-59
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -137,16 +155,17 @@ main:
     // txnKillswitch.appId === TemplateVar<Application>('KILLSWITCH_APP') &&
     // txnKillswitch.appArgs(0) === Bytes.fromHex('73BC6501') && // authorize
     // txnKillswitch.appArgs(1) === Txn.sender.bytes &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:59
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:61
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     dup
     gtxns TypeEnum
     intc_3 // 6
     ==
-    // src/AutoDraw.algo.ts:47-59
+    // src/AutoDraw.algo.ts:48-61
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -158,16 +177,17 @@ main:
     // txnKillswitch.appArgs(1) === Txn.sender.bytes &&
     // // Enforce the second next transaction is a Master call
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:60
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:62
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
     dup
     gtxns ApplicationID
     intc 6 // TMPL_MASTER_APP
     ==
-    // src/AutoDraw.algo.ts:47-60
+    // src/AutoDraw.algo.ts:48-62
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -180,17 +200,18 @@ main:
     // // Enforce the second next transaction is a Master call
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:61
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:63
     // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     dup
     intc_1 // 0
     gtxnsas ApplicationArgs
     pushbytes 0xd3c7a652
     ==
-    // src/AutoDraw.algo.ts:47-61
+    // src/AutoDraw.algo.ts:48-63
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -204,17 +225,18 @@ main:
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
     // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:62
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:64
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     txn AssetReceiver
     dig 1
     intc_0 // 1
     gtxnsas ApplicationArgs
     ==
-    // src/AutoDraw.algo.ts:47-62
+    // src/AutoDraw.algo.ts:48-64
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -229,8 +251,8 @@ main:
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
     // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:63
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:65
     // Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
     txn XferAsset
     dig 1
@@ -238,9 +260,10 @@ main:
     gtxnsas ApplicationArgs
     btoi
     ==
-    // src/AutoDraw.algo.ts:47-63
+    // src/AutoDraw.algo.ts:48-65
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -256,8 +279,8 @@ main:
     // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     // Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
-    bz main_bool_false@16
-    // src/AutoDraw.algo.ts:64
+    bz main_bool_false@17
+    // src/AutoDraw.algo.ts:66
     // Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))
     txn AssetAmount
     dig 1
@@ -265,9 +288,10 @@ main:
     gtxnsas ApplicationArgs
     btoi
     <=
-    // src/AutoDraw.algo.ts:47-64
+    // src/AutoDraw.algo.ts:48-66
     // Txn.rekeyTo === Global.zeroAddress &&
     // Txn.assetCloseTo === Global.zeroAddress &&
+    // Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     // // Enforce this transaction is an axfer with criteria
     // Txn.typeEnum === TransactionType.AssetTransfer &&
     // Txn.xferAsset === ASSET &&
@@ -284,13 +308,14 @@ main:
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     // Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
     // Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))
-    bz main_bool_false@16
+    bz main_bool_false@17
     intc_0 // 1
-    // src/AutoDraw.algo.ts:45-65
+    // src/AutoDraw.algo.ts:46-67
     // return (
     //     // Safety checks
     //     Txn.rekeyTo === Global.zeroAddress &&
     //     Txn.assetCloseTo === Global.zeroAddress &&
+    //     Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     //     // Enforce this transaction is an axfer with criteria
     //     Txn.typeEnum === TransactionType.AssetTransfer &&
     //     Txn.xferAsset === ASSET &&
@@ -310,13 +335,14 @@ main:
     // );
     return
 
-main_bool_false@16:
+main_bool_false@17:
     intc_1 // 0
-    // src/AutoDraw.algo.ts:45-65
+    // src/AutoDraw.algo.ts:46-67
     // return (
     //     // Safety checks
     //     Txn.rekeyTo === Global.zeroAddress &&
     //     Txn.assetCloseTo === Global.zeroAddress &&
+    //     Global.genesisHash === TemplateVar<bytes>('GENESIS_HASH') &&
     //     // Enforce this transaction is an axfer with criteria
     //     Txn.typeEnum === TransactionType.AssetTransfer &&
     //     Txn.xferAsset === ASSET &&
