@@ -112,9 +112,9 @@ Owner or card holder. Closes the card out of an asset; the freed MBR stays withi
 
 Returns a card's `(owner, address, nonce, withdrawalNonce)`.
 
-#### getNextCardNonce(address)uint64 / getCardWithdrawalNonce(address)uint64
+#### getNextCardNonce(address)uint64
 
-Read a card's debit nonce / withdrawal nonce.
+Read a card's debit nonce. (The withdrawal nonce is available via `getCardData`.)
 
 ### Debits, refunds & settlement
 
@@ -136,19 +136,19 @@ Read the next settlement nonce.
 
 ### Withdrawals
 
-#### cardWithdrawalRequest(address,uint64,uint64)(...)
+#### withdrawalRequest(address,uint64,uint64)(...)
 
 Card holder. Creates a permissionless withdrawal request for `card, asset, amount`. Returns the stored request.
 
-#### cardWithdrawalCancel(address)void
+#### withdrawalCancel(address)void
 
 Card holder. Cancels a pending withdrawal request.
 
-#### cardWithdraw(address,uint64)void
+#### withdraw(address,uint64)void
 
 Card holder. Executes a pending permissionless withdrawal once the wait time has elapsed.
 
-#### cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void
+#### withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void
 
 Card holder. Executes an early withdrawal before the wait time elapses, authorized by an ed25519 signature from the early-withdrawal public key. Args: `card, asset, amount, expiresAt, nonce, signature`.
 
@@ -189,10 +189,10 @@ classDiagram
     class CardHolder {
         cardClose()
         cardDisableAsset()
-        cardWithdrawalRequest()
-        cardWithdrawalCancel()
-        cardWithdraw()
-        cardWithdrawPermissioned()
+        withdrawalRequest()
+        withdrawalCancel()
+        withdraw()
+        withdrawPermissioned()
     }
 ```
 
@@ -241,8 +241,8 @@ sequenceDiagram
     deactivate Contract
     Circle-->>MasterCard:
     MasterCard-->>Merchant:
-    User->>Contract: cardWithdrawalRequest()
-    User->>Contract: cardWithdraw()
+    User->>Contract: withdrawalRequest()
+    User->>Contract: withdraw()
     activate Contract
     Card-->>User: axfer (Withdrawal)
     deactivate Contract

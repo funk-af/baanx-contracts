@@ -54,16 +54,6 @@ type CardData = {
     withdrawalNonce: uint64;
 };
 
-// Withdrawal request for an amount of an asset, where the timestamp indicates the earliest it can be made
-type PermissionlessWithdrawalRequest = {
-    card: Account;
-    recipient: Account;
-    asset: Asset;
-    amount: uint64;
-    createdAt: uint64;
-    nonce: uint64;
-};
-
 const WithdrawalTypeApproved = 'approved';
 const WithdrawalTypePermissionLess = 'permissionless';
 
@@ -147,7 +137,7 @@ type Withdrawal = {
     type: string;
 };
 
-type ApprovedWithdrawalRequest = {
+type PermissionedWithdrawal = {
     card: Account;
     recipient: Account;
     asset: Asset;
@@ -185,11 +175,11 @@ export class Master extends Recoverable {
     withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
 
     // Early withdrawal public key
-    early_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'ewpk' });
+    permissioned_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
 
     // Withdrawal requests
     // Only one allowed at any given point. MBR is sponsored by the contract owner (app account).
-    withdrawals = BoxMap<Account, PermissionlessWithdrawalRequest>({ keyPrefix: 'wr' });
+    withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
 
     // Settlement nonce
     settlement_nonce = GlobalState<uint64>({ key: 'sn' });
@@ -355,7 +345,7 @@ export class Master extends Recoverable {
     setEarlyWithdrawalPubkey(pubkey: bytes<32>): void {
         this.onlyOwner();
 
-        this.early_withdrawal_pubkey.value = pubkey;
+        this.permissioned_withdrawal_pubkey.value = pubkey;
     }
 
     /**
@@ -446,11 +436,7 @@ export class Master extends Recoverable {
     cardRecover(card: Account, newCardHolder: Account): void {
         this.onlyOwner();
 
-        // eslint-disable-next-line no-unused-vars
-        const oldCardHolder = this.cards(card).value.owner;
         this.cards(card).value.owner = newCardHolder;
-
-        // TODO: Emit CardRecovered
     }
 
     /**
@@ -614,17 +600,6 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Retrieves the next available withdrawal nonce for the card.
-     *
-     * @param card The card address.
-     * @returns The withdrawal nonce for the card.
-     */
-    @abimethod({ readonly: true })
-    getCardWithdrawalNonce(card: Account): uint64 {
-        return this.cards(card).value.withdrawalNonce;
-    }
-
-    /**
      * Retrieves the card data for a given card address.
      *
      * @param card The address of the card.
@@ -731,13 +706,13 @@ export class Master extends Recoverable {
      * @param amount Amount to withdraw
      */
     @abimethod({ allowActions: ['NoOp'] })
-    cardWithdrawalRequest(card: Account, asset: Asset, amount: uint64): PermissionlessWithdrawalRequest {
+    withdrawalRequest(card: Account, asset: Asset, amount: uint64): WithdrawalRequest {
         assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
         const cardData = clone(this.cards(card).value);
         const [balance, _optedIn] = op.AssetHolding.assetBalance(card, asset);
         assert(amount <= balance, 'INSUFFICIENT_BALANCE');
 
-        const withdrawal: PermissionlessWithdrawalRequest = {
+        const withdrawal: WithdrawalRequest = {
             card: card,
             recipient: Txn.sender,
             asset: asset,
@@ -757,7 +732,7 @@ export class Master extends Recoverable {
      * Allows the card holder to cancel a withdrawal request
      * @param card Address to withdraw from
      */
-    cardWithdrawalCancel(card: Account): void {
+    withdrawalCancel(card: Account): void {
         assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
         assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
         const withdrawal = clone(this.withdrawals(Txn.sender).value);
@@ -770,7 +745,7 @@ export class Master extends Recoverable {
      * @param card Address to withdraw from
      */
     @abimethod({ allowActions: ['NoOp'] })
-    cardWithdraw(card: Account, amount: uint64): void {
+    withdraw(card: Account, amount: uint64): void {
         assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
         assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
         const cardData = clone(this.cards(card).value);
@@ -801,7 +776,7 @@ export class Master extends Recoverable {
      * @param expiresAt - The expiry of the withdrawal signature.
      * @param signature - The signature for early withdrawal.
      */
-    cardWithdrawPermissioned(
+    withdrawPermissioned(
         card: Account,
         asset: Asset,
         amount: uint64,
@@ -815,7 +790,7 @@ export class Master extends Recoverable {
         assert(Global.latestTimestamp < expiresAt, 'WITHDRAWAL_TIME_INVALID');
         assert(cardData.withdrawalNonce === nonce, 'NONCE_INVALID');
 
-        const withdrawal: ApprovedWithdrawalRequest = {
+        const withdrawal: PermissionedWithdrawal = {
             card,
             recipient: Txn.sender,
             asset,
@@ -831,7 +806,7 @@ export class Master extends Recoverable {
         ensureBudget(2500);
 
         assert(
-            op.ed25519verifyBare(withdrawal_hash, signature, this.early_withdrawal_pubkey.value),
+            op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
             'SIGNATURE_INVALID'
         );
 

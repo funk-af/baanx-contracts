@@ -10,7 +10,7 @@ import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount';
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing';
 import { MasterClient, MasterFactory } from '../client/MasterClient';
 import { KillswitchClient, KillswitchFactory } from '../client/KillswitchClient';
-import type { PermissionlessWithdrawalRequest } from '../client/MasterClient';
+import type { WithdrawalRequest } from '../client/MasterClient';
 
 const fixture = algorandFixture({ testAccountFunding: AlgoAmount.MicroAlgos(0) });
 
@@ -26,7 +26,7 @@ describe('Baanx', () => {
 
     let fakeUSDC: bigint;
     let newCardAddress: string;
-    let withdrawalRequest: PermissionlessWithdrawalRequest;
+    let withdrawalRequest: WithdrawalRequest;
 
     // AutoDraw-specific state (uses a separate card so the main flow stays intact)
     let autoDrawCardAddress: string;
@@ -313,7 +313,7 @@ describe('Baanx', () => {
     });
 
     test('User creates withdrawal request', async () => {
-        const result = await appClient.send.cardWithdrawalRequest({
+        const result = await appClient.send.withdrawalRequest({
             args: {
                 card: newCardAddress,
                 asset: fakeUSDC,
@@ -346,7 +346,7 @@ describe('Baanx', () => {
     });
 
     test('Complete withdrawal request', async () => {
-        const result = await appClient.send.cardWithdraw({
+        const result = await appClient.send.withdraw({
             args: {
                 card: newCardAddress,
                 amount: withdrawalRequest.amount,
@@ -367,9 +367,9 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
-    // TODO: cardWithdrawEarly test
+    // TODO: withdrawEarly test
     test('User creates another withdrawal request', async () => {
-        const result = await appClient.send.cardWithdrawalRequest({
+        const result = await appClient.send.withdrawalRequest({
             args: {
                 card: newCardAddress,
                 asset: fakeUSDC,
@@ -408,7 +408,7 @@ describe('Baanx', () => {
         const withdrawalHash = createHash('sha256').update(withdrawalBytes).digest();
         const sig = nacl.sign.detached(withdrawalHash, withdrawalAcc.sk);
 
-        const result = await appClient.send.cardWithdrawPermissioned({
+        const result = await appClient.send.withdrawPermissioned({
             args: {
                 card: newCardAddress,
                 asset: fakeUSDC,
