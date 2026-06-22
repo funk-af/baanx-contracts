@@ -35,7 +35,7 @@ import {
     Txn,
 } from '@algorandfoundation/algorand-typescript';
 import { Recoverable } from './roles/Recoverable.algo';
-import type { Master } from './Baanx.algo';
+import type { Master } from './Master.algo';
 
 export class Killswitch extends Recoverable {
     // ========== Storage ==========

@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": [
-    "../src/Baanx.algo.ts"
+    "../src/Master.algo.ts"
   ],
   "mappings": ";;;;;AAqJA;;;;;;AAAA;;;AAAA;;;;AAAA;AAKK;;AAAA;;AAAA;AAAA;;AAAA;AAAA;AAAA;AAAA;;;AAEG;AACc;;AAED;;;;AADD;;;;;AAFZ;;;AAAA;;;AAAA;AAFH;;;;;;AAQU;;AARV;AAAA;AAAA;AAAA",
   "op_pc_offset": 0,
@@ -111,7 +111,7 @@
       "op": "b new"
     },
     "32": {
-      "subroutine": "src/Baanx.algo.ts::ControlledAddress.new[routing]",
+      "subroutine": "src/Master.algo.ts::ControlledAddress.new[routing]",
       "params": {},
       "block": "new",
       "stack_in": [],

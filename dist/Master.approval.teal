@@ -5,14 +5,14 @@
 main:
     intcblock 0 1 8 32
     bytecblock "cf" 0x151f7c75 "wr" "_owner" "cfac" "_pauser" "sn" "paused" "sa" "ra" "wwt" "pwpk" "permissionless" 0x068101 "approved"
-    // src/Baanx.algo.ts:167
+    // src/Master.algo.ts:167
     // export class Master extends Recoverable {
     pushbytess 0xa0e81872 0x9c86a185 // method "update()void", method "destroy()void"
     txna ApplicationArgs 0
     match main_update_route@2 main_destroy_route@3
 
 main_switch_case_next@4:
-    // src/Baanx.algo.ts:167
+    // src/Master.algo.ts:167
     // export class Master extends Recoverable {
     txn OnCompletion
     !
@@ -25,7 +25,7 @@ main_switch_case_next@4:
     err
 
 main_create_NoOp@37:
-    // src/Baanx.algo.ts:167
+    // src/Master.algo.ts:167
     // export class Master extends Recoverable {
     pushbytes 0x9270773d // method "deploy(address)address"
     txna ApplicationArgs 0
@@ -33,7 +33,7 @@ main_create_NoOp@37:
     err
 
 main_destroy_route@3:
-    // src/Baanx.algo.ts:316
+    // src/Master.algo.ts:316
     // @abimethod({ allowActions: ['DeleteApplication'] })
     txn OnCompletion
     pushint 5 // DeleteApplication
@@ -44,7 +44,7 @@ main_destroy_route@3:
     b destroy
 
 main_update_route@2:
-    // src/Baanx.algo.ts:308
+    // src/Master.algo.ts:308
     // @abimethod({ allowActions: ['UpdateApplication'] })
     txn OnCompletion
     pushint 4 // UpdateApplication
@@ -55,9 +55,9 @@ main_update_route@2:
     b update
 
 
-// src/Baanx.algo.ts::Master.deploy[routing]() -> void:
+// src/Master.algo.ts::Master.deploy[routing]() -> void:
 deploy:
-    // src/Baanx.algo.ts:291
+    // src/Master.algo.ts:291
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     txna ApplicationArgs 1
     dup
@@ -65,44 +65,44 @@ deploy:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:293
+    // src/Master.algo.ts:293
     // this._transferOwnership(owner);
     callsub _transferOwnership
     // src/roles/Pausable.algo.ts:34
     // _pauser = GlobalState<Account>();
     bytec 5 // "_pauser"
-    // src/Baanx.algo.ts:294
+    // src/Master.algo.ts:294
     // this._pauser.value = Txn.sender;
     txn Sender
     app_global_put
-    // src/Baanx.algo.ts:172
+    // src/Master.algo.ts:172
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Baanx.algo.ts:298
+    // src/Master.algo.ts:298
     // this.cards_active_count.value = 0;
     intc_0 // 0
     app_global_put
-    // src/Baanx.algo.ts:185
+    // src/Master.algo.ts:185
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Baanx.algo.ts:299
+    // src/Master.algo.ts:299
     // this.settlement_nonce.value = 0;
     intc_0 // 0
     app_global_put
     // src/roles/Pausable.algo.ts:36
     // paused = GlobalState<boolean>();
     bytec 7 // "paused"
-    // src/Baanx.algo.ts:300
+    // src/Master.algo.ts:300
     // this.paused.value = false;
     intc_0 // 0
     app_global_put
-    // src/Baanx.algo.ts:291
+    // src/Master.algo.ts:291
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     bytec_1 // 0x151f7c75
-    // src/Baanx.algo.ts:302
+    // src/Master.algo.ts:302
     // return Global.currentApplicationAddress;
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:291
+    // src/Master.algo.ts:291
     // @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
     concat
     log
@@ -110,42 +110,42 @@ deploy:
     return
 
 
-// src/Baanx.algo.ts::Master.update[routing]() -> void:
+// src/Master.algo.ts::Master.update[routing]() -> void:
 update:
-    // src/Baanx.algo.ts:310
+    // src/Master.algo.ts:310
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:308
+    // src/Master.algo.ts:308
     // @abimethod({ allowActions: ['UpdateApplication'] })
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.destroy[routing]() -> void:
+// src/Master.algo.ts::Master.destroy[routing]() -> void:
 destroy:
-    // src/Baanx.algo.ts:318
+    // src/Master.algo.ts:318
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:321
+    // src/Master.algo.ts:321
     // assert(!this.cards_active_count.value, 'CARDS_STILL_ACTIVE');
     intc_0 // 0
-    // src/Baanx.algo.ts:172
+    // src/Master.algo.ts:172
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Baanx.algo.ts:321
+    // src/Master.algo.ts:321
     // assert(!this.cards_active_count.value, 'CARDS_STILL_ACTIVE');
     app_global_get_ex
     assert // check GlobalState exists
     !
     assert // CARDS_STILL_ACTIVE
-    // src/Baanx.algo.ts:323-327
+    // src/Master.algo.ts:323-327
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
     //     closeRemainderTo: this.owner(),
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:324
+    // src/Master.algo.ts:324
     // receiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
     // src/roles/Ownable.algo.ts:67
@@ -159,12 +159,12 @@ destroy:
     app_global_get_ex
     assert // check GlobalState exists
     itxn_field CloseRemainderTo
-    // src/Baanx.algo.ts:325
+    // src/Master.algo.ts:325
     // amount: 0,
     intc_0 // 0
     itxn_field Amount
     itxn_field Receiver
-    // src/Baanx.algo.ts:323-327
+    // src/Master.algo.ts:323-327
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
@@ -175,15 +175,15 @@ destroy:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:316
+    // src/Master.algo.ts:316
     // @abimethod({ allowActions: ['DeleteApplication'] })
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.setWithdrawalTimeout[routing]() -> void:
+// src/Master.algo.ts::Master.setWithdrawalTimeout[routing]() -> void:
 setWithdrawalTimeout:
-    // src/Baanx.algo.ts:335
+    // src/Master.algo.ts:335
     // setWithdrawalTimeout(seconds: uint64): void {
     txna ApplicationArgs 1
     dup
@@ -192,25 +192,25 @@ setWithdrawalTimeout:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:336
+    // src/Master.algo.ts:336
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:175
+    // src/Master.algo.ts:175
     // withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
     bytec 10 // "wwt"
-    // src/Baanx.algo.ts:338
+    // src/Master.algo.ts:338
     // this.withdrawal_wait_time.value = seconds;
     swap
     app_global_put
-    // src/Baanx.algo.ts:335
+    // src/Master.algo.ts:335
     // setWithdrawalTimeout(seconds: uint64): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.setEarlyWithdrawalPubkey[routing]() -> void:
+// src/Master.algo.ts::Master.setEarlyWithdrawalPubkey[routing]() -> void:
 setEarlyWithdrawalPubkey:
-    // src/Baanx.algo.ts:345
+    // src/Master.algo.ts:345
     // setEarlyWithdrawalPubkey(pubkey: bytes<32>): void {
     txna ApplicationArgs 1
     dup
@@ -218,25 +218,25 @@ setEarlyWithdrawalPubkey:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:346
+    // src/Master.algo.ts:346
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:178
+    // src/Master.algo.ts:178
     // permissioned_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
     bytec 11 // "pwpk"
-    // src/Baanx.algo.ts:348
+    // src/Master.algo.ts:348
     // this.permissioned_withdrawal_pubkey.value = pubkey;
     swap
     app_global_put
-    // src/Baanx.algo.ts:345
+    // src/Master.algo.ts:345
     // setEarlyWithdrawalPubkey(pubkey: bytes<32>): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.cardCreate[routing]() -> void:
+// src/Master.algo.ts::Master.cardCreate[routing]() -> void:
 cardCreate:
-    // src/Baanx.algo.ts:358
+    // src/Master.algo.ts:358
     // cardCreate(cardOwner: Account, asset: Asset): Account {
     txna ApplicationArgs 1
     dupn 2
@@ -253,13 +253,13 @@ cardCreate:
     btoi
     dup
     uncover 2
-    // src/Baanx.algo.ts:359
+    // src/Master.algo.ts:359
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:363
+    // src/Master.algo.ts:363
     // address: Global.zeroAddress,
     global ZeroAddress
-    // src/Baanx.algo.ts:361-366
+    // src/Master.algo.ts:361-366
     // const cardData: CardData = {
     //     owner: cardOwner,
     //     address: Global.zeroAddress,
@@ -267,10 +267,10 @@ cardCreate:
     //     withdrawalNonce: 0,
     // };
     concat
-    // src/Baanx.algo.ts:364
+    // src/Master.algo.ts:364
     // nonce: 0,
     intc_0 // 0
-    // src/Baanx.algo.ts:361-366
+    // src/Master.algo.ts:361-366
     // const cardData: CardData = {
     //     owner: cardOwner,
     //     address: Global.zeroAddress,
@@ -283,7 +283,7 @@ cardCreate:
     concat
     swap
     concat
-    // src/Baanx.algo.ts:370-374
+    // src/Master.algo.ts:370-374
     // const cardAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
     //     approvalProgram: compiledCard.approvalProgram,
     //     clearStateProgram: compiledCard.clearStateProgram,
@@ -292,17 +292,17 @@ cardCreate:
     itxn_begin
     pushbytes 0x561d2fea // method "new()address"
     itxn_field ApplicationArgs
-    // src/Baanx.algo.ts:373
+    // src/Master.algo.ts:373
     // onCompletion: OnCompleteAction.DeleteApplication,
     pushint 5 // 5
     itxn_field OnCompletion
-    // src/Baanx.algo.ts:369
+    // src/Master.algo.ts:369
     // const compiledCard = compile(ControlledAddress);
     pushbytes base64(C4EBQw==)
     itxn_field ClearStateProgramPages
     pushbytes base64(CyACAAGABFYdL+o2GgCOAQABADEZgQUSMRgUEERCAACxMgoyDrIgIrIIsgcjshAisgGzgAQVH3x1MgpQsCND)
     itxn_field ApprovalProgramPages
-    // src/Baanx.algo.ts:370-374
+    // src/Master.algo.ts:370-374
     // const cardAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
     //     approvalProgram: compiledCard.approvalProgram,
     //     clearStateProgram: compiledCard.clearStateProgram,
@@ -328,30 +328,30 @@ cardCreate:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:377
+    // src/Master.algo.ts:377
     // cardData.address = cardAddr;
     replace2 32
     swap
-    // src/Baanx.algo.ts:380
+    // src/Master.algo.ts:380
     // const assetMbr: uint64 = asset.id ? Global.assetOptInMinBalance : 0;
     bz cardCreate_ternary_false@4
     global AssetOptInMinBalance
 
 cardCreate_ternary_merge@5:
-    // src/Baanx.algo.ts:381-384
+    // src/Master.algo.ts:381-384
     // itxn.payment({
     //     receiver: cardAddr,
     //     amount: Global.minBalance + assetMbr,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:383
+    // src/Master.algo.ts:383
     // amount: Global.minBalance + assetMbr,
     global MinBalance
     +
     itxn_field Amount
     dig 1
     itxn_field Receiver
-    // src/Baanx.algo.ts:381-384
+    // src/Master.algo.ts:381-384
     // itxn.payment({
     //     receiver: cardAddr,
     //     amount: Global.minBalance + assetMbr,
@@ -361,48 +361,48 @@ cardCreate_ternary_merge@5:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:387
+    // src/Master.algo.ts:387
     // if (asset.id) {
     dig 2
     bz cardCreate_after_if_else@8
-    // src/Baanx.algo.ts:388
+    // src/Master.algo.ts:388
     // this.cardAssetOptIn(cardAddr, asset);
     dig 1
     dig 3
     callsub cardAssetOptIn
 
 cardCreate_after_if_else@8:
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 2
     dup
     cover 2
     concat
-    // src/Baanx.algo.ts:392
+    // src/Master.algo.ts:392
     // this.cards(cardAddr).value = clone(cardData);
     dig 2
     box_put
-    // src/Baanx.algo.ts:395
+    // src/Master.algo.ts:395
     // this.cards_active_count.value = this.cards_active_count.value + 1;
     intc_0 // 0
-    // src/Baanx.algo.ts:172
+    // src/Master.algo.ts:172
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Baanx.algo.ts:395
+    // src/Master.algo.ts:395
     // this.cards_active_count.value = this.cards_active_count.value + 1;
     app_global_get_ex
     assert // check GlobalState exists
     intc_1 // 1
     +
-    // src/Baanx.algo.ts:172
+    // src/Master.algo.ts:172
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Baanx.algo.ts:395
+    // src/Master.algo.ts:395
     // this.cards_active_count.value = this.cards_active_count.value + 1;
     swap
     app_global_put
-    // src/Baanx.algo.ts:397-400
+    // src/Master.algo.ts:397-400
     // emit<CardCreated>({
     //     cardOwner: cardOwner,
     //     card: cardAddr,
@@ -414,7 +414,7 @@ cardCreate_after_if_else@8:
     swap
     concat
     log
-    // src/Baanx.algo.ts:358
+    // src/Master.algo.ts:358
     // cardCreate(cardOwner: Account, asset: Asset): Account {
     bytec_1 // 0x151f7c75
     swap
@@ -424,15 +424,15 @@ cardCreate_after_if_else@8:
     return
 
 cardCreate_ternary_false@4:
-    // src/Baanx.algo.ts:380
+    // src/Master.algo.ts:380
     // const assetMbr: uint64 = asset.id ? Global.assetOptInMinBalance : 0;
     intc_0 // 0
     b cardCreate_ternary_merge@5
 
 
-// src/Baanx.algo.ts::Master.cardClose[routing]() -> void:
+// src/Master.algo.ts::Master.cardClose[routing]() -> void:
 cardClose:
-    // src/Baanx.algo.ts:410
+    // src/Master.algo.ts:410
     // cardClose(card: Account): void {
     txna ApplicationArgs 1
     dup
@@ -440,7 +440,7 @@ cardClose:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:411
+    // src/Master.algo.ts:411
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     callsub isOwner
     bnz cardClose_bool_true@3
@@ -452,10 +452,10 @@ cardClose_bool_true@3:
     intc_1 // 1
 
 cardClose_bool_merge@5:
-    // src/Baanx.algo.ts:411
+    // src/Master.algo.ts:411
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:415-420
+    // src/Master.algo.ts:415-420
     // itxn.payment({
     //     sender: card,
     //     receiver: Global.currentApplicationAddress,
@@ -463,21 +463,21 @@ cardClose_bool_merge@5:
     //     closeRemainderTo: Global.currentApplicationAddress,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:417
+    // src/Master.algo.ts:417
     // receiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:419
+    // src/Master.algo.ts:419
     // closeRemainderTo: Global.currentApplicationAddress,
     dup
     itxn_field CloseRemainderTo
-    // src/Baanx.algo.ts:418
+    // src/Master.algo.ts:418
     // amount: 0,
     intc_0 // 0
     itxn_field Amount
     itxn_field Receiver
     dupn 2
     itxn_field Sender
-    // src/Baanx.algo.ts:415-420
+    // src/Master.algo.ts:415-420
     // itxn.payment({
     //     sender: card,
     //     receiver: Global.currentApplicationAddress,
@@ -489,35 +489,35 @@ cardClose_bool_merge@5:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     swap
     concat
-    // src/Baanx.algo.ts:423
+    // src/Master.algo.ts:423
     // this.cards(card).delete();
     box_del
     pop
-    // src/Baanx.algo.ts:426
+    // src/Master.algo.ts:426
     // this.cards_active_count.value = this.cards_active_count.value - 1;
     intc_0 // 0
-    // src/Baanx.algo.ts:172
+    // src/Master.algo.ts:172
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Baanx.algo.ts:426
+    // src/Master.algo.ts:426
     // this.cards_active_count.value = this.cards_active_count.value - 1;
     app_global_get_ex
     assert // check GlobalState exists
     intc_1 // 1
     -
-    // src/Baanx.algo.ts:172
+    // src/Master.algo.ts:172
     // cards_active_count = GlobalState<uint64>({ key: 'cfac' });
     bytec 4 // "cfac"
-    // src/Baanx.algo.ts:426
+    // src/Master.algo.ts:426
     // this.cards_active_count.value = this.cards_active_count.value - 1;
     swap
     app_global_put
-    // src/Baanx.algo.ts:410
+    // src/Master.algo.ts:410
     // cardClose(card: Account): void {
     intc_1 // 1
     return
@@ -527,9 +527,9 @@ cardClose_bool_false@4:
     b cardClose_bool_merge@5
 
 
-// src/Baanx.algo.ts::Master.cardRecover[routing]() -> void:
+// src/Master.algo.ts::Master.cardRecover[routing]() -> void:
 cardRecover:
-    // src/Baanx.algo.ts:436
+    // src/Master.algo.ts:436
     // cardRecover(card: Account, newCardHolder: Account): void {
     txna ApplicationArgs 1
     dup
@@ -543,28 +543,28 @@ cardRecover:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:437
+    // src/Master.algo.ts:437
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     uncover 2
     concat
-    // src/Baanx.algo.ts:439
+    // src/Master.algo.ts:439
     // this.cards(card).value.owner = newCardHolder;
     intc_0 // 0
     uncover 2
     box_replace
-    // src/Baanx.algo.ts:436
+    // src/Master.algo.ts:436
     // cardRecover(card: Account, newCardHolder: Account): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.assetAllowlistAdd[routing]() -> void:
+// src/Master.algo.ts::Master.assetAllowlistAdd[routing]() -> void:
 assetAllowlistAdd:
-    // src/Baanx.algo.ts:449
+    // src/Master.algo.ts:449
     // assetAllowlistAdd(asset: Asset, settlementAddress: Account): void {
     txna ApplicationArgs 1
     dup
@@ -579,10 +579,10 @@ assetAllowlistAdd:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:450
+    // src/Master.algo.ts:450
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:452-457
+    // src/Master.algo.ts:452-457
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -590,13 +590,13 @@ assetAllowlistAdd:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:453
+    // src/Master.algo.ts:453
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:454
+    // src/Master.algo.ts:454
     // assetReceiver: Global.currentApplicationAddress,
     dup
-    // src/Baanx.algo.ts:456
+    // src/Master.algo.ts:456
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -604,7 +604,7 @@ assetAllowlistAdd:
     itxn_field XferAsset
     itxn_field AssetReceiver
     itxn_field Sender
-    // src/Baanx.algo.ts:452-457
+    // src/Master.algo.ts:452-457
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -616,7 +616,7 @@ assetAllowlistAdd:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:459
+    // src/Master.algo.ts:459
     // emit<AssetAllowlistAdded>({ asset: asset });
     dig 1
     itob
@@ -624,18 +624,18 @@ assetAllowlistAdd:
     swap
     concat
     log
-    // src/Baanx.algo.ts:461
+    // src/Master.algo.ts:461
     // this.updateSettlementAddress(asset, settlementAddress);
     callsub updateSettlementAddress
-    // src/Baanx.algo.ts:449
+    // src/Master.algo.ts:449
     // assetAllowlistAdd(asset: Asset, settlementAddress: Account): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.assetAllowlistRemove[routing]() -> void:
+// src/Master.algo.ts::Master.assetAllowlistRemove[routing]() -> void:
 assetAllowlistRemove:
-    // src/Baanx.algo.ts:470
+    // src/Master.algo.ts:470
     // assetAllowlistRemove(asset: Asset): void {
     txna ApplicationArgs 1
     dup
@@ -644,10 +644,10 @@ assetAllowlistRemove:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:471
+    // src/Master.algo.ts:471
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:474-480
+    // src/Master.algo.ts:474-480
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -656,14 +656,14 @@ assetAllowlistRemove:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:475
+    // src/Master.algo.ts:475
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:476-477
+    // src/Master.algo.ts:476-477
     // assetReceiver: Global.currentApplicationAddress,
     // assetCloseTo: Global.currentApplicationAddress,
     dupn 2
-    // src/Baanx.algo.ts:479
+    // src/Master.algo.ts:479
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -672,7 +672,7 @@ assetAllowlistRemove:
     itxn_field AssetCloseTo
     itxn_field AssetReceiver
     itxn_field Sender
-    // src/Baanx.algo.ts:474-480
+    // src/Master.algo.ts:474-480
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -685,33 +685,33 @@ assetAllowlistRemove:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:483
+    // src/Master.algo.ts:483
     // this.settlement_address(asset).delete();
     itob
-    // src/Baanx.algo.ts:188
+    // src/Master.algo.ts:188
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     dig 1
     concat
-    // src/Baanx.algo.ts:483
+    // src/Master.algo.ts:483
     // this.settlement_address(asset).delete();
     box_del
     pop
-    // src/Baanx.algo.ts:485
+    // src/Master.algo.ts:485
     // emit<AssetAllowlistRemoved>({ asset: asset });
     pushbytes 0x065c0374 // method "AssetAllowlistRemoved(uint64)"
     swap
     concat
     log
-    // src/Baanx.algo.ts:470
+    // src/Master.algo.ts:470
     // assetAllowlistRemove(asset: Asset): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.cardDebit[routing]() -> void:
+// src/Master.algo.ts::Master.cardDebit[routing]() -> void:
 cardDebit:
-    // src/Baanx.algo.ts:496
+    // src/Master.algo.ts:496
     // cardDebit(card: Account, asset: Asset, amount: uint64, nonce: uint64, ref: string): void {
     txna ApplicationArgs 1
     dup
@@ -751,31 +751,31 @@ cardDebit:
     ==
     assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
     extract 2 0
-    // src/Baanx.algo.ts:497
+    // src/Master.algo.ts:497
     // this.whenNotPaused();
     callsub whenNotPaused
-    // src/Baanx.algo.ts:498
+    // src/Master.algo.ts:498
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 5
     concat
-    // src/Baanx.algo.ts:501
+    // src/Master.algo.ts:501
     // const nextNonce: uint64 = this.cards(card).value.nonce;
     dup
     box_get
     assert // Box must have value
     pushint 64 // 64
     extract_uint64
-    // src/Baanx.algo.ts:502
+    // src/Master.algo.ts:502
     // assert(nextNonce === nonce, 'NONCE_INVALID');
     dup
     dig 4
     ==
     assert // NONCE_INVALID
-    // src/Baanx.algo.ts:504-510
+    // src/Master.algo.ts:504-510
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -784,7 +784,7 @@ cardDebit:
     //     note: ref,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:506
+    // src/Master.algo.ts:506
     // assetReceiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
     dig 3
@@ -796,7 +796,7 @@ cardDebit:
     itxn_field AssetReceiver
     dig 6
     itxn_field Sender
-    // src/Baanx.algo.ts:504-510
+    // src/Master.algo.ts:504-510
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Global.currentApplicationAddress,
@@ -809,7 +809,7 @@ cardDebit:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:512-518
+    // src/Master.algo.ts:512-518
     // emit<Debit>({
     //     card: card,
     //     asset: asset,
@@ -843,7 +843,7 @@ cardDebit:
     swap
     concat
     log
-    // src/Baanx.algo.ts:521
+    // src/Master.algo.ts:521
     // this.cards(card).value.nonce = nextNonce + 1;
     intc_1 // 1
     +
@@ -851,25 +851,25 @@ cardDebit:
     pushint 64 // 64
     swap
     box_replace
-    // src/Baanx.algo.ts:496
+    // src/Master.algo.ts:496
     // cardDebit(card: Account, asset: Asset, amount: uint64, nonce: uint64, ref: string): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.getRefundAddress[routing]() -> void:
+// src/Master.algo.ts::Master.getRefundAddress[routing]() -> void:
 getRefundAddress:
-    // src/Baanx.algo.ts:531
+    // src/Master.algo.ts:531
     // return this.refund_address.value;
     intc_0 // 0
-    // src/Baanx.algo.ts:191
+    // src/Master.algo.ts:191
     // refund_address = GlobalState<Account>({ key: 'ra' });
     bytec 9 // "ra"
-    // src/Baanx.algo.ts:531
+    // src/Master.algo.ts:531
     // return this.refund_address.value;
     app_global_get_ex
     assert // check GlobalState exists
-    // src/Baanx.algo.ts:529
+    // src/Master.algo.ts:529
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -879,9 +879,9 @@ getRefundAddress:
     return
 
 
-// src/Baanx.algo.ts::Master.setRefundAddress[routing]() -> void:
+// src/Master.algo.ts::Master.setRefundAddress[routing]() -> void:
 setRefundAddress:
-    // src/Baanx.algo.ts:540
+    // src/Master.algo.ts:540
     // setRefundAddress(newRefundAddress: Account): void {
     txna ApplicationArgs 1
     dup
@@ -889,25 +889,25 @@ setRefundAddress:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:541
+    // src/Master.algo.ts:541
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:191
+    // src/Master.algo.ts:191
     // refund_address = GlobalState<Account>({ key: 'ra' });
     bytec 9 // "ra"
-    // src/Baanx.algo.ts:543
+    // src/Master.algo.ts:543
     // this.refund_address.value = newRefundAddress;
     swap
     app_global_put
-    // src/Baanx.algo.ts:540
+    // src/Master.algo.ts:540
     // setRefundAddress(newRefundAddress: Account): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.cardRefund[routing]() -> void:
+// src/Master.algo.ts::Master.cardRefund[routing]() -> void:
 cardRefund:
-    // src/Baanx.algo.ts:554
+    // src/Master.algo.ts:554
     // cardRefund(card: Account, asset: Asset, amount: uint64, nonce: uint64): void {
     txna ApplicationArgs 1
     dup
@@ -936,41 +936,41 @@ cardRefund:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:555
+    // src/Master.algo.ts:555
     // this.whenNotPaused();
     callsub whenNotPaused
-    // src/Baanx.algo.ts:557
+    // src/Master.algo.ts:557
     // assert(Txn.sender === this.refund_address.value, 'SENDER_NOT_ALLOWED');
     txn Sender
     intc_0 // 0
-    // src/Baanx.algo.ts:191
+    // src/Master.algo.ts:191
     // refund_address = GlobalState<Account>({ key: 'ra' });
     bytec 9 // "ra"
-    // src/Baanx.algo.ts:557
+    // src/Master.algo.ts:557
     // assert(Txn.sender === this.refund_address.value, 'SENDER_NOT_ALLOWED');
     app_global_get_ex
     assert // check GlobalState exists
     ==
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 4
     concat
-    // src/Baanx.algo.ts:560
+    // src/Master.algo.ts:560
     // const nextNonce: uint64 = this.cards(card).value.nonce;
     dup
     box_get
     assert // Box must have value
     pushint 64 // 64
     extract_uint64
-    // src/Baanx.algo.ts:561
+    // src/Master.algo.ts:561
     // assert(nextNonce === nonce, 'NONCE_INVALID');
     dup
     dig 3
     ==
     assert // NONCE_INVALID
-    // src/Baanx.algo.ts:563-568
+    // src/Master.algo.ts:563-568
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: card,
@@ -978,7 +978,7 @@ cardRefund:
     //     assetAmount: amount,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:564
+    // src/Master.algo.ts:564
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
     dig 4
@@ -988,7 +988,7 @@ cardRefund:
     dig 6
     itxn_field AssetReceiver
     itxn_field Sender
-    // src/Baanx.algo.ts:563-568
+    // src/Master.algo.ts:563-568
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: card,
@@ -1000,7 +1000,7 @@ cardRefund:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:570-575
+    // src/Master.algo.ts:570-575
     // emit<Refund>({
     //     card: card,
     //     asset: asset,
@@ -1022,7 +1022,7 @@ cardRefund:
     swap
     concat
     log
-    // src/Baanx.algo.ts:578
+    // src/Master.algo.ts:578
     // this.cards(card).value.nonce = nextNonce + 1;
     intc_1 // 1
     +
@@ -1030,25 +1030,25 @@ cardRefund:
     pushint 64 // 64
     swap
     box_replace
-    // src/Baanx.algo.ts:554
+    // src/Master.algo.ts:554
     // cardRefund(card: Account, asset: Asset, amount: uint64, nonce: uint64): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.getNextSettlementNonce[routing]() -> void:
+// src/Master.algo.ts::Master.getNextSettlementNonce[routing]() -> void:
 getNextSettlementNonce:
-    // src/Baanx.algo.ts:588
+    // src/Master.algo.ts:588
     // return this.settlement_nonce.value;
     intc_0 // 0
-    // src/Baanx.algo.ts:185
+    // src/Master.algo.ts:185
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Baanx.algo.ts:588
+    // src/Master.algo.ts:588
     // return this.settlement_nonce.value;
     app_global_get_ex
     assert // check GlobalState exists
-    // src/Baanx.algo.ts:586
+    // src/Master.algo.ts:586
     // @abimethod({ readonly: true })
     itob
     bytec_1 // 0x151f7c75
@@ -1059,9 +1059,9 @@ getNextSettlementNonce:
     return
 
 
-// src/Baanx.algo.ts::Master.getNextCardNonce[routing]() -> void:
+// src/Master.algo.ts::Master.getNextCardNonce[routing]() -> void:
 getNextCardNonce:
-    // src/Baanx.algo.ts:597
+    // src/Master.algo.ts:597
     // @abimethod({ readonly: true })
     txna ApplicationArgs 1
     dup
@@ -1069,17 +1069,17 @@ getNextCardNonce:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     swap
     concat
-    // src/Baanx.algo.ts:599
+    // src/Master.algo.ts:599
     // return this.cards(card).value.nonce;
     box_get
     assert // Box must have value
     extract 64 8
-    // src/Baanx.algo.ts:597
+    // src/Master.algo.ts:597
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -1089,9 +1089,9 @@ getNextCardNonce:
     return
 
 
-// src/Baanx.algo.ts::Master.getCardData[routing]() -> void:
+// src/Master.algo.ts::Master.getCardData[routing]() -> void:
 getCardData:
-    // src/Baanx.algo.ts:608
+    // src/Master.algo.ts:608
     // @abimethod({ readonly: true })
     txna ApplicationArgs 1
     dup
@@ -1099,16 +1099,16 @@ getCardData:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     swap
     concat
-    // src/Baanx.algo.ts:610
+    // src/Master.algo.ts:610
     // return this.cards(card).value;
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:608
+    // src/Master.algo.ts:608
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -1118,9 +1118,9 @@ getCardData:
     return
 
 
-// src/Baanx.algo.ts::Master.getSettlementAddress[routing]() -> void:
+// src/Master.algo.ts::Master.getSettlementAddress[routing]() -> void:
 getSettlementAddress:
-    // src/Baanx.algo.ts:619
+    // src/Master.algo.ts:619
     // @abimethod({ readonly: true })
     txna ApplicationArgs 1
     dup
@@ -1129,19 +1129,19 @@ getSettlementAddress:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:621
+    // src/Master.algo.ts:621
     // return this.settlement_address(asset).value;
     itob
-    // src/Baanx.algo.ts:188
+    // src/Master.algo.ts:188
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     swap
     concat
-    // src/Baanx.algo.ts:621
+    // src/Master.algo.ts:621
     // return this.settlement_address(asset).value;
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:619
+    // src/Master.algo.ts:619
     // @abimethod({ readonly: true })
     bytec_1 // 0x151f7c75
     swap
@@ -1151,9 +1151,9 @@ getSettlementAddress:
     return
 
 
-// src/Baanx.algo.ts::Master.setSettlementAddress[routing]() -> void:
+// src/Master.algo.ts::Master.setSettlementAddress[routing]() -> void:
 setSettlementAddress:
-    // src/Baanx.algo.ts:631
+    // src/Master.algo.ts:631
     // setSettlementAddress(settlementAsset: Asset, newSettlementAddress: Account): void {
     txna ApplicationArgs 1
     dup
@@ -1168,21 +1168,21 @@ setSettlementAddress:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:632
+    // src/Master.algo.ts:632
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:634
+    // src/Master.algo.ts:634
     // this.updateSettlementAddress(settlementAsset, newSettlementAddress);
     callsub updateSettlementAddress
-    // src/Baanx.algo.ts:631
+    // src/Master.algo.ts:631
     // setSettlementAddress(settlementAsset: Asset, newSettlementAddress: Account): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.settle[routing]() -> void:
+// src/Master.algo.ts::Master.settle[routing]() -> void:
 settle:
-    // src/Baanx.algo.ts:645
+    // src/Master.algo.ts:645
     // settle(asset: Asset, amount: uint64, nonce: uint64): void {
     txna ApplicationArgs 1
     dup
@@ -1205,19 +1205,19 @@ settle:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:646
+    // src/Master.algo.ts:646
     // this.whenNotPaused();
     callsub whenNotPaused
-    // src/Baanx.algo.ts:647
+    // src/Master.algo.ts:647
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:650
+    // src/Master.algo.ts:650
     // assert(this.settlement_nonce.value === nonce, 'NONCE_INVALID');
     intc_0 // 0
-    // src/Baanx.algo.ts:185
+    // src/Master.algo.ts:185
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Baanx.algo.ts:650
+    // src/Master.algo.ts:650
     // assert(this.settlement_nonce.value === nonce, 'NONCE_INVALID');
     app_global_get_ex
     assert // check GlobalState exists
@@ -1225,7 +1225,7 @@ settle:
     dig 2
     ==
     assert // NONCE_INVALID
-    // src/Baanx.algo.ts:652-657
+    // src/Master.algo.ts:652-657
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: this.settlement_address(asset).value,
@@ -1233,19 +1233,19 @@ settle:
     //     assetAmount: amount,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:653
+    // src/Master.algo.ts:653
     // sender: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Baanx.algo.ts:654
+    // src/Master.algo.ts:654
     // assetReceiver: this.settlement_address(asset).value,
     dig 4
     itob
-    // src/Baanx.algo.ts:188
+    // src/Master.algo.ts:188
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     dig 1
     concat
-    // src/Baanx.algo.ts:654
+    // src/Master.algo.ts:654
     // assetReceiver: this.settlement_address(asset).value,
     box_get
     assert // Box must have value
@@ -1257,7 +1257,7 @@ settle:
     itxn_field AssetReceiver
     uncover 2
     itxn_field Sender
-    // src/Baanx.algo.ts:652-657
+    // src/Master.algo.ts:652-657
     // itxn.assetTransfer({
     //     sender: Global.currentApplicationAddress,
     //     assetReceiver: this.settlement_address(asset).value,
@@ -1269,7 +1269,7 @@ settle:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:659-664
+    // src/Master.algo.ts:659-664
     // emit<Settlement>({
     //     recipient: this.settlement_address(asset).value,
     //     asset: asset,
@@ -1288,26 +1288,26 @@ settle:
     swap
     concat
     log
-    // src/Baanx.algo.ts:667
+    // src/Master.algo.ts:667
     // this.settlement_nonce.value = this.settlement_nonce.value + 1;
     intc_1 // 1
     +
-    // src/Baanx.algo.ts:185
+    // src/Master.algo.ts:185
     // settlement_nonce = GlobalState<uint64>({ key: 'sn' });
     bytec 6 // "sn"
-    // src/Baanx.algo.ts:667
+    // src/Master.algo.ts:667
     // this.settlement_nonce.value = this.settlement_nonce.value + 1;
     swap
     app_global_put
-    // src/Baanx.algo.ts:645
+    // src/Master.algo.ts:645
     // settle(asset: Asset, amount: uint64, nonce: uint64): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.cardEnableAsset[routing]() -> void:
+// src/Master.algo.ts::Master.cardEnableAsset[routing]() -> void:
 cardEnableAsset:
-    // src/Baanx.algo.ts:678
+    // src/Master.algo.ts:678
     // cardEnableAsset(card: Account, asset: Asset): void {
     txna ApplicationArgs 1
     dup
@@ -1322,22 +1322,22 @@ cardEnableAsset:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:679
+    // src/Master.algo.ts:679
     // this.onlyOwner();
     callsub onlyOwner
-    // src/Baanx.algo.ts:681-684
+    // src/Master.algo.ts:681-684
     // itxn.payment({
     //     receiver: card,
     //     amount: Global.assetOptInMinBalance,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:683
+    // src/Master.algo.ts:683
     // amount: Global.assetOptInMinBalance,
     global AssetOptInMinBalance
     itxn_field Amount
     dig 1
     itxn_field Receiver
-    // src/Baanx.algo.ts:681-684
+    // src/Master.algo.ts:681-684
     // itxn.payment({
     //     receiver: card,
     //     amount: Global.assetOptInMinBalance,
@@ -1347,18 +1347,18 @@ cardEnableAsset:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:686
+    // src/Master.algo.ts:686
     // this.cardAssetOptIn(card, asset);
     callsub cardAssetOptIn
-    // src/Baanx.algo.ts:678
+    // src/Master.algo.ts:678
     // cardEnableAsset(card: Account, asset: Asset): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.cardDisableAsset[routing]() -> void:
+// src/Master.algo.ts::Master.cardDisableAsset[routing]() -> void:
 cardDisableAsset:
-    // src/Baanx.algo.ts:696
+    // src/Master.algo.ts:696
     // cardDisableAsset(card: Account, asset: Asset): void {
     txna ApplicationArgs 1
     dup
@@ -1373,7 +1373,7 @@ cardDisableAsset:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:697
+    // src/Master.algo.ts:697
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     callsub isOwner
     bnz cardDisableAsset_bool_true@3
@@ -1385,10 +1385,10 @@ cardDisableAsset_bool_true@3:
     intc_1 // 1
 
 cardDisableAsset_bool_merge@5:
-    // src/Baanx.algo.ts:697
+    // src/Master.algo.ts:697
     // assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:228-234
+    // src/Master.algo.ts:228-234
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -1397,7 +1397,7 @@ cardDisableAsset_bool_merge@5:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:233
+    // src/Master.algo.ts:233
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -1410,7 +1410,7 @@ cardDisableAsset_bool_merge@5:
     itxn_field AssetReceiver
     dup
     itxn_field Sender
-    // src/Baanx.algo.ts:228-234
+    // src/Master.algo.ts:228-234
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -1423,7 +1423,7 @@ cardDisableAsset_bool_merge@5:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:236-239
+    // src/Master.algo.ts:236-239
     // emit<CardAssetDisabled>({
     //     card: card,
     //     asset: asset,
@@ -1435,7 +1435,7 @@ cardDisableAsset_bool_merge@5:
     swap
     concat
     log
-    // src/Baanx.algo.ts:696
+    // src/Master.algo.ts:696
     // cardDisableAsset(card: Account, asset: Asset): void {
     intc_1 // 1
     return
@@ -1445,9 +1445,9 @@ cardDisableAsset_bool_false@4:
     b cardDisableAsset_bool_merge@5
 
 
-// src/Baanx.algo.ts::Master.withdrawalRequest[routing]() -> void:
+// src/Master.algo.ts::Master.withdrawalRequest[routing]() -> void:
 withdrawalRequest:
-    // src/Baanx.algo.ts:708
+    // src/Master.algo.ts:708
     // @abimethod({ allowActions: ['NoOp'] })
     txna ApplicationArgs 1
     dup
@@ -1469,42 +1469,42 @@ withdrawalRequest:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:710
+    // src/Master.algo.ts:710
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     dig 2
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 3
     concat
-    // src/Baanx.algo.ts:711
+    // src/Master.algo.ts:711
     // const cardData = clone(this.cards(card).value);
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:712
+    // src/Master.algo.ts:712
     // const [balance, _optedIn] = op.AssetHolding.assetBalance(card, asset);
     dig 3
     dig 3
     asset_holding_get AssetBalance
     pop
-    // src/Baanx.algo.ts:713
+    // src/Master.algo.ts:713
     // assert(amount <= balance, 'INSUFFICIENT_BALANCE');
     dig 2
     >=
     assert // INSUFFICIENT_BALANCE
-    // src/Baanx.algo.ts:717
+    // src/Master.algo.ts:717
     // recipient: Txn.sender,
     txn Sender
-    // src/Baanx.algo.ts:720
+    // src/Master.algo.ts:720
     // createdAt: Global.latestTimestamp,
     global LatestTimestamp
-    // src/Baanx.algo.ts:721
+    // src/Master.algo.ts:721
     // nonce: cardData.withdrawalNonce,
     uncover 2
     extract 72 8
-    // src/Baanx.algo.ts:715-722
+    // src/Master.algo.ts:715-722
     // const withdrawal: WithdrawalRequest = {
     //     card: card,
     //     recipient: Txn.sender,
@@ -1527,26 +1527,26 @@ withdrawalRequest:
     concat
     swap
     concat
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:724
+    // src/Master.algo.ts:724
     // this.withdrawals(Txn.sender).value = clone(withdrawal);
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:724
+    // src/Master.algo.ts:724
     // this.withdrawals(Txn.sender).value = clone(withdrawal);
     dig 1
     box_put
-    // src/Baanx.algo.ts:726
+    // src/Master.algo.ts:726
     // emit<WithdrawalRequest>(withdrawal);
     pushbytes 0xd85f620a // method "WithdrawalRequest(address,address,uint64,uint64,uint64,uint64)"
     dig 1
     concat
     log
-    // src/Baanx.algo.ts:708
+    // src/Master.algo.ts:708
     // @abimethod({ allowActions: ['NoOp'] })
     bytec_1 // 0x151f7c75
     swap
@@ -1556,9 +1556,9 @@ withdrawalRequest:
     return
 
 
-// src/Baanx.algo.ts::Master.withdrawalCancel[routing]() -> void:
+// src/Master.algo.ts::Master.withdrawalCancel[routing]() -> void:
 withdrawalCancel:
-    // src/Baanx.algo.ts:735
+    // src/Master.algo.ts:735
     // withdrawalCancel(card: Account): void {
     txna ApplicationArgs 1
     dup
@@ -1566,51 +1566,51 @@ withdrawalCancel:
     intc_3 // 32
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
-    // src/Baanx.algo.ts:736
+    // src/Master.algo.ts:736
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:737
+    // src/Master.algo.ts:737
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:737
+    // src/Master.algo.ts:737
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     box_len
     bury 1
     assert // WITHDRAWAL_REQUEST_NOT_FOUND
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:738
+    // src/Master.algo.ts:738
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:738
+    // src/Master.algo.ts:738
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:739
+    // src/Master.algo.ts:739
     // this.withdrawals(Txn.sender).delete();
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:739
+    // src/Master.algo.ts:739
     // this.withdrawals(Txn.sender).delete();
     box_del
     pop
-    // src/Baanx.algo.ts:740
+    // src/Master.algo.ts:740
     // emit<WithdrawalRequestCancelled>(withdrawal);
     dup
     extract 0 32
@@ -1639,15 +1639,15 @@ withdrawalCancel:
     swap
     concat
     log
-    // src/Baanx.algo.ts:735
+    // src/Master.algo.ts:735
     // withdrawalCancel(card: Account): void {
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.withdraw[routing]() -> void:
+// src/Master.algo.ts::Master.withdraw[routing]() -> void:
 withdraw:
-    // src/Baanx.algo.ts:747
+    // src/Master.algo.ts:747
     // @abimethod({ allowActions: ['NoOp'] })
     txna ApplicationArgs 1
     dup
@@ -1662,48 +1662,48 @@ withdraw:
     ==
     assert // invalid number of bytes for arc4.uint64
     btoi
-    // src/Baanx.algo.ts:749
+    // src/Master.algo.ts:749
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     dig 1
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:750
+    // src/Master.algo.ts:750
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:750
+    // src/Master.algo.ts:750
     // assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
     box_len
     bury 1
     assert // WITHDRAWAL_REQUEST_NOT_FOUND
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 2
     concat
-    // src/Baanx.algo.ts:751
+    // src/Master.algo.ts:751
     // const cardData = clone(this.cards(card).value);
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:752
+    // src/Master.algo.ts:752
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:752
+    // src/Master.algo.ts:752
     // const withdrawal = clone(this.withdrawals(Txn.sender).value);
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:753
+    // src/Master.algo.ts:753
     // assert(amount <= withdrawal.amount, 'AMOUNT_INVALID');
     dup
     pushint 72 // 72
@@ -1711,7 +1711,7 @@ withdraw:
     dig 3
     >=
     assert // AMOUNT_INVALID
-    // src/Baanx.algo.ts:754
+    // src/Master.algo.ts:754
     // assert(cardData.withdrawalNonce === withdrawal.nonce, 'NONCE_INVALID');
     swap
     pushint 72 // 72
@@ -1723,32 +1723,32 @@ withdraw:
     dig 1
     ==
     assert // NONCE_INVALID
-    // src/Baanx.algo.ts:756
+    // src/Master.algo.ts:756
     // const releaseTime: uint64 = withdrawal.createdAt + this.withdrawal_wait_time.value;
     dig 1
     pushint 80 // 80
     extract_uint64
     intc_0 // 0
-    // src/Baanx.algo.ts:175
+    // src/Master.algo.ts:175
     // withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
     bytec 10 // "wwt"
-    // src/Baanx.algo.ts:756
+    // src/Master.algo.ts:756
     // const releaseTime: uint64 = withdrawal.createdAt + this.withdrawal_wait_time.value;
     app_global_get_ex
     assert // check GlobalState exists
     dig 1
     +
-    // src/Baanx.algo.ts:757
+    // src/Master.algo.ts:757
     // assert(Global.latestTimestamp >= releaseTime, 'WITHDRAWAL_TIME_INVALID');
     global LatestTimestamp
     <=
     assert // WITHDRAWAL_TIME_INVALID
-    // src/Baanx.algo.ts:762
+    // src/Master.algo.ts:762
     // withdrawal.asset,
     uncover 2
     pushint 64 // 64
     extract_uint64
-    // src/Baanx.algo.ts:760-767
+    // src/Master.algo.ts:760-767
     // this.withdrawFunds(
     //     card,
     //     withdrawal.asset,
@@ -1762,10 +1762,10 @@ withdraw:
     uncover 4
     uncover 3
     uncover 4
-    // src/Baanx.algo.ts:766
+    // src/Master.algo.ts:766
     // WithdrawalTypePermissionLess
     bytec 12 // "permissionless"
-    // src/Baanx.algo.ts:760-767
+    // src/Master.algo.ts:760-767
     // this.withdrawFunds(
     //     card,
     //     withdrawal.asset,
@@ -1775,28 +1775,28 @@ withdraw:
     //     WithdrawalTypePermissionLess
     // );
     callsub withdrawFunds
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:768
+    // src/Master.algo.ts:768
     // this.withdrawals(Txn.sender).delete();
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:768
+    // src/Master.algo.ts:768
     // this.withdrawals(Txn.sender).delete();
     box_del
     pop
-    // src/Baanx.algo.ts:747
+    // src/Master.algo.ts:747
     // @abimethod({ allowActions: ['NoOp'] })
     intc_1 // 1
     return
 
 
-// src/Baanx.algo.ts::Master.withdrawPermissioned[routing]() -> void:
+// src/Master.algo.ts::Master.withdrawPermissioned[routing]() -> void:
 withdrawPermissioned:
-    // src/Baanx.algo.ts:779-786
+    // src/Master.algo.ts:779-786
     // withdrawPermissioned(
     //     card: Account,
     //     asset: Asset,
@@ -1853,27 +1853,27 @@ withdrawPermissioned:
     pushint 64 // 64
     ==
     assert // invalid number of bytes for arc4.static_array<arc4.uint8, 64>
-    // src/Baanx.algo.ts:787
+    // src/Master.algo.ts:787
     // assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
     dig 2
     callsub isCardOwner
     assert // SENDER_NOT_ALLOWED
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     dig 3
     concat
-    // src/Baanx.algo.ts:788
+    // src/Master.algo.ts:788
     // const cardData = clone(this.cards(card).value);
     box_get
     assert // Box must have value
-    // src/Baanx.algo.ts:790
+    // src/Master.algo.ts:790
     // assert(Global.latestTimestamp < expiresAt, 'WITHDRAWAL_TIME_INVALID');
     global LatestTimestamp
     dig 3
     <
     assert // WITHDRAWAL_TIME_INVALID
-    // src/Baanx.algo.ts:791
+    // src/Master.algo.ts:791
     // assert(cardData.withdrawalNonce === nonce, 'NONCE_INVALID');
     pushint 72 // 72
     extract_uint64
@@ -1882,13 +1882,13 @@ withdrawPermissioned:
     dig 1
     ==
     assert // NONCE_INVALID
-    // src/Baanx.algo.ts:795
+    // src/Master.algo.ts:795
     // recipient: Txn.sender,
     txn Sender
-    // src/Baanx.algo.ts:800
+    // src/Master.algo.ts:800
     // genesisHash: Global.genesisHash,
     global GenesisHash
-    // src/Baanx.algo.ts:793-801
+    // src/Master.algo.ts:793-801
     // const withdrawal: PermissionedWithdrawal = {
     //     card,
     //     recipient: Txn.sender,
@@ -1915,7 +1915,7 @@ withdrawPermissioned:
     concat
     swap
     concat
-    // src/Baanx.algo.ts:803
+    // src/Master.algo.ts:803
     // const withdrawal_hash = op.sha256(arc4.encodeArc4(withdrawal));
     sha256
 
@@ -1939,13 +1939,13 @@ withdrawPermissioned_while_top@5:
     b withdrawPermissioned_while_top@5
 
 withdrawPermissioned_after_while@10:
-    // src/Baanx.algo.ts:809
+    // src/Master.algo.ts:809
     // op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
     intc_0 // 0
-    // src/Baanx.algo.ts:178
+    // src/Master.algo.ts:178
     // permissioned_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
     bytec 11 // "pwpk"
-    // src/Baanx.algo.ts:809
+    // src/Master.algo.ts:809
     // op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
     app_global_get_ex
     assert // check GlobalState exists
@@ -1953,13 +1953,13 @@ withdrawPermissioned_after_while@10:
     dig 4
     uncover 2
     ed25519verify_bare
-    // src/Baanx.algo.ts:808-811
+    // src/Master.algo.ts:808-811
     // assert(
     //     op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
     //     'SIGNATURE_INVALID'
     // );
     assert // SIGNATURE_INVALID
-    // src/Baanx.algo.ts:814
+    // src/Master.algo.ts:814
     // this.withdrawFunds(card, asset, amount, expiresAt, cardData.withdrawalNonce, WithdrawalTypeApproved);
     dig 6
     dig 6
@@ -1968,36 +1968,36 @@ withdrawPermissioned_after_while@10:
     dig 5
     bytec 14 // "approved"
     callsub withdrawFunds
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:819
+    // src/Master.algo.ts:819
     // if (this.withdrawals(Txn.sender).exists) {
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:819
+    // src/Master.algo.ts:819
     // if (this.withdrawals(Txn.sender).exists) {
     box_len
     bury 1
     bz withdrawPermissioned_after_if_else@3
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     bytec_2 // "wr"
-    // src/Baanx.algo.ts:820
+    // src/Master.algo.ts:820
     // this.withdrawals(Txn.sender).delete();
     txn Sender
-    // src/Baanx.algo.ts:182
+    // src/Master.algo.ts:182
     // withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
     concat
-    // src/Baanx.algo.ts:820
+    // src/Master.algo.ts:820
     // this.withdrawals(Txn.sender).delete();
     box_del
     pop
 
 withdrawPermissioned_after_if_else@3:
-    // src/Baanx.algo.ts:779-786
+    // src/Master.algo.ts:779-786
     // withdrawPermissioned(
     //     card: Account,
     //     asset: Asset,
@@ -2231,23 +2231,23 @@ transferOwnership:
     return
 
 
-// src/Baanx.algo.ts::Master.isCardOwner(card: bytes) -> uint64:
+// src/Master.algo.ts::Master.isCardOwner(card: bytes) -> uint64:
 isCardOwner:
-    // src/Baanx.algo.ts:199
+    // src/Master.algo.ts:199
     // private isCardOwner(card: Account): boolean {
     proto 1 1
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     frame_dig -1
     concat
-    // src/Baanx.algo.ts:200
+    // src/Master.algo.ts:200
     // assert(this.cards(card).exists, 'CARD_NOT_FOUND');
     dup
     box_len
     bury 1
     assert // CARD_NOT_FOUND
-    // src/Baanx.algo.ts:201
+    // src/Master.algo.ts:201
     // return this.cards(card).value.owner === Txn.sender;
     box_get
     pop
@@ -2257,21 +2257,21 @@ isCardOwner:
     retsub
 
 
-// src/Baanx.algo.ts::Master.cardAssetOptIn(card: bytes, asset: uint64) -> void:
+// src/Master.algo.ts::Master.cardAssetOptIn(card: bytes, asset: uint64) -> void:
 cardAssetOptIn:
-    // src/Baanx.algo.ts:209
+    // src/Master.algo.ts:209
     // private cardAssetOptIn(card: Account, asset: Asset): void {
     proto 2 0
-    // src/Baanx.algo.ts:211
+    // src/Master.algo.ts:211
     // const [_assetBal, optedIn] = op.AssetHolding.assetBalance(Global.currentApplicationAddress, asset);
     global CurrentApplicationAddress
     frame_dig -1
     asset_holding_get AssetBalance
     bury 1
-    // src/Baanx.algo.ts:212
+    // src/Master.algo.ts:212
     // assert(optedIn, 'ASSET_NOT_OPTED_IN');
     assert // ASSET_NOT_OPTED_IN
-    // src/Baanx.algo.ts:214-219
+    // src/Master.algo.ts:214-219
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -2279,7 +2279,7 @@ cardAssetOptIn:
     //     assetAmount: 0,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:218
+    // src/Master.algo.ts:218
     // assetAmount: 0,
     intc_0 // 0
     itxn_field AssetAmount
@@ -2289,7 +2289,7 @@ cardAssetOptIn:
     itxn_field AssetReceiver
     frame_dig -2
     itxn_field Sender
-    // src/Baanx.algo.ts:214-219
+    // src/Master.algo.ts:214-219
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: card,
@@ -2301,7 +2301,7 @@ cardAssetOptIn:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Baanx.algo.ts:221-224
+    // src/Master.algo.ts:221-224
     // emit<CardAssetEnabled>({
     //     card: card,
     //     asset: asset,
@@ -2318,9 +2318,9 @@ cardAssetOptIn:
     retsub
 
 
-// src/Baanx.algo.ts::Master.withdrawFunds(card: bytes, asset: uint64, amount: uint64, timestamp: uint64, nonce: uint64, withdrawalType: bytes) -> void:
+// src/Master.algo.ts::Master.withdrawFunds(card: bytes, asset: uint64, amount: uint64, timestamp: uint64, nonce: uint64, withdrawalType: bytes) -> void:
 withdrawFunds:
-    // src/Baanx.algo.ts:242-249
+    // src/Master.algo.ts:242-249
     // private withdrawFunds(
     //     card: Account,
     //     asset: Asset,
@@ -2330,11 +2330,11 @@ withdrawFunds:
     //     withdrawalType: string
     // ): void {
     proto 6 0
-    // src/Baanx.algo.ts:251
+    // src/Master.algo.ts:251
     // if (amount > 0) {
     frame_dig -4
     bz withdrawFunds_after_if_else@3
-    // src/Baanx.algo.ts:252-257
+    // src/Master.algo.ts:252-257
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Txn.sender,
@@ -2342,7 +2342,7 @@ withdrawFunds:
     //     assetAmount: amount,
     // }).submit();
     itxn_begin
-    // src/Baanx.algo.ts:254
+    // src/Master.algo.ts:254
     // assetReceiver: Txn.sender,
     txn Sender
     frame_dig -4
@@ -2352,7 +2352,7 @@ withdrawFunds:
     itxn_field AssetReceiver
     frame_dig -6
     itxn_field Sender
-    // src/Baanx.algo.ts:252-257
+    // src/Master.algo.ts:252-257
     // itxn.assetTransfer({
     //     sender: card,
     //     assetReceiver: Txn.sender,
@@ -2366,10 +2366,10 @@ withdrawFunds:
     itxn_submit
 
 withdrawFunds_after_if_else@3:
-    // src/Baanx.algo.ts:263
+    // src/Master.algo.ts:263
     // recipient: Txn.sender,
     txn Sender
-    // src/Baanx.algo.ts:266
+    // src/Master.algo.ts:266
     // createdAt: withdrawalType === WithdrawalTypePermissionLess ? timestamp : 0,
     frame_dig -1
     bytec 12 // "permissionless"
@@ -2378,7 +2378,7 @@ withdrawFunds_after_if_else@3:
     frame_dig -3
     uncover 2
     select
-    // src/Baanx.algo.ts:267
+    // src/Master.algo.ts:267
     // expiresAt: withdrawalType === WithdrawalTypeApproved ? timestamp : 0,
     frame_dig -1
     bytec 14 // "approved"
@@ -2387,7 +2387,7 @@ withdrawFunds_after_if_else@3:
     frame_dig -3
     uncover 2
     select
-    // src/Baanx.algo.ts:261-270
+    // src/Master.algo.ts:261-270
     // emit<Withdrawal>({
     //     card: card,
     //     recipient: Txn.sender,
@@ -2431,17 +2431,17 @@ withdrawFunds_after_if_else@3:
     swap
     concat
     log
-    // src/Baanx.algo.ts:272
+    // src/Master.algo.ts:272
     // this.cards(card).value.withdrawalNonce = nonce + 1;
     frame_dig -2
     intc_1 // 1
     +
-    // src/Baanx.algo.ts:170
+    // src/Master.algo.ts:170
     // cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
     bytec_0 // "cf"
     frame_dig -6
     concat
-    // src/Baanx.algo.ts:272
+    // src/Master.algo.ts:272
     // this.cards(card).value.withdrawalNonce = nonce + 1;
     swap
     itob
@@ -2451,43 +2451,43 @@ withdrawFunds_after_if_else@3:
     retsub
 
 
-// src/Baanx.algo.ts::Master.updateSettlementAddress(asset: uint64, newSettlementAddress: bytes) -> void:
+// src/Master.algo.ts::Master.updateSettlementAddress(asset: uint64, newSettlementAddress: bytes) -> void:
 updateSettlementAddress:
-    // src/Baanx.algo.ts:275
+    // src/Master.algo.ts:275
     // private updateSettlementAddress(asset: Asset, newSettlementAddress: Account): void {
     proto 2 0
-    // src/Baanx.algo.ts:276
+    // src/Master.algo.ts:276
     // const oldSettlementAddress = this.settlement_address(asset).exists
     frame_dig -2
     itob
-    // src/Baanx.algo.ts:188
+    // src/Master.algo.ts:188
     // settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
     bytec 8 // "sa"
     swap
     concat
     dup
-    // src/Baanx.algo.ts:276
+    // src/Master.algo.ts:276
     // const oldSettlementAddress = this.settlement_address(asset).exists
     box_len
     bury 1
-    // src/Baanx.algo.ts:276-278
+    // src/Master.algo.ts:276-278
     // const oldSettlementAddress = this.settlement_address(asset).exists
     //     ? this.settlement_address(asset).value
     //     : Global.zeroAddress;
     bz updateSettlementAddress_ternary_false@2
-    // src/Baanx.algo.ts:277
+    // src/Master.algo.ts:277
     // ? this.settlement_address(asset).value
     frame_dig 0
     box_get
     assert // Box must have value
 
 updateSettlementAddress_ternary_merge@3:
-    // src/Baanx.algo.ts:279
+    // src/Master.algo.ts:279
     // this.settlement_address(asset).value = newSettlementAddress;
     frame_dig 0
     frame_dig -1
     box_put
-    // src/Baanx.algo.ts:281-284
+    // src/Master.algo.ts:281-284
     // emit<SettlementAddressChanged>({
     //     oldSettlementAddress: oldSettlementAddress,
     //     newSettlementAddress: newSettlementAddress,
@@ -2501,7 +2501,7 @@ updateSettlementAddress_ternary_merge@3:
     retsub
 
 updateSettlementAddress_ternary_false@2:
-    // src/Baanx.algo.ts:278
+    // src/Master.algo.ts:278
     // : Global.zeroAddress;
     global ZeroAddress
     b updateSettlementAddress_ternary_merge@3
