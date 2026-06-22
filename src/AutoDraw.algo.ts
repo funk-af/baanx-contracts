@@ -58,7 +58,7 @@ export class AutoDraw extends LogicSig {
             // Enforce the second next transaction is a Master call
             txnMasterDebit.type === TransactionType.ApplicationCall &&
             txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-            txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+            txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
             Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
             Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
             Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))

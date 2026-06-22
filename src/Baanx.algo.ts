@@ -34,7 +34,6 @@ import {
     Txn,
     Global,
     assert,
-    assertMatch,
     ensureBudget,
     arc4,
     itxn,
@@ -44,14 +43,11 @@ import {
     clone,
     uint64,
     bytes,
-    Bytes,
 } from '@algorandfoundation/algorand-typescript';
-import type { gtxn } from '@algorandfoundation/algorand-typescript';
 import { Recoverable } from './roles/Recoverable.algo';
 
-// CardFundData
-type CardFundData = {
-    partnerChannel: Account;
+// CardData
+type CardData = {
     owner: Account;
     address: Account;
     nonce: uint64;
@@ -60,7 +56,7 @@ type CardFundData = {
 
 // Withdrawal request for an amount of an asset, where the timestamp indicates the earliest it can be made
 type PermissionlessWithdrawalRequest = {
-    cardFund: Account;
+    card: Account;
     recipient: Account;
     asset: Asset;
     amount: uint64;
@@ -72,24 +68,18 @@ const WithdrawalTypeApproved = 'approved';
 const WithdrawalTypePermissionLess = 'permissionless';
 
 // ========== Event Types ==========
-type PartnerChannelCreated = {
-    partnerChannel: Account;
-    partnerChannelName: string;
+type CardCreated = {
+    cardOwner: Account;
+    card: Account;
 };
 
-type CardFundCreated = {
-    cardFundOwner: Account;
-    cardFund: Account;
-    partnerChannel: Account;
-};
-
-type CardFundAssetEnabled = {
-    cardFund: Account;
+type CardAssetEnabled = {
+    card: Account;
     asset: Asset;
 };
 
-type CardFundAssetDisabled = {
-    cardFund: Account;
+type CardAssetDisabled = {
+    card: Account;
     asset: Asset;
 };
 
@@ -129,7 +119,7 @@ type Settlement = {
 };
 
 type WithdrawalRequest = {
-    cardFund: Account;
+    card: Account;
     recipient: Account;
     asset: Asset;
     amount: uint64;
@@ -138,7 +128,7 @@ type WithdrawalRequest = {
 };
 
 type WithdrawalRequestCancelled = {
-    cardFund: Account;
+    card: Account;
     recipient: Account;
     asset: Asset;
     amount: uint64;
@@ -147,7 +137,7 @@ type WithdrawalRequestCancelled = {
 };
 
 type Withdrawal = {
-    cardFund: Account;
+    card: Account;
     recipient: Account;
     asset: Asset;
     amount: uint64;
@@ -155,6 +145,16 @@ type Withdrawal = {
     expiresAt: uint64;
     nonce: uint64;
     type: string;
+};
+
+type ApprovedWithdrawalRequest = {
+    card: Account;
+    recipient: Account;
+    asset: Asset;
+    amount: uint64;
+    expiresAt: uint64;
+    nonce: uint64;
+    genesisHash: bytes<32>;
 };
 
 class ControlledAddress extends Contract {
@@ -176,15 +176,10 @@ class ControlledAddress extends Contract {
 
 export class Master extends Recoverable {
     // ========== Storage ==========
-    // Card Funds
-    card_funds = BoxMap<Account, CardFundData>({ keyPrefix: 'cf' });
+    // Cards
+    cards = BoxMap<Account, CardData>({ keyPrefix: 'cf' });
 
-    card_funds_active_count = GlobalState<uint64>({ key: 'cfac' });
-
-    // Partner Channels
-    partner_channels = BoxMap<Account, string>({ keyPrefix: 'pc' });
-
-    partner_channels_active_count = GlobalState<uint64>({ key: 'pcac' });
+    cards_active_count = GlobalState<uint64>({ key: 'cfac' });
 
     // Seconds to wait
     withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
@@ -207,61 +202,55 @@ export class Master extends Recoverable {
 
     // ========== Internal Utils ==========
     /**
-     * Check if the current transaction sender is the Card Fund holder/owner
-     * @param cardFund Card Fund address
+     * Check if the current transaction sender is the card holder/owner
+     * @param card Card address
      * @returns True if the sender is the Card Holder of the card
      */
-    private isCardFundOwner(cardFund: Account): boolean {
-        assert(this.card_funds(cardFund).exists, 'CARD_FUND_NOT_FOUND');
-        return this.card_funds(cardFund).value.owner === Txn.sender;
+    private isCardOwner(card: Account): boolean {
+        assert(this.cards(card).exists, 'CARD_NOT_FOUND');
+        return this.cards(card).value.owner === Txn.sender;
     }
 
     /**
-     * Opt-in a Card Fund into an asset. Minimum balance requirement must be met prior to calling this function.
-     * @param cardFund Card Fund address
+     * Opt-in a card into an asset. Minimum balance requirement must be met prior to calling this function.
+     * @param card Card address
      * @param asset Asset to opt-in to
      */
-    private cardFundAssetOptIn(cardFund: Account, asset: Asset): void {
+    private cardAssetOptIn(card: Account, asset: Asset): void {
         // Only proceed if the master allowlist accepts it
         const [_assetBal, optedIn] = op.AssetHolding.assetBalance(Global.currentApplicationAddress, asset);
         assert(optedIn, 'ASSET_NOT_OPTED_IN');
 
         itxn.assetTransfer({
-            sender: cardFund,
-            assetReceiver: cardFund,
+            sender: card,
+            assetReceiver: card,
             xferAsset: asset,
             assetAmount: 0,
         }).submit();
 
-        emit<CardFundAssetEnabled>({
-            cardFund: cardFund,
+        emit<CardAssetEnabled>({
+            card: card,
             asset: asset,
         });
     }
 
-    private cardFundAssetCloseOut(cardFund: Account, asset: Asset): void {
+    private cardAssetCloseOut(card: Account, asset: Asset): void {
         itxn.assetTransfer({
-            sender: cardFund,
-            assetReceiver: cardFund,
-            assetCloseTo: cardFund,
+            sender: card,
+            assetReceiver: card,
+            assetCloseTo: card,
             xferAsset: asset,
             assetAmount: 0,
         }).submit();
 
-        itxn.payment({
-            sender: cardFund,
-            receiver: Txn.sender,
-            amount: this.getCardFundAssetMbr(),
-        }).submit();
-
-        emit<CardFundAssetDisabled>({
-            cardFund: cardFund,
+        emit<CardAssetDisabled>({
+            card: card,
             asset: asset,
         });
     }
 
     private withdrawFunds(
-        cardFund: Account,
+        card: Account,
         asset: Asset,
         amount: uint64,
         timestamp: uint64,
@@ -271,7 +260,7 @@ export class Master extends Recoverable {
         // if amount is zero, we skip the asset transfer
         if (amount > 0) {
             itxn.assetTransfer({
-                sender: cardFund,
+                sender: card,
                 assetReceiver: Txn.sender,
                 xferAsset: asset,
                 assetAmount: amount,
@@ -280,7 +269,7 @@ export class Master extends Recoverable {
 
         // Emit withdrawal event
         emit<Withdrawal>({
-            cardFund: cardFund,
+            card: card,
             recipient: Txn.sender,
             asset: asset,
             amount: amount,
@@ -290,7 +279,7 @@ export class Master extends Recoverable {
             type: withdrawalType,
         });
 
-        this.card_funds(cardFund).value.withdrawalNonce = nonce + 1;
+        this.cards(card).value.withdrawalNonce = nonce + 1;
     }
 
     private updateSettlementAddress(asset: Asset, newSettlementAddress: Account): void {
@@ -316,8 +305,7 @@ export class Master extends Recoverable {
 
         // puya-ts does not auto-zero-init GlobalState, so set the counters explicitly
         // at creation time.
-        this.card_funds_active_count.value = 0;
-        this.partner_channels_active_count.value = 0;
+        this.cards_active_count.value = 0;
         this.settlement_nonce.value = 0;
         this.paused.value = false;
 
@@ -333,16 +321,14 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active card funds
+     * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active cards
      */
     @abimethod({ allowActions: ['DeleteApplication'] })
     destroy(): void {
         this.onlyOwner();
 
-        // There must not be any active card fund
-        assert(!this.card_funds_active_count.value, 'CARD_FUNDS_STILL_ACTIVE');
-        // There must not be any active partner channels
-        assert(!this.partner_channels_active_count.value, 'PARTNER_CHANNELS_STILL_ACTIVE');
+        // There must not be any active card
+        assert(!this.cards_active_count.value, 'CARDS_STILL_ACTIVE');
 
         itxn.payment({
             receiver: Global.currentApplicationAddress,
@@ -373,225 +359,109 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Retrieves the minimum balance requirement for creating a partner channel account.
-     * @param partnerChannelName - The name of the partner channel.
-     * @returns The minimum balance requirement for creating a partner channel account.
-     */
-    getPartnerChannelMbr(partnerChannelName: string): uint64 {
-        const boxCost: uint64 = 2500 + 400 * (3 + 32 + Bytes(partnerChannelName).length);
-        return Global.minBalance + Global.minBalance + boxCost;
-    }
-
-    /**
-     * Creates a partner channel account and associates it with the provided partner channel name.
-     * Only the owner of the contract can call this function.
-     *
-     * @param mbr - The PayTxn object representing the payment transaction.
-     * @param partnerChannelName - The name of the partner channel.
-     * @returns The address of the newly created partner channel account.
-     */
-    partnerChannelCreate(mbr: gtxn.PaymentTxn, partnerChannelName: string): Account {
-        assertMatch(mbr, {
-            receiver: Global.currentApplicationAddress,
-            amount: this.getPartnerChannelMbr(partnerChannelName),
-        });
-
-        // Create a new account
-        const compiledPartner = compile(ControlledAddress);
-        const partnerChannelAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
-            approvalProgram: compiledPartner.approvalProgram,
-            clearStateProgram: compiledPartner.clearStateProgram,
-            onCompletion: OnCompleteAction.DeleteApplication,
-        }).returnValue;
-
-        // Fund the account with a minimum balance
-        itxn.payment({
-            receiver: partnerChannelAddr,
-            amount: Global.minBalance,
-        }).submit();
-
-        this.partner_channels(partnerChannelAddr).value = partnerChannelName;
-
-        // Increment active partner channels
-        this.partner_channels_active_count.value = this.partner_channels_active_count.value + 1;
-
-        emit<PartnerChannelCreated>({
-            partnerChannel: partnerChannelAddr,
-            partnerChannelName: partnerChannelName,
-        });
-
-        return partnerChannelAddr;
-    }
-
-    partnerChannelClose(partnerChannel: Account): void {
-        this.onlyOwner();
-
-        itxn.payment({
-            sender: partnerChannel,
-            receiver: partnerChannel,
-            amount: 0,
-            closeRemainderTo: Txn.sender,
-        }).submit();
-
-        const partnerChannelSize: uint64 = Bytes(this.partner_channels(partnerChannel).value).length;
-        const boxCost: uint64 = 2500 + 400 * (3 + 32 + partnerChannelSize);
-
-        itxn.payment({
-            receiver: Txn.sender,
-            amount: boxCost,
-        }).submit();
-
-        // Delete the partner channel from the box
-        this.partner_channels(partnerChannel).delete();
-
-        // Decrement active partner channels
-        this.partner_channels_active_count.value = this.partner_channels_active_count.value - 1;
-    }
-
-    /**
-     * Retrieves the minimum balance requirement for creating a card fund account.
-     * @param asset Asset to opt-in to. 0 = No asset opt-in
-     * @returns Minimum balance requirement for creating a card fund account
-     */
-    getCardFundMbr(asset: Asset): uint64 {
-        // TODO: Double check size requirement is accurate. The prefix doesn't seem right.
-        // Box Cost: 2500 + 400 * (Prefix + Address + (partnerChannel + owner + address + nonce + withdrawalNonce))
-        const boxCost: uint64 = 2500 + 400 * (3 + 32 + (32 + 32 + 32 + 8 + 8));
-        const assetMbr: uint64 = asset.id ? Global.assetOptInMinBalance : 0;
-        return Global.minBalance + assetMbr + boxCost;
-    }
-
-    /**
-     * Create account. This generates a brand new account and funds the minimum balance requirement
-     * @param mbr Payment transaction of minimum balance requirement
-     * @param partnerChannel Funding Channel name
+     * Create a card. This generates a brand new account and funds the minimum balance requirement
+     * from the contract (owner-sponsored). Only the owner can call this function.
+     * @param cardOwner The card holder who will own/control the card
      * @param asset Asset to opt-in to. 0 = No asset opt-in
      * @returns Newly generated account used by their card
      */
-    cardFundCreate(mbr: gtxn.PaymentTxn, partnerChannel: Account, asset: Asset): Account {
-        assert(this.partner_channels(partnerChannel).exists, 'PARTNER_CHANNEL_NOT_FOUND');
+    cardCreate(cardOwner: Account, asset: Asset): Account {
+        this.onlyOwner();
 
-        const cardFundData: CardFundData = {
-            partnerChannel: partnerChannel,
-            owner: Txn.sender,
+        const cardData: CardData = {
+            owner: cardOwner,
             address: Global.zeroAddress,
             nonce: 0,
             withdrawalNonce: 0,
         };
 
-        assertMatch(mbr, {
-            receiver: Global.currentApplicationAddress,
-            amount: this.getCardFundMbr(asset),
-        });
-
         // Create a new account
-        const compiledCardFund = compile(ControlledAddress);
-        const cardFundAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
-            approvalProgram: compiledCardFund.approvalProgram,
-            clearStateProgram: compiledCardFund.clearStateProgram,
+        const compiledCard = compile(ControlledAddress);
+        const cardAddr = arc4.abiCall<typeof ControlledAddress.prototype.new>({
+            approvalProgram: compiledCard.approvalProgram,
+            clearStateProgram: compiledCard.clearStateProgram,
             onCompletion: OnCompleteAction.DeleteApplication,
         }).returnValue;
 
-        // Update the card fund data with the newly generated address
-        cardFundData.address = cardFundAddr;
+        // Update the card data with the newly generated address
+        cardData.address = cardAddr;
 
         // Fund the account with a minimum balance
         const assetMbr: uint64 = asset.id ? Global.assetOptInMinBalance : 0;
         itxn.payment({
-            receiver: cardFundAddr,
+            receiver: cardAddr,
             amount: Global.minBalance + assetMbr,
         }).submit();
 
         // Opt-in to the asset if provided
         if (asset.id) {
-            this.cardFundAssetOptIn(cardFundAddr, asset);
+            this.cardAssetOptIn(cardAddr, asset);
         }
 
         // Store new card along with Card Holder
-        this.card_funds(cardFundAddr).value = clone(cardFundData);
+        this.cards(cardAddr).value = clone(cardData);
 
-        // Increment active card funds
-        this.card_funds_active_count.value = this.card_funds_active_count.value + 1;
+        // Increment active cards
+        this.cards_active_count.value = this.cards_active_count.value + 1;
 
-        emit<CardFundCreated>({
-            cardFundOwner: Txn.sender,
-            cardFund: cardFundAddr,
-            partnerChannel: partnerChannel,
+        emit<CardCreated>({
+            cardOwner: cardOwner,
+            card: cardAddr,
         });
 
         // Return the new account address
-        return cardFundAddr;
+        return cardAddr;
     }
 
     /**
      * Close account. This permanently removes the rekey and deletes the account from the ledger
-     * @param cardFund Address to close
+     * @param card Address to close
      */
-    cardFundClose(cardFund: Account): void {
-        assert(this.isOwner() || this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
+    cardClose(card: Account): void {
+        assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
 
+        // Close the card account back to the contract, returning its balance to the
+        // owner-funded pool. Deleting the box releases its MBR back to the contract too.
         itxn.payment({
-            sender: cardFund,
-            receiver: cardFund,
+            sender: card,
+            receiver: Global.currentApplicationAddress,
             amount: 0,
-            closeRemainderTo: Txn.sender,
-        }).submit();
-
-        const cardFundSize: uint64 = 112; // CardFundData: 3x Account(32) + 2x uint64(8) = 112 bytes
-        const boxCost: uint64 = 2500 + 400 * (1 + 32 + cardFundSize);
-
-        itxn.payment({
-            receiver: Txn.sender,
-            amount: boxCost,
+            closeRemainderTo: Global.currentApplicationAddress,
         }).submit();
 
         // Delete the card from the box
-        this.card_funds(cardFund).delete();
+        this.cards(card).delete();
 
-        // Decrement active card funds
-        this.card_funds_active_count.value = this.card_funds_active_count.value - 1;
+        // Decrement active cards
+        this.cards_active_count.value = this.cards_active_count.value - 1;
     }
 
     /**
      * Recovers funds from an old card and transfers them to a new card.
      * Only the owner of the contract can perform this operation.
      *
-     * @param cardFund - The card fund to recover.
-     * @param newCardFundHolder - The address of the new card holder.
+     * @param card - The card to recover.
+     * @param newCardHolder - The address of the new card holder.
      */
-    cardFundRecover(cardFund: Account, newCardFundHolder: Account): void {
+    cardRecover(card: Account, newCardHolder: Account): void {
         this.onlyOwner();
 
         // eslint-disable-next-line no-unused-vars
-        const oldCardFundHolder = this.card_funds(cardFund).value.owner;
-        this.card_funds(cardFund).value.owner = newCardFundHolder;
+        const oldCardHolder = this.cards(card).value.owner;
+        this.cards(card).value.owner = newCardHolder;
 
-        // TODO: Emit CardFundRecovered
+        // TODO: Emit CardRecovered
     }
 
     /**
-     * Retrieves the minimum balance requirement for adding an asset to the allowlist.
-     * @returns Minimum balance requirement for adding an asset to the allowlist
-     */
-    getAssetAllowlistMbr(): uint64 {
-        // Box Cost: 2500 + 400 * (Prefix + AssetID + Address)
-        const ASSET_SETTLEMENT_ADDRESS_COST: uint64 = 2500 + 400 * (2 + 8 + 32);
-        return Global.assetOptInMinBalance + ASSET_SETTLEMENT_ADDRESS_COST;
-    }
-
-    /**
-     * Allows the master contract to flag intent of accepting an asset.
+     * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
+     * opt-in are funded from the contract (owner-sponsored).
      *
-     * @param mbr Payment transaction of minimum balance requirement.
      * @param asset The AssetID of the asset being transferred.
+     * @param settlementAddress The address settlements for this asset are sent to.
      */
-    assetAllowlistAdd(mbr: gtxn.PaymentTxn, asset: Asset, settlementAddress: Account): void {
+    assetAllowlistAdd(asset: Asset, settlementAddress: Account): void {
         this.onlyOwner();
-
-        assertMatch(mbr, {
-            receiver: Global.currentApplicationAddress,
-            amount: this.getAssetAllowlistMbr(),
-        });
 
         itxn.assetTransfer({
             sender: Global.currentApplicationAddress,
@@ -606,7 +476,8 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Allows the master contract to reject accepting an asset.
+     * Allows the master contract to reject accepting an asset. The freed MBR remains in the
+     * contract (owner-sponsored pool).
      *
      * @param asset - The AssetID of the asset being transferred.
      */
@@ -625,11 +496,6 @@ export class Master extends Recoverable {
         // Delete the settlement address, freeing up MBR
         this.settlement_address(asset).delete();
 
-        itxn.payment({
-            receiver: Txn.sender,
-            amount: this.getAssetAllowlistMbr(),
-        }).submit();
-
         emit<AssetAllowlistRemoved>({ asset: asset });
     }
 
@@ -637,20 +503,20 @@ export class Master extends Recoverable {
      * Debits the specified amount of the given asset from the card account.
      * Only the owner of the contract can perform this operation.
      *
-     * @param cardFund The card fund from which the asset will be debited.
+     * @param card The card from which the asset will be debited.
      * @param asset The asset to be debited.
      * @param amount The amount of the asset to be debited.
      */
-    cardFundDebit(cardFund: Account, asset: Asset, amount: uint64, nonce: uint64, ref: string): void {
+    cardDebit(card: Account, asset: Asset, amount: uint64, nonce: uint64, ref: string): void {
         this.whenNotPaused();
         this.onlyOwner();
 
         // Ensure the nonce is correct
-        const nextNonce: uint64 = this.card_funds(cardFund).value.nonce;
+        const nextNonce: uint64 = this.cards(card).value.nonce;
         assert(nextNonce === nonce, 'NONCE_INVALID');
 
         itxn.assetTransfer({
-            sender: cardFund,
+            sender: card,
             assetReceiver: Global.currentApplicationAddress,
             xferAsset: asset,
             assetAmount: amount,
@@ -658,7 +524,7 @@ export class Master extends Recoverable {
         }).submit();
 
         emit<Debit>({
-            card: cardFund,
+            card: card,
             asset: asset,
             amount: amount,
             nonce: nonce,
@@ -666,7 +532,7 @@ export class Master extends Recoverable {
         });
 
         // Increment the nonce
-        this.card_funds(cardFund).value.nonce = nextNonce + 1;
+        this.cards(card).value.nonce = nextNonce + 1;
     }
 
     /**
@@ -695,35 +561,35 @@ export class Master extends Recoverable {
      * Refunds a specified amount of an asset to a card account.
      * Only the owner of the contract can perform this operation.
      *
-     * @param cardFund - The card account to refund the asset to.
+     * @param card - The card account to refund the asset to.
      * @param asset - The asset to refund.
      * @param amount - The amount of the asset to refund.
      */
-    cardFundRefund(cardFund: Account, asset: Asset, amount: uint64, nonce: uint64): void {
+    cardRefund(card: Account, asset: Asset, amount: uint64, nonce: uint64): void {
         this.whenNotPaused();
 
         assert(Txn.sender === this.refund_address.value, 'SENDER_NOT_ALLOWED');
 
         // Ensure the nonce is correct
-        const nextNonce: uint64 = this.card_funds(cardFund).value.nonce;
+        const nextNonce: uint64 = this.cards(card).value.nonce;
         assert(nextNonce === nonce, 'NONCE_INVALID');
 
         itxn.assetTransfer({
             sender: Global.currentApplicationAddress,
-            assetReceiver: cardFund,
+            assetReceiver: card,
             xferAsset: asset,
             assetAmount: amount,
         }).submit();
 
         emit<Refund>({
-            card: cardFund,
+            card: card,
             asset: asset,
             amount: amount,
             nonce: nonce,
         });
 
         // Increment the nonce
-        this.card_funds(cardFund).value.nonce = nextNonce + 1;
+        this.cards(card).value.nonce = nextNonce + 1;
     }
 
     /**
@@ -737,36 +603,36 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available nonce for the card.
      *
-     * @param cardFund The card fund address.
-     * @returns The nonce for the card fund.
+     * @param card The card address.
+     * @returns The nonce for the card.
      */
     @abimethod({ readonly: true })
-    getNextCardFundNonce(cardFund: Account): uint64 {
-        return this.card_funds(cardFund).value.nonce;
+    getNextCardNonce(card: Account): uint64 {
+        return this.cards(card).value.nonce;
     }
 
     /**
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available withdrawal nonce for the card.
      *
-     * @param cardFund The card fund address.
-     * @returns The nonce for the card fund.
+     * @param card The card address.
+     * @returns The withdrawal nonce for the card.
      */
     @abimethod({ readonly: true })
-    getCardFundWithdrawalNonce(cardFund: Account): uint64 {
-        return this.card_funds(cardFund).value.withdrawalNonce;
+    getCardWithdrawalNonce(card: Account): uint64 {
+        return this.cards(card).value.withdrawalNonce;
     }
 
     /**
-     * Retrieves the card fund data for a given card fund address.
+     * Retrieves the card data for a given card address.
      *
-     * @param cardFund The address of the card fund.
-     * @returns The card fund data.
+     * @param card The address of the card.
+     * @returns The card data.
      */
     @abimethod({ readonly: true })
-    getCardFundData(cardFund: Account): CardFundData {
-        return this.card_funds(cardFund).value;
+    getCardData(card: Account): CardData {
+        return this.cards(card).value;
     }
 
     /**
@@ -826,73 +692,58 @@ export class Master extends Recoverable {
         this.settlement_nonce.value = this.settlement_nonce.value + 1;
     }
 
-    /**
-     * Retrieves the minimum balance requirement for adding an asset to the card fund.
-     * @returns The minimum balance requirement for adding an asset to the card fund.
-     */
-    getCardFundAssetMbr(): uint64 {
-        return Global.assetOptInMinBalance;
-    }
-
     // ===== Card Holder Methods =====
     /**
-     * Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account
+     * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
+     * funded from the contract (owner-sponsored). Only the owner can call this function.
      *
-     * @param cardFund Address to add asset to
+     * @param card Address to add asset to
      * @param asset Asset to add
      */
-    cardFundEnableAsset(mbr: gtxn.PaymentTxn, cardFund: Account, asset: Asset): void {
-        assert(this.isOwner() || this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
-
-        assertMatch(mbr, {
-            receiver: Global.currentApplicationAddress,
-            amount: this.getCardFundAssetMbr(),
-        });
+    cardEnableAsset(card: Account, asset: Asset): void {
+        this.onlyOwner();
 
         itxn.payment({
-            receiver: cardFund,
-            amount: this.getCardFundAssetMbr(),
+            receiver: card,
+            amount: Global.assetOptInMinBalance,
         }).submit();
 
-        this.cardFundAssetOptIn(cardFund, asset);
+        this.cardAssetOptIn(card, asset);
     }
 
     /**
-     * Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account
+     * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
+     * requirement of the account. The freed MBR remains within the card account.
      *
-     * @param cardFund - The address of the card.
+     * @param card - The address of the card.
      * @param asset - The ID of the asset to be removed.
      */
-    cardFundDisableAsset(cardFund: Account, asset: Asset): void {
-        assert(this.isOwner() || this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
+    cardDisableAsset(card: Account, asset: Asset): void {
+        assert(this.isOwner() || this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
 
-        this.cardFundAssetCloseOut(cardFund, asset);
+        this.cardAssetCloseOut(card, asset);
     }
 
     /**
-     * Allows the Card Holder (or contract owner) to send an amount of assets from the account
-     * @param cardFund Address to withdraw from
+     * Allows the card holder to request a withdrawal of an amount of assets from the account
+     * @param card Address to withdraw from
      * @param asset Asset to withdraw
      * @param amount Amount to withdraw
      */
     @abimethod({ allowActions: ['NoOp'] })
-    cardFundInitPermissionlessWithdrawal(
-        cardFund: Account,
-        asset: Asset,
-        amount: uint64
-    ): PermissionlessWithdrawalRequest {
-        assert(this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
-        const cardFundData = clone(this.card_funds(cardFund).value);
-        const [balance, _optedIn] = op.AssetHolding.assetBalance(cardFund, asset);
+    cardWithdrawalRequest(card: Account, asset: Asset, amount: uint64): PermissionlessWithdrawalRequest {
+        assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
+        const cardData = clone(this.cards(card).value);
+        const [balance, _optedIn] = op.AssetHolding.assetBalance(card, asset);
         assert(amount <= balance, 'INSUFFICIENT_BALANCE');
 
         const withdrawal: PermissionlessWithdrawalRequest = {
-            cardFund: cardFund,
+            card: card,
             recipient: Txn.sender,
             asset: asset,
             amount: amount,
             createdAt: Global.latestTimestamp,
-            nonce: cardFundData.withdrawalNonce,
+            nonce: cardData.withdrawalNonce,
         };
 
         this.withdrawals(Txn.sender).value = clone(withdrawal);
@@ -903,11 +754,11 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Allows the Card Holder (or contract owner) to cancel a withdrawal request
-     * @param cardFund Address to withdraw from
+     * Allows the card holder to cancel a withdrawal request
+     * @param card Address to withdraw from
      */
-    cardFundWithdrawalCancel(cardFund: Account): void {
-        assert(this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
+    cardWithdrawalCancel(card: Account): void {
+        assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
         assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
         const withdrawal = clone(this.withdrawals(Txn.sender).value);
         this.withdrawals(Txn.sender).delete();
@@ -915,24 +766,24 @@ export class Master extends Recoverable {
     }
 
     /**
-     * Allows the Card Holder to send an amount of assets from the account
-     * @param cardFund Address to withdraw from
+     * Allows the card holder to send an amount of assets from the account
+     * @param card Address to withdraw from
      */
     @abimethod({ allowActions: ['NoOp'] })
-    cardFundExecutePermissionlessWithdrawal(cardFund: Account, amount: uint64): void {
-        assert(this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
+    cardWithdraw(card: Account, amount: uint64): void {
+        assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
         assert(this.withdrawals(Txn.sender).exists, 'WITHDRAWAL_REQUEST_NOT_FOUND');
-        const cardFundData = clone(this.card_funds(cardFund).value);
+        const cardData = clone(this.cards(card).value);
         const withdrawal = clone(this.withdrawals(Txn.sender).value);
         assert(amount <= withdrawal.amount, 'AMOUNT_INVALID');
-        assert(cardFundData.withdrawalNonce === withdrawal.nonce, 'NONCE_INVALID');
+        assert(cardData.withdrawalNonce === withdrawal.nonce, 'NONCE_INVALID');
 
         const releaseTime: uint64 = withdrawal.createdAt + this.withdrawal_wait_time.value;
         assert(Global.latestTimestamp >= releaseTime, 'WITHDRAWAL_TIME_INVALID');
 
         // Issue the withdrawal
         this.withdrawFunds(
-            cardFund,
+            card,
             withdrawal.asset,
             amount,
             withdrawal.createdAt,
@@ -944,36 +795,37 @@ export class Master extends Recoverable {
 
     /**
      * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
-     * @param cardFund - The address of the card.
+     * @param card - The address of the card.
      * @param asset - The ID of the asset to be withdrawn.
      * @param amount - The amount of the withdrawal.
      * @param expiresAt - The expiry of the withdrawal signature.
      * @param signature - The signature for early withdrawal.
      */
-    cardFundExecuteApprovedWithdrawal(
-        cardFund: Account,
+    cardWithdrawPermissioned(
+        card: Account,
         asset: Asset,
         amount: uint64,
         expiresAt: uint64,
         nonce: uint64,
         signature: bytes<64>
     ): void {
-        assert(this.isCardFundOwner(cardFund), 'SENDER_NOT_ALLOWED');
-        const cardFundData = clone(this.card_funds(cardFund).value);
+        assert(this.isCardOwner(card), 'SENDER_NOT_ALLOWED');
+        const cardData = clone(this.cards(card).value);
 
         assert(Global.latestTimestamp < expiresAt, 'WITHDRAWAL_TIME_INVALID');
-        assert(cardFundData.withdrawalNonce === nonce, 'NONCE_INVALID');
+        assert(cardData.withdrawalNonce === nonce, 'NONCE_INVALID');
 
-        // Build withdrawal bytes for hashing: cardFund(32) + recipient(32) + asset(8) + amount(8) + expiresAt(8) + nonce(8) + genesisHash(32)
-        const withdrawalBytes: bytes = Bytes(cardFund.bytes)
-            .concat(Bytes(Txn.sender.bytes))
-            .concat(op.itob(asset.id))
-            .concat(op.itob(amount))
-            .concat(op.itob(expiresAt))
-            .concat(op.itob(nonce))
-            .concat(Bytes(Global.genesisHash));
+        const withdrawal: ApprovedWithdrawalRequest = {
+            card,
+            recipient: Txn.sender,
+            asset,
+            amount,
+            expiresAt,
+            nonce,
+            genesisHash: Global.genesisHash,
+        };
 
-        const withdrawal_hash = op.sha256(withdrawalBytes);
+        const withdrawal_hash = op.sha256(arc4.encodeArc4(withdrawal));
 
         // Need at least 2000 Opcode budget
         ensureBudget(2500);
@@ -984,7 +836,7 @@ export class Master extends Recoverable {
         );
 
         // Issue the withdrawal
-        this.withdrawFunds(cardFund, asset, amount, expiresAt, cardFundData.withdrawalNonce, WithdrawalTypeApproved);
+        this.withdrawFunds(card, asset, amount, expiresAt, cardData.withdrawalNonce, WithdrawalTypeApproved);
 
         // An approved (early) withdrawal supersedes any pending permissionless request for
         // the sender. Clean it up to release its box MBR and avoid orphaning the box, since

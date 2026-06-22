@@ -23,22 +23,40 @@
  */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
-import { abimethod, Account, assert, BoxMap, Global, Txn } from '@algorandfoundation/algorand-typescript';
+import {
+    abimethod,
+    Account,
+    Application,
+    arc4,
+    assert,
+    BoxMap,
+    Global,
+    GlobalState,
+    Txn,
+} from '@algorandfoundation/algorand-typescript';
 import { Recoverable } from './roles/Recoverable.algo';
+import type { Master } from './Baanx.algo';
 
 export class Killswitch extends Recoverable {
     // ========== Storage ==========
     accounts = BoxMap<Account, boolean>({ keyPrefix: '' });
 
+    // The Master card-management contract, used to verify card ownership before enabling.
+    master_app = GlobalState<Application>({ key: 'ma' });
+
     // ========== External Functions ==========
     /**
      * Deploy the contract, setting the owner as provided and initializing global state.
+     *
+     * @param owner The account to set as the contract owner.
+     * @param master The Master contract used to verify card ownership when enabling delegation.
      */
     @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
-    deploy(owner: Account): Account {
+    deploy(owner: Account, master: Application): Account {
         this._transferOwnership(owner);
         this._pauser.value = Txn.sender;
         this.paused.value = false;
+        this.master_app.value = master;
         return Global.currentApplicationAddress;
     }
 
@@ -53,10 +71,23 @@ export class Killswitch extends Recoverable {
     }
 
     /**
-     * Enables AutoDraw delegation
+     * Enables AutoDraw delegation.
+     *
+     * Gated to accounts that own a card in the Master contract, to prevent abuse of the
+     * owner-funded box MBR. The caller must supply a card address they own; ownership is
+     * verified against the Master contract via a cross-contract call.
+     *
+     * @param card A card address owned by the caller, used to prove card ownership.
      */
-    enable(): void {
+    enable(card: Account): void {
         assert(!this.accounts(Txn.sender).exists, 'ALREADY_ENABLED');
+
+        const cardData = arc4.abiCall<typeof Master.prototype.getCardData>({
+            appId: this.master_app.value,
+            args: [card],
+        }).returnValue;
+        assert(cardData.owner === Txn.sender, 'NOT_CARD_OWNER');
+
         this.accounts(Txn.sender).create();
     }
 

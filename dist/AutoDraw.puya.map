@@ -661,9 +661,9 @@
       ]
     },
     "111": {
-      "op": "pushbytes 0x06755b0d",
+      "op": "pushbytes 0xd3c7a652",
       "defined_out": [
-        "0x06755b0d",
+        "0xd3c7a652",
         "tmp%26#0",
         "txnKillswitch#0",
         "txnMasterDebit#0"
@@ -672,7 +672,7 @@
         "txnKillswitch#0",
         "txnMasterDebit#0",
         "tmp%26#0",
-        "0x06755b0d"
+        "0xd3c7a652"
       ]
     },
     "117": {

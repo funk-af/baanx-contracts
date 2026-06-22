@@ -182,11 +182,11 @@ main:
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:61
-    // txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     dup
     intc_1 // 0
     gtxnsas ApplicationArgs
-    pushbytes 0x06755b0d
+    pushbytes 0xd3c7a652
     ==
     // src/AutoDraw.algo.ts:47-61
     // Txn.rekeyTo === Global.zeroAddress &&
@@ -203,7 +203,7 @@ main:
     // // Enforce the second next transaction is a Master call
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    // txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:62
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
@@ -227,7 +227,7 @@ main:
     // // Enforce the second next transaction is a Master call
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    // txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     bz main_bool_false@16
     // src/AutoDraw.algo.ts:63
@@ -253,7 +253,7 @@ main:
     // // Enforce the second next transaction is a Master call
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    // txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     // Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
     bz main_bool_false@16
@@ -280,7 +280,7 @@ main:
     // // Enforce the second next transaction is a Master call
     // txnMasterDebit.type === TransactionType.ApplicationCall &&
     // txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    // txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    // txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     // Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     // Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
     // Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))
@@ -303,7 +303,7 @@ main:
     //     // Enforce the second next transaction is a Master call
     //     txnMasterDebit.type === TransactionType.ApplicationCall &&
     //     txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    //     txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    //     txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     //     Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     //     Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
     //     Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))
@@ -329,7 +329,7 @@ main_bool_false@16:
     //     // Enforce the second next transaction is a Master call
     //     txnMasterDebit.type === TransactionType.ApplicationCall &&
     //     txnMasterDebit.appId === TemplateVar<Application>('MASTER_APP') &&
-    //     txnMasterDebit.appArgs(0) === Bytes.fromHex('06755B0D') && // cardFundDebit
+    //     txnMasterDebit.appArgs(0) === Bytes.fromHex('D3C7A652') && // cardDebit
     //     Txn.assetReceiver.bytes === txnMasterDebit.appArgs(1) &&
     //     Txn.xferAsset.id === op.btoi(txnMasterDebit.appArgs(2)) &&
     //     Txn.assetAmount <= op.btoi(txnMasterDebit.appArgs(3))

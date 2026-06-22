@@ -23,7 +23,7 @@ import { TransactionComposer, AppCallMethodCall, AppMethodCallTransactionArgumen
 import { SendParams, SendSingleTransactionResult, SendAtomicTransactionComposerResults } from '@algorandfoundation/algokit-utils/types/transaction'
 import { Address, encodeAddress, modelsv2, OnApplicationComplete, Transaction, TransactionSigner } from 'algosdk'
 
-export const APP_SPEC: Arc56Contract = {"name":"Master","structs":{"CardFundData":[{"name":"partnerChannel","type":"address"},{"name":"owner","type":"address"},{"name":"address","type":"address"},{"name":"nonce","type":"uint64"},{"name":"withdrawalNonce","type":"uint64"}],"PermissionlessWithdrawalRequest":[{"name":"cardFund","type":"address"},{"name":"recipient","type":"address"},{"name":"asset","type":"uint64"},{"name":"amount","type":"uint64"},{"name":"createdAt","type":"uint64"},{"name":"nonce","type":"uint64"}]},"methods":[{"name":"deploy","args":[{"type":"address","name":"owner"}],"returns":{"type":"address"},"actions":{"create":["NoOp"],"call":[]},"readonly":false,"desc":"Deploy the contract, setting the owner as provided and initializing global state.","events":[{"name":"OwnershipTransferred","args":[{"type":"address","name":"previousOwner"},{"type":"address","name":"newOwner"}]}],"recommendations":{}},{"name":"update","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["UpdateApplication"]},"readonly":false,"desc":"Allows the owner to update the smart contract","events":[],"recommendations":{}},{"name":"destroy","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["DeleteApplication"]},"readonly":false,"desc":"Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active card funds","events":[],"recommendations":{}},{"name":"setWithdrawalTimeout","args":[{"type":"uint64","name":"seconds","desc":"New number of seconds to wait"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Set the number of seconds a withdrawal request must wait until being withdrawn","events":[],"recommendations":{}},{"name":"setEarlyWithdrawalPubkey","args":[{"type":"byte[32]","name":"pubkey","desc":"- The public key to set."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Sets the early withdrawal public key.","events":[],"recommendations":{}},{"name":"getPartnerChannelMbr","args":[{"type":"string","name":"partnerChannelName","desc":"- The name of the partner channel."}],"returns":{"type":"uint64","desc":"The minimum balance requirement for creating a partner channel account."},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Retrieves the minimum balance requirement for creating a partner channel account.","events":[],"recommendations":{}},{"name":"partnerChannelCreate","args":[{"type":"pay","name":"mbr","desc":"- The PayTxn object representing the payment transaction."},{"type":"string","name":"partnerChannelName","desc":"- The name of the partner channel."}],"returns":{"type":"address","desc":"The address of the newly created partner channel account."},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Creates a partner channel account and associates it with the provided partner channel name.\nOnly the owner of the contract can call this function.","events":[{"name":"PartnerChannelCreated","args":[{"type":"address","name":"partnerChannel"},{"type":"string","name":"partnerChannelName"}]}],"recommendations":{}},{"name":"partnerChannelClose","args":[{"type":"address","name":"partnerChannel"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"getCardFundMbr","args":[{"type":"uint64","name":"asset","desc":"Asset to opt-in to. 0 = No asset opt-in"}],"returns":{"type":"uint64","desc":"Minimum balance requirement for creating a card fund account"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Retrieves the minimum balance requirement for creating a card fund account.","events":[],"recommendations":{}},{"name":"cardFundCreate","args":[{"type":"pay","name":"mbr","desc":"Payment transaction of minimum balance requirement"},{"type":"address","name":"partnerChannel","desc":"Funding Channel name"},{"type":"uint64","name":"asset","desc":"Asset to opt-in to. 0 = No asset opt-in"}],"returns":{"type":"address","desc":"Newly generated account used by their card"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Create account. This generates a brand new account and funds the minimum balance requirement","events":[{"name":"CardFundAssetEnabled","args":[{"type":"address","name":"cardFund"},{"type":"uint64","name":"asset"}]},{"name":"CardFundCreated","args":[{"type":"address","name":"cardFundOwner"},{"type":"address","name":"cardFund"},{"type":"address","name":"partnerChannel"}]}],"recommendations":{}},{"name":"cardFundClose","args":[{"type":"address","name":"cardFund","desc":"Address to close"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Close account. This permanently removes the rekey and deletes the account from the ledger","events":[],"recommendations":{}},{"name":"cardFundRecover","args":[{"type":"address","name":"cardFund","desc":"- The card fund to recover."},{"type":"address","name":"newCardFundHolder","desc":"- The address of the new card holder."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Recovers funds from an old card and transfers them to a new card.\nOnly the owner of the contract can perform this operation.","events":[],"recommendations":{}},{"name":"getAssetAllowlistMbr","args":[],"returns":{"type":"uint64","desc":"Minimum balance requirement for adding an asset to the allowlist"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Retrieves the minimum balance requirement for adding an asset to the allowlist.","events":[],"recommendations":{}},{"name":"assetAllowlistAdd","args":[{"type":"pay","name":"mbr","desc":"Payment transaction of minimum balance requirement."},{"type":"uint64","name":"asset","desc":"The AssetID of the asset being transferred."},{"type":"address","name":"settlementAddress"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the master contract to flag intent of accepting an asset.","events":[{"name":"AssetAllowlistAdded","args":[{"type":"uint64","name":"asset"}]},{"name":"SettlementAddressChanged","args":[{"type":"address","name":"oldSettlementAddress"},{"type":"address","name":"newSettlementAddress"}]}],"recommendations":{}},{"name":"assetAllowlistRemove","args":[{"type":"uint64","name":"asset","desc":"- The AssetID of the asset being transferred."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the master contract to reject accepting an asset.","events":[{"name":"AssetAllowlistRemoved","args":[{"type":"uint64","name":"asset"}]}],"recommendations":{}},{"name":"cardFundDebit","args":[{"type":"address","name":"cardFund","desc":"The card fund from which the asset will be debited."},{"type":"uint64","name":"asset","desc":"The asset to be debited."},{"type":"uint64","name":"amount","desc":"The amount of the asset to be debited."},{"type":"uint64","name":"nonce"},{"type":"string","name":"ref"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Debits the specified amount of the given asset from the card account.\nOnly the owner of the contract can perform this operation.","events":[{"name":"Debit","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"},{"type":"string","name":"reference"}]}],"recommendations":{}},{"name":"getRefundAddress","args":[],"returns":{"type":"address","desc":"The refund address."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the refund address.","events":[],"recommendations":{}},{"name":"setRefundAddress","args":[{"type":"address","name":"newRefundAddress","desc":"The new refund address to be set."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Sets the refund address.\nOnly the owner of the contract can call this method.","events":[],"recommendations":{}},{"name":"cardFundRefund","args":[{"type":"address","name":"cardFund","desc":"- The card account to refund the asset to."},{"type":"uint64","name":"asset","desc":"- The asset to refund."},{"type":"uint64","name":"amount","desc":"- The amount of the asset to refund."},{"type":"uint64","name":"nonce"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Refunds a specified amount of an asset to a card account.\nOnly the owner of the contract can perform this operation.","events":[{"name":"Refund","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"getNextSettlementNonce","args":[],"returns":{"type":"uint64","desc":"The settlement nonce."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the next available nonce for settlements.","events":[],"recommendations":{}},{"name":"getNextCardFundNonce","args":[{"type":"address","name":"cardFund","desc":"The card fund address."}],"returns":{"type":"uint64","desc":"The nonce for the card fund."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the next available nonce for the card fund.","events":[],"recommendations":{}},{"name":"getCardFundWithdrawalNonce","args":[{"type":"address","name":"cardFund","desc":"The card fund address."}],"returns":{"type":"uint64","desc":"The nonce for the card fund."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the next available nonce for the card fund.","events":[],"recommendations":{}},{"name":"getCardFundData","args":[{"type":"address","name":"cardFund","desc":"The address of the card fund."}],"returns":{"type":"(address,address,address,uint64,uint64)","struct":"CardFundData","desc":"The card fund data."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the card fund data for a given card fund address.","events":[],"recommendations":{}},{"name":"getSettlementAddress","args":[{"type":"uint64","name":"asset","desc":"The ID of the asset."}],"returns":{"type":"address","desc":"The settlement address for the asset."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the settlement address for the specified asset.","events":[],"recommendations":{}},{"name":"setSettlementAddress","args":[{"type":"uint64","name":"settlementAsset","desc":"The ID of the settlement asset."},{"type":"address","name":"newSettlementAddress","desc":"The new settlement address to be set."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Sets the settlement address for a given settlement asset.\nOnly the owner of the contract can call this method.","events":[{"name":"SettlementAddressChanged","args":[{"type":"address","name":"oldSettlementAddress"},{"type":"address","name":"newSettlementAddress"}]}],"recommendations":{}},{"name":"settle","args":[{"type":"uint64","name":"asset","desc":"The asset to be transferred."},{"type":"uint64","name":"amount","desc":"The amount of the asset to be transferred."},{"type":"uint64","name":"nonce","desc":"The nonce to prevent duplicate settlements."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Settles a payment by transferring an asset to the specified recipient.\nOnly the owner of the contract can call this function.","events":[{"name":"Settlement","args":[{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"getCardFundAssetMbr","args":[],"returns":{"type":"uint64","desc":"The minimum balance requirement for adding an asset to the card fund."},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Retrieves the minimum balance requirement for adding an asset to the card fund.","events":[],"recommendations":{}},{"name":"cardFundEnableAsset","args":[{"type":"pay","name":"mbr"},{"type":"address","name":"cardFund","desc":"Address to add asset to"},{"type":"uint64","name":"asset","desc":"Asset to add"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account","events":[{"name":"CardFundAssetEnabled","args":[{"type":"address","name":"cardFund"},{"type":"uint64","name":"asset"}]}],"recommendations":{}},{"name":"cardFundDisableAsset","args":[{"type":"address","name":"cardFund","desc":"- The address of the card."},{"type":"uint64","name":"asset","desc":"- The ID of the asset to be removed."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account","events":[{"name":"CardFundAssetDisabled","args":[{"type":"address","name":"cardFund"},{"type":"uint64","name":"asset"}]}],"recommendations":{}},{"name":"cardFundInitPermissionlessWithdrawal","args":[{"type":"address","name":"cardFund","desc":"Address to withdraw from"},{"type":"uint64","name":"asset","desc":"Asset to withdraw"},{"type":"uint64","name":"amount","desc":"Amount to withdraw"}],"returns":{"type":"(address,address,uint64,uint64,uint64,uint64)","struct":"PermissionlessWithdrawalRequest"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the Card Holder (or contract owner) to send an amount of assets from the account","events":[{"name":"WithdrawalRequest","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"cardFundWithdrawalCancel","args":[{"type":"address","name":"cardFund","desc":"Address to withdraw from"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the Card Holder (or contract owner) to cancel a withdrawal request","events":[{"name":"WithdrawalRequestCancelled","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"cardFundExecutePermissionlessWithdrawal","args":[{"type":"address","name":"cardFund","desc":"Address to withdraw from"},{"type":"uint64","name":"amount"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the Card Holder to send an amount of assets from the account","events":[{"name":"Withdrawal","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"expiresAt"},{"type":"uint64","name":"nonce"},{"type":"string","name":"type"}]}],"recommendations":{}},{"name":"cardFundExecuteApprovedWithdrawal","args":[{"type":"address","name":"cardFund","desc":"- The address of the card."},{"type":"uint64","name":"asset","desc":"- The ID of the asset to be withdrawn."},{"type":"uint64","name":"amount","desc":"- The amount of the withdrawal."},{"type":"uint64","name":"expiresAt","desc":"- The expiry of the withdrawal signature."},{"type":"uint64","name":"nonce"},{"type":"byte[64]","name":"signature","desc":"- The signature for early withdrawal."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.","events":[{"name":"Withdrawal","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"expiresAt"},{"type":"uint64","name":"nonce"},{"type":"string","name":"type"}]}],"recommendations":{}},{"name":"recoverAsset","args":[{"type":"uint64","name":"asset","desc":"Asset ID of the asset to recover. If 0, Algo will be recovered."},{"type":"uint64","name":"amount","desc":"Amount of the asset to recover. If Algos, remember the minimum balance requirement."},{"type":"address","name":"recipient","desc":"Address to send the recovered asset to."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Recover an asset sent to the contract by mistake. Only the owner can call this function.","events":[],"recommendations":{}},{"name":"pauser","args":[],"returns":{"type":"address","desc":"Pauser's address"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"pause","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[{"name":"Pause","args":[]}],"recommendations":{}},{"name":"unpause","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[{"name":"Unpause","args":[]}],"recommendations":{}},{"name":"updatePauser","args":[{"type":"address","name":"_newPauser"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[{"name":"PauserChanged","args":[{"type":"address","name":"newAddress"}]}],"recommendations":{}},{"name":"owner","args":[],"returns":{"type":"address"},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"events":[],"recommendations":{}},{"name":"transferOwnership","args":[{"type":"address","name":"newOwner","desc":"The address of the new owner."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Transfers the ownership of the contract to a new owner.\nRequires the caller to be the current owner.","events":[{"name":"OwnershipTransferred","args":[{"type":"address","name":"previousOwner"},{"type":"address","name":"newOwner"}]}],"recommendations":{}}],"arcs":[22,28],"networks":{},"state":{"schema":{"global":{"ints":5,"bytes":4},"local":{"ints":0,"bytes":0}},"keys":{"global":{"card_funds_active_count":{"keyType":"AVMString","valueType":"AVMUint64","key":"Y2ZhYw=="},"partner_channels_active_count":{"keyType":"AVMString","valueType":"AVMUint64","key":"cGNhYw=="},"withdrawal_wait_time":{"keyType":"AVMString","valueType":"AVMUint64","key":"d3d0"},"early_withdrawal_pubkey":{"keyType":"AVMString","valueType":"AVMBytes","key":"ZXdwaw=="},"settlement_nonce":{"keyType":"AVMString","valueType":"AVMUint64","key":"c24="},"refund_address":{"keyType":"AVMString","valueType":"address","key":"cmE="},"_pauser":{"keyType":"AVMString","valueType":"address","key":"X3BhdXNlcg=="},"paused":{"keyType":"AVMString","valueType":"AVMUint64","key":"cGF1c2Vk"},"_owner":{"keyType":"AVMString","valueType":"address","key":"X293bmVy","desc":"Owner of the contract"}},"local":{},"box":{}},"maps":{"global":{},"local":{},"box":{"card_funds":{"keyType":"address","valueType":"CardFundData","prefix":"Y2Y="},"partner_channels":{"keyType":"address","valueType":"AVMString","prefix":"cGM="},"withdrawals":{"keyType":"address","valueType":"PermissionlessWithdrawalRequest","prefix":"d3I="},"settlement_address":{"keyType":"uint64","valueType":"address","prefix":"c2E="}}}},"bareActions":{"create":[],"call":[]},"sourceInfo":{"approval":{"sourceInfo":[{"pc":[2425],"errorMessage":"AMOUNT_INVALID"},{"pc":[2886],"errorMessage":"ASSET_NOT_OPTED_IN"},{"pc":[857,1485,1655,1746,1768,1790,1812,1899,2180,2312,2411,2417,2562,3071],"errorMessage":"Box must have value"},{"pc":[742,1039],"errorMessage":"Bytes has valid prefix"},{"pc":[566],"errorMessage":"CARD_FUNDS_STILL_ACTIVE"},{"pc":[2865],"errorMessage":"CARD_FUND_NOT_FOUND"},{"pc":[2191],"errorMessage":"INSUFFICIENT_BALANCE"},{"pc":[1493,1663,1886,2439,2578],"errorMessage":"NONCE_INVALID"},{"pc":[497],"errorMessage":"OnCompletion must be DeleteApplication && can only call when not creating"},{"pc":[202],"errorMessage":"OnCompletion must be NoOp"},{"pc":[509],"errorMessage":"OnCompletion must be UpdateApplication && can only call when not creating"},{"pc":[573],"errorMessage":"PARTNER_CHANNELS_STILL_ACTIVE"},{"pc":[961],"errorMessage":"PARTNER_CHANNEL_NOT_FOUND"},{"pc":[1152,1648,2001,2078,2174,2298,2397,2556,3166],"errorMessage":"SENDER_NOT_ALLOWED"},{"pc":[2649],"errorMessage":"SIGNATURE_INVALID"},{"pc":[2306,2405],"errorMessage":"WITHDRAWAL_REQUEST_NOT_FOUND"},{"pc":[2456,2568],"errorMessage":"WITHDRAWAL_TIME_INVALID"},{"pc":[704,997,1304,2017],"errorMessage":"assert target is match for conditions"},{"pc":[564,571,580,778,890,1096,1202,1578,1646,1726,1881,2449,2641,2757,2831,3145,3155,3164,3173,3190],"errorMessage":"check GlobalState exists"},{"pc":[637,674,1461],"errorMessage":"invalid array length header"},{"pc":[645,682,1469],"errorMessage":"invalid number of bytes for arc4.dynamic_array<arc4.uint8>"},{"pc":[520,622,747,826,938,1044,1137,1222,1230,1282,1428,1592,1609,1741,1763,1785,1835,1976,2053,2150,2294,2382,2492,2712,2803,2845],"errorMessage":"invalid number of bytes for arc4.static_array<arc4.uint8, 32>"},{"pc":[2550],"errorMessage":"invalid number of bytes for arc4.static_array<arc4.uint8, 64>"},{"pc":[604,906,946,1273,1352,1436,1445,1454,1617,1626,1635,1804,1826,1851,1860,1869,1984,2061,2158,2167,2390,2500,2512,2526,2538,2690,2700],"errorMessage":"invalid number of bytes for arc4.uint64"},{"pc":[668,927,1265,1968],"errorMessage":"transaction type is pay"}],"pcOffsetMethod":"none"},"clear":{"sourceInfo":[],"pcOffsetMethod":"none"}},"source":{"approval":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBAYWxnb3JhbmRmb3VuZGF0aW9uL2FsZ29yYW5kLXR5cGVzY3JpcHQvYXJjNC9pbmRleC5kLnRzOjpDb250cmFjdC5hcHByb3ZhbFByb2dyYW0oKSAtPiB1aW50NjQ6Cm1haW46CiAgICBpbnRjYmxvY2sgMSAwIDMyIDggMTkzMDAKICAgIGJ5dGVjYmxvY2sgMHgxNTFmN2M3NSAiY2YiICJ3ciIgIl9vd25lciIgImNmYWMiICJwY2FjIiAiX3BhdXNlciIgInNuIiAicGF1c2VkIiAic2EiICJwYyIgInJhIiAid3d0IiAiZXdwayIgMHg1NjFkMmZlYSBiYXNlNjQoQzRFQlF3PT0pIGJhc2U2NChDeUFDQUFHQUJGWWRMK28yR2dDT0FRQUJBREVaZ1FVU01SZ1VFRVJDQUFDeE1nb3lEcklnSXJJSXNnY2pzaEFpc2dHemdBUVZIM3gxTWdwUXNDTkQpICJwZXJtaXNzaW9ubGVzcyIgMHgwNjgxMDEgImFwcHJvdmVkIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTc3CiAgICAvLyBleHBvcnQgY2xhc3MgTWFzdGVyIGV4dGVuZHMgUmVjb3ZlcmFibGUgewogICAgcHVzaGJ5dGVzcyAweGEwZTgxODcyIDB4OWM4NmExODUgLy8gbWV0aG9kICJ1cGRhdGUoKXZvaWQiLCBtZXRob2QgImRlc3Ryb3koKXZvaWQiCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBtYWluX3VwZGF0ZV9yb3V0ZUAyIG1haW5fZGVzdHJveV9yb3V0ZUAzCgptYWluX3N3aXRjaF9jYXNlX25leHRANDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE3NwogICAgLy8gZXhwb3J0IGNsYXNzIE1hc3RlciBleHRlbmRzIFJlY292ZXJhYmxlIHsKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydCAvLyBPbkNvbXBsZXRpb24gbXVzdCBiZSBOb09wCiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgYnogbWFpbl9jcmVhdGVfTm9PcEA0NAogICAgcHVzaGJ5dGVzcyAweGEwNTBmNWYxIDB4ZTJlYmJmODYgMHhiOWVjOGMxOCAweDNkZDgzOGNlIDB4NjkwYzU5OGYgMHgyMjdjZTNhYSAweDY3N2NkMGYxIDB4YTRlODlhODUgMHg1NzNiYjQ1YSAweGVkODVlZmE2IDB4MmQ0NmQ3MmYgMHg0ZGFlMjgxZiAweDA2NzU1YjBkIDB4N2I5ZTZiMDIgMHgwMGRjMDJjNCAweDY5NjQ3YmY0IDB4NzUyNzFhMDcgMHg0NDQ3MjVjYyAweDY1ODY2M2FkIDB4OWQ5OTJhNzYgMHg1MWI0N2YwNiAweDQxOWVlZmZiIDB4ZjQ1OGZjMWEgMHgxYTI2ZTJmNSAweGVmODE2YTI1IDB4MTliNTc3ZTcgMHhlYWNlM2FmMyAweDE2Y2FmMGExIDB4ZmY4ZTY3YmEgMHg2NTcyMjBkOSAweDc4NWExYmY5IDB4YjBkOTUzYjMgMHgwMTc4Zjk0YiAweDFiNTI5ZGU4IDB4MGNhZGQxNjMgMHhiMWJiYjBhOCAweGUxN2JhZmI0IC8vIG1ldGhvZCAic2V0V2l0aGRyYXdhbFRpbWVvdXQodWludDY0KXZvaWQiLCBtZXRob2QgInNldEVhcmx5V2l0aGRyYXdhbFB1YmtleShieXRlWzMyXSl2b2lkIiwgbWV0aG9kICJnZXRQYXJ0bmVyQ2hhbm5lbE1icihzdHJpbmcpdWludDY0IiwgbWV0aG9kICJwYXJ0bmVyQ2hhbm5lbENyZWF0ZShwYXksc3RyaW5nKWFkZHJlc3MiLCBtZXRob2QgInBhcnRuZXJDaGFubmVsQ2xvc2UoYWRkcmVzcyl2b2lkIiwgbWV0aG9kICJnZXRDYXJkRnVuZE1icih1aW50NjQpdWludDY0IiwgbWV0aG9kICJjYXJkRnVuZENyZWF0ZShwYXksYWRkcmVzcyx1aW50NjQpYWRkcmVzcyIsIG1ldGhvZCAiY2FyZEZ1bmRDbG9zZShhZGRyZXNzKXZvaWQiLCBtZXRob2QgImNhcmRGdW5kUmVjb3ZlcihhZGRyZXNzLGFkZHJlc3Mpdm9pZCIsIG1ldGhvZCAiZ2V0QXNzZXRBbGxvd2xpc3RNYnIoKXVpbnQ2NCIsIG1ldGhvZCAiYXNzZXRBbGxvd2xpc3RBZGQocGF5LHVpbnQ2NCxhZGRyZXNzKXZvaWQiLCBtZXRob2QgImFzc2V0QWxsb3dsaXN0UmVtb3ZlKHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJjYXJkRnVuZERlYml0KGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsc3RyaW5nKXZvaWQiLCBtZXRob2QgImdldFJlZnVuZEFkZHJlc3MoKWFkZHJlc3MiLCBtZXRob2QgInNldFJlZnVuZEFkZHJlc3MoYWRkcmVzcyl2b2lkIiwgbWV0aG9kICJjYXJkRnVuZFJlZnVuZChhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0KXZvaWQiLCBtZXRob2QgImdldE5leHRTZXR0bGVtZW50Tm9uY2UoKXVpbnQ2NCIsIG1ldGhvZCAiZ2V0TmV4dENhcmRGdW5kTm9uY2UoYWRkcmVzcyl1aW50NjQiLCBtZXRob2QgImdldENhcmRGdW5kV2l0aGRyYXdhbE5vbmNlKGFkZHJlc3MpdWludDY0IiwgbWV0aG9kICJnZXRDYXJkRnVuZERhdGEoYWRkcmVzcykoYWRkcmVzcyxhZGRyZXNzLGFkZHJlc3MsdWludDY0LHVpbnQ2NCkiLCBtZXRob2QgImdldFNldHRsZW1lbnRBZGRyZXNzKHVpbnQ2NClhZGRyZXNzIiwgbWV0aG9kICJzZXRTZXR0bGVtZW50QWRkcmVzcyh1aW50NjQsYWRkcmVzcyl2b2lkIiwgbWV0aG9kICJzZXR0bGUodWludDY0LHVpbnQ2NCx1aW50NjQpdm9pZCIsIG1ldGhvZCAiZ2V0Q2FyZEZ1bmRBc3NldE1icigpdWludDY0IiwgbWV0aG9kICJjYXJkRnVuZEVuYWJsZUFzc2V0KHBheSxhZGRyZXNzLHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJjYXJkRnVuZERpc2FibGVBc3NldChhZGRyZXNzLHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJjYXJkRnVuZEluaXRQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWwoYWRkcmVzcyx1aW50NjQsdWludDY0KShhZGRyZXNzLGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsdWludDY0KSIsIG1ldGhvZCAiY2FyZEZ1bmRXaXRoZHJhd2FsQ2FuY2VsKGFkZHJlc3Mpdm9pZCIsIG1ldGhvZCAiY2FyZEZ1bmRFeGVjdXRlUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsKGFkZHJlc3MsdWludDY0KXZvaWQiLCBtZXRob2QgImNhcmRGdW5kRXhlY3V0ZUFwcHJvdmVkV2l0aGRyYXdhbChhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0LHVpbnQ2NCxieXRlWzY0XSl2b2lkIiwgbWV0aG9kICJyZWNvdmVyQXNzZXQodWludDY0LHVpbnQ2NCxhZGRyZXNzKXZvaWQiLCBtZXRob2QgInBhdXNlcigpYWRkcmVzcyIsIG1ldGhvZCAicGF1c2UoKXZvaWQiLCBtZXRob2QgInVucGF1c2UoKXZvaWQiLCBtZXRob2QgInVwZGF0ZVBhdXNlcihhZGRyZXNzKXZvaWQiLCBtZXRob2QgIm93bmVyKClhZGRyZXNzIiwgbWV0aG9kICJ0cmFuc2Zlck93bmVyc2hpcChhZGRyZXNzKXZvaWQiCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBzZXRXaXRoZHJhd2FsVGltZW91dCBzZXRFYXJseVdpdGhkcmF3YWxQdWJrZXkgZ2V0UGFydG5lckNoYW5uZWxNYnIgcGFydG5lckNoYW5uZWxDcmVhdGUgcGFydG5lckNoYW5uZWxDbG9zZSBnZXRDYXJkRnVuZE1iciBjYXJkRnVuZENyZWF0ZSBjYXJkRnVuZENsb3NlIGNhcmRGdW5kUmVjb3ZlciBnZXRBc3NldEFsbG93bGlzdE1iciBhc3NldEFsbG93bGlzdEFkZCBhc3NldEFsbG93bGlzdFJlbW92ZSBjYXJkRnVuZERlYml0IGdldFJlZnVuZEFkZHJlc3Mgc2V0UmVmdW5kQWRkcmVzcyBjYXJkRnVuZFJlZnVuZCBnZXROZXh0U2V0dGxlbWVudE5vbmNlIGdldE5leHRDYXJkRnVuZE5vbmNlIGdldENhcmRGdW5kV2l0aGRyYXdhbE5vbmNlIGdldENhcmRGdW5kRGF0YSBnZXRTZXR0bGVtZW50QWRkcmVzcyBzZXRTZXR0bGVtZW50QWRkcmVzcyBzZXR0bGUgZ2V0Q2FyZEZ1bmRBc3NldE1iciBjYXJkRnVuZEVuYWJsZUFzc2V0IGNhcmRGdW5kRGlzYWJsZUFzc2V0IGNhcmRGdW5kSW5pdFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbCBjYXJkRnVuZFdpdGhkcmF3YWxDYW5jZWwgY2FyZEZ1bmRFeGVjdXRlUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsIGNhcmRGdW5kRXhlY3V0ZUFwcHJvdmVkV2l0aGRyYXdhbCByZWNvdmVyQXNzZXQgcGF1c2VyIHBhdXNlIHVucGF1c2UgdXBkYXRlUGF1c2VyIG93bmVyIHRyYW5zZmVyT3duZXJzaGlwCiAgICBlcnIKCm1haW5fY3JlYXRlX05vT3BANDQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxNzcKICAgIC8vIGV4cG9ydCBjbGFzcyBNYXN0ZXIgZXh0ZW5kcyBSZWNvdmVyYWJsZSB7CiAgICBwdXNoYnl0ZXMgMHg5MjcwNzczZCAvLyBtZXRob2QgImRlcGxveShhZGRyZXNzKWFkZHJlc3MiCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAwCiAgICBtYXRjaCBkZXBsb3kKICAgIGVycgoKbWFpbl9kZXN0cm95X3JvdXRlQDM6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzgKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnRGVsZXRlQXBwbGljYXRpb24nXSB9KQogICAgdHhuIE9uQ29tcGxldGlvbgogICAgcHVzaGludCA1IC8vIERlbGV0ZUFwcGxpY2F0aW9uCiAgICA9PQogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgICYmCiAgICBhc3NlcnQgLy8gT25Db21wbGV0aW9uIG11c3QgYmUgRGVsZXRlQXBwbGljYXRpb24gJiYgY2FuIG9ubHkgY2FsbCB3aGVuIG5vdCBjcmVhdGluZwogICAgYiBkZXN0cm95CgptYWluX3VwZGF0ZV9yb3V0ZUAyOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzMwCiAgICAvLyBAYWJpbWV0aG9kKHsgYWxsb3dBY3Rpb25zOiBbJ1VwZGF0ZUFwcGxpY2F0aW9uJ10gfSkKICAgIHR4biBPbkNvbXBsZXRpb24KICAgIHB1c2hpbnQgNCAvLyBVcGRhdGVBcHBsaWNhdGlvbgogICAgPT0KICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAmJgogICAgYXNzZXJ0IC8vIE9uQ29tcGxldGlvbiBtdXN0IGJlIFVwZGF0ZUFwcGxpY2F0aW9uICYmIGNhbiBvbmx5IGNhbGwgd2hlbiBub3QgY3JlYXRpbmcKICAgIGIgdXBkYXRlCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5kZXBsb3lbcm91dGluZ10oKSAtPiB2b2lkOgpkZXBsb3k6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMTIKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnTm9PcCddLCBvbkNyZWF0ZTogJ3JlcXVpcmUnIH0pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMxNAogICAgLy8gdGhpcy5fdHJhbnNmZXJPd25lcnNoaXAob3duZXIpOwogICAgY2FsbHN1YiBfdHJhbnNmZXJPd25lcnNoaXAKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjM0CiAgICAvLyBfcGF1c2VyID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oKTsKICAgIGJ5dGVjIDYgLy8gIl9wYXVzZXIiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMTUKICAgIC8vIHRoaXMuX3BhdXNlci52YWx1ZSA9IFR4bi5zZW5kZXI7CiAgICB0eG4gU2VuZGVyCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgyCiAgICAvLyBjYXJkX2Z1bmRzX2FjdGl2ZV9jb3VudCA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICdjZmFjJyB9KTsKICAgIGJ5dGVjIDQgLy8gImNmYWMiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMTkKICAgIC8vIHRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUgPSAwOwogICAgaW50Y18xIC8vIDAKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODcKICAgIC8vIHBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3BjYWMnIH0pOwogICAgYnl0ZWMgNSAvLyAicGNhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMyMAogICAgLy8gdGhpcy5wYXJ0bmVyX2NoYW5uZWxzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IDA7CiAgICBpbnRjXzEgLy8gMAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwMAogICAgLy8gc2V0dGxlbWVudF9ub25jZSA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICdzbicgfSk7CiAgICBieXRlYyA3IC8vICJzbiIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMyMQogICAgLy8gdGhpcy5zZXR0bGVtZW50X25vbmNlLnZhbHVlID0gMDsKICAgIGludGNfMSAvLyAwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzYKICAgIC8vIHBhdXNlZCA9IEdsb2JhbFN0YXRlPGJvb2xlYW4+KCk7CiAgICBieXRlYyA4IC8vICJwYXVzZWQiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMjIKICAgIC8vIHRoaXMucGF1c2VkLnZhbHVlID0gZmFsc2U7CiAgICBpbnRjXzEgLy8gMAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMxMgogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydOb09wJ10sIG9uQ3JlYXRlOiAncmVxdWlyZScgfSkKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzI0CiAgICAvLyByZXR1cm4gR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3M7CiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzEyCiAgICAvLyBAYWJpbWV0aG9kKHsgYWxsb3dBY3Rpb25zOiBbJ05vT3AnXSwgb25DcmVhdGU6ICdyZXF1aXJlJyB9KQogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLnVwZGF0ZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CnVwZGF0ZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMzMgogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzAKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnVXBkYXRlQXBwbGljYXRpb24nXSB9KQogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZGVzdHJveVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmRlc3Ryb3k6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNDAKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQzCiAgICAvLyBhc3NlcnQoIXRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUsICdDQVJEX0ZVTkRTX1NUSUxMX0FDVElWRScpOwogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZF9mdW5kc19hY3RpdmVfY291bnQgPSBHbG9iYWxTdGF0ZTx1aW50NjQ+KHsga2V5OiAnY2ZhYycgfSk7CiAgICBieXRlYyA0IC8vICJjZmFjIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQzCiAgICAvLyBhc3NlcnQoIXRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUsICdDQVJEX0ZVTkRTX1NUSUxMX0FDVElWRScpOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgICEKICAgIGFzc2VydCAvLyBDQVJEX0ZVTkRTX1NUSUxMX0FDVElWRQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQ1CiAgICAvLyBhc3NlcnQoIXRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUsICdQQVJUTkVSX0NIQU5ORUxTX1NUSUxMX0FDVElWRScpOwogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4NwogICAgLy8gcGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQgPSBHbG9iYWxTdGF0ZTx1aW50NjQ+KHsga2V5OiAncGNhYycgfSk7CiAgICBieXRlYyA1IC8vICJwY2FjIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQ1CiAgICAvLyBhc3NlcnQoIXRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUsICdQQVJUTkVSX0NIQU5ORUxTX1NUSUxMX0FDVElWRScpOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgICEKICAgIGFzc2VydCAvLyBQQVJUTkVSX0NIQU5ORUxTX1NUSUxMX0FDVElWRQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQ3LTM1MQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiAwLAogICAgLy8gICAgIGNsb3NlUmVtYWluZGVyVG86IHRoaXMub3duZXIoKSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQ4CiAgICAvLyByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo2NwogICAgLy8gcmV0dXJuIHRoaXMuX293bmVyLnZhbHVlOwogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NDYKICAgIC8vIF9vd25lciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlY18zIC8vICJfb3duZXIiCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjY3CiAgICAvLyByZXR1cm4gdGhpcy5fb3duZXIudmFsdWU7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgaXR4bl9maWVsZCBDbG9zZVJlbWFpbmRlclRvCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNDkKICAgIC8vIGFtb3VudDogMCwKICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEFtb3VudAogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQ3LTM1MQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiAwLAogICAgLy8gICAgIGNsb3NlUmVtYWluZGVyVG86IHRoaXMub3duZXIoKSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaW50Y18wIC8vIDEKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMzOAogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydEZWxldGVBcHBsaWNhdGlvbiddIH0pCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5zZXRXaXRoZHJhd2FsVGltZW91dFtyb3V0aW5nXSgpIC0+IHZvaWQ6CnNldFdpdGhkcmF3YWxUaW1lb3V0OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzU5CiAgICAvLyBzZXRXaXRoZHJhd2FsVGltZW91dChzZWNvbmRzOiB1aW50NjQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM2MAogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTAKICAgIC8vIHdpdGhkcmF3YWxfd2FpdF90aW1lID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3d3dCcgfSk7CiAgICBieXRlYyAxMiAvLyAid3d0IgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzYyCiAgICAvLyB0aGlzLndpdGhkcmF3YWxfd2FpdF90aW1lLnZhbHVlID0gc2Vjb25kczsKICAgIHN3YXAKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNTkKICAgIC8vIHNldFdpdGhkcmF3YWxUaW1lb3V0KHNlY29uZHM6IHVpbnQ2NCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuc2V0RWFybHlXaXRoZHJhd2FsUHVia2V5W3JvdXRpbmddKCkgLT4gdm9pZDoKc2V0RWFybHlXaXRoZHJhd2FsUHVia2V5OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzY5CiAgICAvLyBzZXRFYXJseVdpdGhkcmF3YWxQdWJrZXkocHVia2V5OiBieXRlczwzMj4pOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzcwCiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5MwogICAgLy8gZWFybHlfd2l0aGRyYXdhbF9wdWJrZXkgPSBHbG9iYWxTdGF0ZTxieXRlczwzMj4+KHsga2V5OiAnZXdwaycgfSk7CiAgICBieXRlYyAxMyAvLyAiZXdwayIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM3MgogICAgLy8gdGhpcy5lYXJseV93aXRoZHJhd2FsX3B1YmtleS52YWx1ZSA9IHB1YmtleTsKICAgIHN3YXAKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNjkKICAgIC8vIHNldEVhcmx5V2l0aGRyYXdhbFB1YmtleShwdWJrZXk6IGJ5dGVzPDMyPik6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0UGFydG5lckNoYW5uZWxNYnJbcm91dGluZ10oKSAtPiB2b2lkOgpnZXRQYXJ0bmVyQ2hhbm5lbE1icjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM4MAogICAgLy8gZ2V0UGFydG5lckNoYW5uZWxNYnIocGFydG5lckNoYW5uZWxOYW1lOiBzdHJpbmcpOiB1aW50NjQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBpbnRjXzEgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgcHVzaGludCAyIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIGNhbGxzdWIgc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRQYXJ0bmVyQ2hhbm5lbE1icgogICAgaXRvYgogICAgYnl0ZWNfMCAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIucGFydG5lckNoYW5uZWxDcmVhdGVbcm91dGluZ10oKSAtPiB2b2lkOgpwYXJ0bmVyQ2hhbm5lbENyZWF0ZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM5MwogICAgLy8gcGFydG5lckNoYW5uZWxDcmVhdGUobWJyOiBndHhuLlBheW1lbnRUeG4sIHBhcnRuZXJDaGFubmVsTmFtZTogc3RyaW5nKTogQWNjb3VudCB7CiAgICB0eG4gR3JvdXBJbmRleAogICAgaW50Y18wIC8vIDEKICAgIC0KICAgIGR1cAogICAgZ3R4bnMgVHlwZUVudW0KICAgIGludGNfMCAvLyBwYXkKICAgID09CiAgICBhc3NlcnQgLy8gdHJhbnNhY3Rpb24gdHlwZSBpcyBwYXkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgaW50Y18xIC8vIDAKICAgIGV4dHJhY3RfdWludDE2IC8vIG9uIGVycm9yOiBpbnZhbGlkIGFycmF5IGxlbmd0aCBoZWFkZXIKICAgIHB1c2hpbnQgMiAvLyAyCiAgICArCiAgICBkaWcgMQogICAgbGVuCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIGV4dHJhY3QgMiAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozOTQtMzk3CiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldFBhcnRuZXJDaGFubmVsTWJyKHBhcnRuZXJDaGFubmVsTmFtZSksCiAgICAvLyB9KTsKICAgIGRpZyAxCiAgICBndHhucyBSZWNlaXZlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mzk1CiAgICAvLyByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mzk0LTM5NwogICAgLy8gYXNzZXJ0TWF0Y2gobWJyLCB7CiAgICAvLyAgICAgcmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFtb3VudDogdGhpcy5nZXRQYXJ0bmVyQ2hhbm5lbE1icihwYXJ0bmVyQ2hhbm5lbE5hbWUpLAogICAgLy8gfSk7CiAgICA9PQogICAgdW5jb3ZlciAyCiAgICBndHhucyBBbW91bnQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM5NgogICAgLy8gYW1vdW50OiB0aGlzLmdldFBhcnRuZXJDaGFubmVsTWJyKHBhcnRuZXJDaGFubmVsTmFtZSksCiAgICBkaWcgMgogICAgY2FsbHN1YiBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmdldFBhcnRuZXJDaGFubmVsTWJyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozOTQtMzk3CiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldFBhcnRuZXJDaGFubmVsTWJyKHBhcnRuZXJDaGFubmVsTmFtZSksCiAgICAvLyB9KTsKICAgID09CiAgICAmJgogICAgYXNzZXJ0IC8vIGFzc2VydCB0YXJnZXQgaXMgbWF0Y2ggZm9yIGNvbmRpdGlvbnMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQwMS00MDUKICAgIC8vIGNvbnN0IHBhcnRuZXJDaGFubmVsQWRkciA9IGFyYzQuYWJpQ2FsbDx0eXBlb2YgQ29udHJvbGxlZEFkZHJlc3MucHJvdG90eXBlLm5ldz4oewogICAgLy8gICAgIGFwcHJvdmFsUHJvZ3JhbTogY29tcGlsZWRQYXJ0bmVyLmFwcHJvdmFsUHJvZ3JhbSwKICAgIC8vICAgICBjbGVhclN0YXRlUHJvZ3JhbTogY29tcGlsZWRQYXJ0bmVyLmNsZWFyU3RhdGVQcm9ncmFtLAogICAgLy8gICAgIG9uQ29tcGxldGlvbjogT25Db21wbGV0ZUFjdGlvbi5EZWxldGVBcHBsaWNhdGlvbiwKICAgIC8vIH0pLnJldHVyblZhbHVlOwogICAgaXR4bl9iZWdpbgogICAgYnl0ZWMgMTQgLy8gbWV0aG9kICJuZXcoKWFkZHJlc3MiCiAgICBpdHhuX2ZpZWxkIEFwcGxpY2F0aW9uQXJncwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDA0CiAgICAvLyBvbkNvbXBsZXRpb246IE9uQ29tcGxldGVBY3Rpb24uRGVsZXRlQXBwbGljYXRpb24sCiAgICBwdXNoaW50IDUgLy8gNQogICAgaXR4bl9maWVsZCBPbkNvbXBsZXRpb24KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQwMAogICAgLy8gY29uc3QgY29tcGlsZWRQYXJ0bmVyID0gY29tcGlsZShDb250cm9sbGVkQWRkcmVzcyk7CiAgICBieXRlYyAxNSAvLyBiYXNlNjQoQzRFQlF3PT0pCiAgICBpdHhuX2ZpZWxkIENsZWFyU3RhdGVQcm9ncmFtUGFnZXMKICAgIGJ5dGVjIDE2IC8vIGJhc2U2NChDeUFDQUFHQUJGWWRMK28yR2dDT0FRQUJBREVaZ1FVU01SZ1VFRVJDQUFDeE1nb3lEcklnSXJJSXNnY2pzaEFpc2dHemdBUVZIM3gxTWdwUXNDTkQpCiAgICBpdHhuX2ZpZWxkIEFwcHJvdmFsUHJvZ3JhbVBhZ2VzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MDEtNDA1CiAgICAvLyBjb25zdCBwYXJ0bmVyQ2hhbm5lbEFkZHIgPSBhcmM0LmFiaUNhbGw8dHlwZW9mIENvbnRyb2xsZWRBZGRyZXNzLnByb3RvdHlwZS5uZXc+KHsKICAgIC8vICAgICBhcHByb3ZhbFByb2dyYW06IGNvbXBpbGVkUGFydG5lci5hcHByb3ZhbFByb2dyYW0sCiAgICAvLyAgICAgY2xlYXJTdGF0ZVByb2dyYW06IGNvbXBpbGVkUGFydG5lci5jbGVhclN0YXRlUHJvZ3JhbSwKICAgIC8vICAgICBvbkNvbXBsZXRpb246IE9uQ29tcGxldGVBY3Rpb24uRGVsZXRlQXBwbGljYXRpb24sCiAgICAvLyB9KS5yZXR1cm5WYWx1ZTsKICAgIHB1c2hpbnQgNiAvLyBhcHBsCiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICBpdHhuIExhc3RMb2cKICAgIGR1cAogICAgZXh0cmFjdCA0IDAKICAgIHN3YXAKICAgIGV4dHJhY3QgMCA0CiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgID09CiAgICBhc3NlcnQgLy8gQnl0ZXMgaGFzIHZhbGlkIHByZWZpeAogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MDgtNDExCiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBwYXJ0bmVyQ2hhbm5lbEFkZHIsCiAgICAvLyAgICAgYW1vdW50OiBHbG9iYWwubWluQmFsYW5jZSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDEwCiAgICAvLyBhbW91bnQ6IEdsb2JhbC5taW5CYWxhbmNlLAogICAgZ2xvYmFsIE1pbkJhbGFuY2UKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBkdXAKICAgIGl0eG5fZmllbGQgUmVjZWl2ZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQwOC00MTEKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgcmVjZWl2ZXI6IHBhcnRuZXJDaGFubmVsQWRkciwKICAgIC8vICAgICBhbW91bnQ6IEdsb2JhbC5taW5CYWxhbmNlLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzAgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTg1CiAgICAvLyBwYXJ0bmVyX2NoYW5uZWxzID0gQm94TWFwPEFjY291bnQsIHN0cmluZz4oeyBrZXlQcmVmaXg6ICdwYycgfSk7CiAgICBieXRlYyAxMCAvLyAicGMiCiAgICBkaWcgMQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MTMKICAgIC8vIHRoaXMucGFydG5lcl9jaGFubmVscyhwYXJ0bmVyQ2hhbm5lbEFkZHIpLnZhbHVlID0gcGFydG5lckNoYW5uZWxOYW1lOwogICAgZHVwCiAgICBib3hfZGVsCiAgICBwb3AKICAgIGRpZyAyCiAgICBib3hfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MTYKICAgIC8vIHRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLnBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50LnZhbHVlICsgMTsKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODcKICAgIC8vIHBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3BjYWMnIH0pOwogICAgYnl0ZWMgNSAvLyAicGNhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQxNgogICAgLy8gdGhpcy5wYXJ0bmVyX2NoYW5uZWxzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUgKyAxOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIGludGNfMCAvLyAxCiAgICArCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODcKICAgIC8vIHBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3BjYWMnIH0pOwogICAgYnl0ZWMgNSAvLyAicGNhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQxNgogICAgLy8gdGhpcy5wYXJ0bmVyX2NoYW5uZWxzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUgKyAxOwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQxOC00MjEKICAgIC8vIGVtaXQ8UGFydG5lckNoYW5uZWxDcmVhdGVkPih7CiAgICAvLyAgICAgcGFydG5lckNoYW5uZWw6IHBhcnRuZXJDaGFubmVsQWRkciwKICAgIC8vICAgICBwYXJ0bmVyQ2hhbm5lbE5hbWU6IHBhcnRuZXJDaGFubmVsTmFtZSwKICAgIC8vIH0pOwogICAgZGlnIDEKICAgIGxlbgogICAgaXRvYgogICAgZXh0cmFjdCA2IDIKICAgIHVuY292ZXIgMgogICAgY29uY2F0CiAgICBkaWcgMQogICAgcHVzaGJ5dGVzIDB4MDAyMgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweDJjOTI0ZGVlIC8vIG1ldGhvZCAiUGFydG5lckNoYW5uZWxDcmVhdGVkKGFkZHJlc3Msc3RyaW5nKSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozOTMKICAgIC8vIHBhcnRuZXJDaGFubmVsQ3JlYXRlKG1icjogZ3R4bi5QYXltZW50VHhuLCBwYXJ0bmVyQ2hhbm5lbE5hbWU6IHN0cmluZyk6IEFjY291bnQgewogICAgYnl0ZWNfMCAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIucGFydG5lckNoYW5uZWxDbG9zZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CnBhcnRuZXJDaGFubmVsQ2xvc2U6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjYKICAgIC8vIHBhcnRuZXJDaGFubmVsQ2xvc2UocGFydG5lckNoYW5uZWw6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDI3CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQyOS00MzQKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgc2VuZGVyOiBwYXJ0bmVyQ2hhbm5lbCwKICAgIC8vICAgICByZWNlaXZlcjogcGFydG5lckNoYW5uZWwsCiAgICAvLyAgICAgYW1vdW50OiAwLAogICAgLy8gICAgIGNsb3NlUmVtYWluZGVyVG86IFR4bi5zZW5kZXIsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQzMwogICAgLy8gY2xvc2VSZW1haW5kZXJUbzogVHhuLnNlbmRlciwKICAgIHR4biBTZW5kZXIKICAgIGl0eG5fZmllbGQgQ2xvc2VSZW1haW5kZXJUbwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDMyCiAgICAvLyBhbW91bnQ6IDAsCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBBbW91bnQKICAgIGR1cAogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgZHVwCiAgICBpdHhuX2ZpZWxkIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDI5LTQzNAogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICBzZW5kZXI6IHBhcnRuZXJDaGFubmVsLAogICAgLy8gICAgIHJlY2VpdmVyOiBwYXJ0bmVyQ2hhbm5lbCwKICAgIC8vICAgICBhbW91bnQ6IDAsCiAgICAvLyAgICAgY2xvc2VSZW1haW5kZXJUbzogVHhuLnNlbmRlciwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaW50Y18wIC8vIDEKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4NQogICAgLy8gcGFydG5lcl9jaGFubmVscyA9IEJveE1hcDxBY2NvdW50LCBzdHJpbmc+KHsga2V5UHJlZml4OiAncGMnIH0pOwogICAgYnl0ZWMgMTAgLy8gInBjIgogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MzYKICAgIC8vIGNvbnN0IHBhcnRuZXJDaGFubmVsU2l6ZTogdWludDY0ID0gQnl0ZXModGhpcy5wYXJ0bmVyX2NoYW5uZWxzKHBhcnRuZXJDaGFubmVsKS52YWx1ZSkubGVuZ3RoOwogICAgZHVwCiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgbGVuCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MzcKICAgIC8vIGNvbnN0IGJveENvc3Q6IHVpbnQ2NCA9IDI1MDAgKyA0MDAgKiAoMyArIDMyICsgcGFydG5lckNoYW5uZWxTaXplKTsKICAgIHB1c2hpbnQgMzUgLy8gMzUKICAgICsKICAgIHB1c2hpbnQgNDAwIC8vIDQwMAogICAgKgogICAgcHVzaGludCAyNTAwIC8vIDI1MDAKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQzOS00NDIKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgcmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgYW1vdW50OiBib3hDb3N0LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NDAKICAgIC8vIHJlY2VpdmVyOiBUeG4uc2VuZGVyLAogICAgdHhuIFNlbmRlcgogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgaXR4bl9maWVsZCBBbW91bnQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQzOS00NDIKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgcmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgYW1vdW50OiBib3hDb3N0LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzAgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDQ1CiAgICAvLyB0aGlzLnBhcnRuZXJfY2hhbm5lbHMocGFydG5lckNoYW5uZWwpLmRlbGV0ZSgpOwogICAgYm94X2RlbAogICAgcG9wCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NDgKICAgIC8vIHRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLnBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50LnZhbHVlIC0gMTsKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODcKICAgIC8vIHBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3BjYWMnIH0pOwogICAgYnl0ZWMgNSAvLyAicGNhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ0OAogICAgLy8gdGhpcy5wYXJ0bmVyX2NoYW5uZWxzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUgLSAxOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIGludGNfMCAvLyAxCiAgICAtCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODcKICAgIC8vIHBhcnRuZXJfY2hhbm5lbHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3BjYWMnIH0pOwogICAgYnl0ZWMgNSAvLyAicGNhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ0OAogICAgLy8gdGhpcy5wYXJ0bmVyX2NoYW5uZWxzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMucGFydG5lcl9jaGFubmVsc19hY3RpdmVfY291bnQudmFsdWUgLSAxOwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQyNgogICAgLy8gcGFydG5lckNoYW5uZWxDbG9zZShwYXJ0bmVyQ2hhbm5lbDogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0Q2FyZEZ1bmRNYnJbcm91dGluZ10oKSAtPiB2b2lkOgpnZXRDYXJkRnVuZE1icjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ1NgogICAgLy8gZ2V0Q2FyZEZ1bmRNYnIoYXNzZXQ6IEFzc2V0KTogdWludDY0IHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGNhbGxzdWIgc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZE1icgogICAgaXRvYgogICAgYnl0ZWNfMCAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZEZ1bmRDcmVhdGVbcm91dGluZ10oKSAtPiB2b2lkOgpjYXJkRnVuZENyZWF0ZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ3MQogICAgLy8gY2FyZEZ1bmRDcmVhdGUobWJyOiBndHhuLlBheW1lbnRUeG4sIHBhcnRuZXJDaGFubmVsOiBBY2NvdW50LCBhc3NldDogQXNzZXQpOiBBY2NvdW50IHsKICAgIHR4biBHcm91cEluZGV4CiAgICBpbnRjXzAgLy8gMQogICAgLQogICAgZHVwCiAgICBndHhucyBUeXBlRW51bQogICAgaW50Y18wIC8vIHBheQogICAgPT0KICAgIGFzc2VydCAvLyB0cmFuc2FjdGlvbiB0eXBlIGlzIHBheQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBjb3ZlciAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGR1cAogICAgY292ZXIgMgogICAgY292ZXIgMwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTg1CiAgICAvLyBwYXJ0bmVyX2NoYW5uZWxzID0gQm94TWFwPEFjY291bnQsIHN0cmluZz4oeyBrZXlQcmVmaXg6ICdwYycgfSk7CiAgICBieXRlYyAxMCAvLyAicGMiCiAgICBkaWcgMQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NzIKICAgIC8vIGFzc2VydCh0aGlzLnBhcnRuZXJfY2hhbm5lbHMocGFydG5lckNoYW5uZWwpLmV4aXN0cywgJ1BBUlRORVJfQ0hBTk5FTF9OT1RfRk9VTkQnKTsKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgYXNzZXJ0IC8vIFBBUlRORVJfQ0hBTk5FTF9OT1RfRk9VTkQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ3NgogICAgLy8gb3duZXI6IFR4bi5zZW5kZXIsCiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NzcKICAgIC8vIGFkZHJlc3M6IEdsb2JhbC56ZXJvQWRkcmVzcywKICAgIGdsb2JhbCBaZXJvQWRkcmVzcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDc0LTQ4MAogICAgLy8gY29uc3QgY2FyZEZ1bmREYXRhOiBDYXJkRnVuZERhdGEgPSB7CiAgICAvLyAgICAgcGFydG5lckNoYW5uZWw6IHBhcnRuZXJDaGFubmVsLAogICAgLy8gICAgIG93bmVyOiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFkZHJlc3M6IEdsb2JhbC56ZXJvQWRkcmVzcywKICAgIC8vICAgICBub25jZTogMCwKICAgIC8vICAgICB3aXRoZHJhd2FsTm9uY2U6IDAsCiAgICAvLyB9OwogICAgY292ZXIgMgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ3OAogICAgLy8gbm9uY2U6IDAsCiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDc0LTQ4MAogICAgLy8gY29uc3QgY2FyZEZ1bmREYXRhOiBDYXJkRnVuZERhdGEgPSB7CiAgICAvLyAgICAgcGFydG5lckNoYW5uZWw6IHBhcnRuZXJDaGFubmVsLAogICAgLy8gICAgIG93bmVyOiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFkZHJlc3M6IEdsb2JhbC56ZXJvQWRkcmVzcywKICAgIC8vICAgICBub25jZTogMCwKICAgIC8vICAgICB3aXRoZHJhd2FsTm9uY2U6IDAsCiAgICAvLyB9OwogICAgaXRvYgogICAgc3dhcAogICAgZGlnIDEKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODItNDg1CiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kTWJyKGFzc2V0KSwKICAgIC8vIH0pOwogICAgZGlnIDIKICAgIGd0eG5zIFJlY2VpdmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODMKICAgIC8vIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODItNDg1CiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kTWJyKGFzc2V0KSwKICAgIC8vIH0pOwogICAgPT0KICAgIHVuY292ZXIgMwogICAgZ3R4bnMgQW1vdW50CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODQKICAgIC8vIGFtb3VudDogdGhpcy5nZXRDYXJkRnVuZE1icihhc3NldCksCiAgICBkaWcgMwogICAgY2FsbHN1YiBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmdldENhcmRGdW5kTWJyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODItNDg1CiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kTWJyKGFzc2V0KSwKICAgIC8vIH0pOwogICAgPT0KICAgICYmCiAgICBhc3NlcnQgLy8gYXNzZXJ0IHRhcmdldCBpcyBtYXRjaCBmb3IgY29uZGl0aW9ucwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDg5LTQ5MwogICAgLy8gY29uc3QgY2FyZEZ1bmRBZGRyID0gYXJjNC5hYmlDYWxsPHR5cGVvZiBDb250cm9sbGVkQWRkcmVzcy5wcm90b3R5cGUubmV3Pih7CiAgICAvLyAgICAgYXBwcm92YWxQcm9ncmFtOiBjb21waWxlZENhcmRGdW5kLmFwcHJvdmFsUHJvZ3JhbSwKICAgIC8vICAgICBjbGVhclN0YXRlUHJvZ3JhbTogY29tcGlsZWRDYXJkRnVuZC5jbGVhclN0YXRlUHJvZ3JhbSwKICAgIC8vICAgICBvbkNvbXBsZXRpb246IE9uQ29tcGxldGVBY3Rpb24uRGVsZXRlQXBwbGljYXRpb24sCiAgICAvLyB9KS5yZXR1cm5WYWx1ZTsKICAgIGl0eG5fYmVnaW4KICAgIGJ5dGVjIDE0IC8vIG1ldGhvZCAibmV3KClhZGRyZXNzIgogICAgaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ5MgogICAgLy8gb25Db21wbGV0aW9uOiBPbkNvbXBsZXRlQWN0aW9uLkRlbGV0ZUFwcGxpY2F0aW9uLAogICAgcHVzaGludCA1IC8vIDUKICAgIGl0eG5fZmllbGQgT25Db21wbGV0aW9uCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODgKICAgIC8vIGNvbnN0IGNvbXBpbGVkQ2FyZEZ1bmQgPSBjb21waWxlKENvbnRyb2xsZWRBZGRyZXNzKTsKICAgIGJ5dGVjIDE1IC8vIGJhc2U2NChDNEVCUXc9PSkKICAgIGl0eG5fZmllbGQgQ2xlYXJTdGF0ZVByb2dyYW1QYWdlcwogICAgYnl0ZWMgMTYgLy8gYmFzZTY0KEN5QUNBQUdBQkZZZEwrbzJHZ0NPQVFBQkFERVpnUVVTTVJnVUVFUkNBQUN4TWdveURySWdJcklJc2djanNoQWlzZ0d6Z0FRVkgzeDFNZ3BRc0NORCkKICAgIGl0eG5fZmllbGQgQXBwcm92YWxQcm9ncmFtUGFnZXMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ4OS00OTMKICAgIC8vIGNvbnN0IGNhcmRGdW5kQWRkciA9IGFyYzQuYWJpQ2FsbDx0eXBlb2YgQ29udHJvbGxlZEFkZHJlc3MucHJvdG90eXBlLm5ldz4oewogICAgLy8gICAgIGFwcHJvdmFsUHJvZ3JhbTogY29tcGlsZWRDYXJkRnVuZC5hcHByb3ZhbFByb2dyYW0sCiAgICAvLyAgICAgY2xlYXJTdGF0ZVByb2dyYW06IGNvbXBpbGVkQ2FyZEZ1bmQuY2xlYXJTdGF0ZVByb2dyYW0sCiAgICAvLyAgICAgb25Db21wbGV0aW9uOiBPbkNvbXBsZXRlQWN0aW9uLkRlbGV0ZUFwcGxpY2F0aW9uLAogICAgLy8gfSkucmV0dXJuVmFsdWU7CiAgICBwdXNoaW50IDYgLy8gYXBwbAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgaXR4biBMYXN0TG9nCiAgICBkdXAKICAgIGV4dHJhY3QgNCAwCiAgICBkdXAKICAgIGNvdmVyIDIKICAgIGNvdmVyIDQKICAgIGV4dHJhY3QgMCA0CiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgID09CiAgICBhc3NlcnQgLy8gQnl0ZXMgaGFzIHZhbGlkIHByZWZpeAogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0OTYKICAgIC8vIGNhcmRGdW5kRGF0YS5hZGRyZXNzID0gY2FyZEZ1bmRBZGRyOwogICAgcmVwbGFjZTIgNjQKICAgIHN3YXAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ5OQogICAgLy8gY29uc3QgYXNzZXRNYnI6IHVpbnQ2NCA9IGFzc2V0LmlkID8gR2xvYmFsLmFzc2V0T3B0SW5NaW5CYWxhbmNlIDogMDsKICAgIGJ6IGNhcmRGdW5kQ3JlYXRlX3Rlcm5hcnlfZmFsc2VANAogICAgZ2xvYmFsIEFzc2V0T3B0SW5NaW5CYWxhbmNlCgpjYXJkRnVuZENyZWF0ZV90ZXJuYXJ5X21lcmdlQDU6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MDAtNTAzCiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBjYXJkRnVuZEFkZHIsCiAgICAvLyAgICAgYW1vdW50OiBHbG9iYWwubWluQmFsYW5jZSArIGFzc2V0TWJyLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MDIKICAgIC8vIGFtb3VudDogR2xvYmFsLm1pbkJhbGFuY2UgKyBhc3NldE1iciwKICAgIGdsb2JhbCBNaW5CYWxhbmNlCiAgICArCiAgICBpdHhuX2ZpZWxkIEFtb3VudAogICAgZGlnIDEKICAgIGl0eG5fZmllbGQgUmVjZWl2ZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUwMC01MDMKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgcmVjZWl2ZXI6IGNhcmRGdW5kQWRkciwKICAgIC8vICAgICBhbW91bnQ6IEdsb2JhbC5taW5CYWxhbmNlICsgYXNzZXRNYnIsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGludGNfMCAvLyAxCiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MDYKICAgIC8vIGlmIChhc3NldC5pZCkgewogICAgZGlnIDIKICAgIGJ6IGNhcmRGdW5kQ3JlYXRlX2FmdGVyX2lmX2Vsc2VAOAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTA3CiAgICAvLyB0aGlzLmNhcmRGdW5kQXNzZXRPcHRJbihjYXJkRnVuZEFkZHIsIGFzc2V0KTsKICAgIGRpZyAxCiAgICBkaWcgMwogICAgY2FsbHN1YiBjYXJkRnVuZEFzc2V0T3B0SW4KCmNhcmRGdW5kQ3JlYXRlX2FmdGVyX2lmX2Vsc2VAODoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZF9mdW5kcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRnVuZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMSAvLyAiY2YiCiAgICBkaWcgMgogICAgZHVwCiAgICBjb3ZlciAyCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUxMQogICAgLy8gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kQWRkcikudmFsdWUgPSBjbG9uZShjYXJkRnVuZERhdGEpOwogICAgZGlnIDIKICAgIGJveF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUxNAogICAgLy8gdGhpcy5jYXJkX2Z1bmRzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUgKyAxOwogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZF9mdW5kc19hY3RpdmVfY291bnQgPSBHbG9iYWxTdGF0ZTx1aW50NjQ+KHsga2V5OiAnY2ZhYycgfSk7CiAgICBieXRlYyA0IC8vICJjZmFjIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTE0CiAgICAvLyB0aGlzLmNhcmRfZnVuZHNfYWN0aXZlX2NvdW50LnZhbHVlID0gdGhpcy5jYXJkX2Z1bmRzX2FjdGl2ZV9jb3VudC52YWx1ZSArIDE7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgaW50Y18wIC8vIDEKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZF9mdW5kc19hY3RpdmVfY291bnQgPSBHbG9iYWxTdGF0ZTx1aW50NjQ+KHsga2V5OiAnY2ZhYycgfSk7CiAgICBieXRlYyA0IC8vICJjZmFjIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTE0CiAgICAvLyB0aGlzLmNhcmRfZnVuZHNfYWN0aXZlX2NvdW50LnZhbHVlID0gdGhpcy5jYXJkX2Z1bmRzX2FjdGl2ZV9jb3VudC52YWx1ZSArIDE7CiAgICBzd2FwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTE3CiAgICAvLyBjYXJkRnVuZE93bmVyOiBUeG4uc2VuZGVyLAogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTE2LTUyMAogICAgLy8gZW1pdDxDYXJkRnVuZENyZWF0ZWQ+KHsKICAgIC8vICAgICBjYXJkRnVuZE93bmVyOiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGNhcmRGdW5kOiBjYXJkRnVuZEFkZHIsCiAgICAvLyAgICAgcGFydG5lckNoYW5uZWw6IHBhcnRuZXJDaGFubmVsLAogICAgLy8gfSk7CiAgICBkaWcgMQogICAgY29uY2F0CiAgICBkaWcgNQogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHhiNDg5NWU0NyAvLyBtZXRob2QgIkNhcmRGdW5kQ3JlYXRlZChhZGRyZXNzLGFkZHJlc3MsYWRkcmVzcykiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDcxCiAgICAvLyBjYXJkRnVuZENyZWF0ZShtYnI6IGd0eG4uUGF5bWVudFR4biwgcGFydG5lckNoYW5uZWw6IEFjY291bnQsIGFzc2V0OiBBc3NldCk6IEFjY291bnQgewogICAgYnl0ZWNfMCAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKY2FyZEZ1bmRDcmVhdGVfdGVybmFyeV9mYWxzZUA0OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDk5CiAgICAvLyBjb25zdCBhc3NldE1icjogdWludDY0ID0gYXNzZXQuaWQgPyBHbG9iYWwuYXNzZXRPcHRJbk1pbkJhbGFuY2UgOiAwOwogICAgaW50Y18xIC8vIDAKICAgIGIgY2FyZEZ1bmRDcmVhdGVfdGVybmFyeV9tZXJnZUA1CgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkRnVuZENsb3NlW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZEZ1bmRDbG9zZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUzMAogICAgLy8gY2FyZEZ1bmRDbG9zZShjYXJkRnVuZDogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MzEKICAgIC8vIGFzc2VydCh0aGlzLmlzT3duZXIoKSB8fCB0aGlzLmlzQ2FyZEZ1bmRPd25lcihjYXJkRnVuZCksICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGNhbGxzdWIgaXNPd25lcgogICAgYm56IGNhcmRGdW5kQ2xvc2VfYm9vbF90cnVlQDMKICAgIGR1cAogICAgY2FsbHN1YiBpc0NhcmRGdW5kT3duZXIKICAgIGJ6IGNhcmRGdW5kQ2xvc2VfYm9vbF9mYWxzZUA0CgpjYXJkRnVuZENsb3NlX2Jvb2xfdHJ1ZUAzOgogICAgaW50Y18wIC8vIDEKCmNhcmRGdW5kQ2xvc2VfYm9vbF9tZXJnZUA1OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTMxCiAgICAvLyBhc3NlcnQodGhpcy5pc093bmVyKCkgfHwgdGhpcy5pc0NhcmRGdW5kT3duZXIoY2FyZEZ1bmQpLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBhc3NlcnQgLy8gU0VOREVSX05PVF9BTExPV0VECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MzMtNTM4CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHNlbmRlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgcmVjZWl2ZXI6IGNhcmRGdW5kLAogICAgLy8gICAgIGFtb3VudDogMCwKICAgIC8vICAgICBjbG9zZVJlbWFpbmRlclRvOiBUeG4uc2VuZGVyLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MzcKICAgIC8vIGNsb3NlUmVtYWluZGVyVG86IFR4bi5zZW5kZXIsCiAgICB0eG4gU2VuZGVyCiAgICBpdHhuX2ZpZWxkIENsb3NlUmVtYWluZGVyVG8KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUzNgogICAgLy8gYW1vdW50OiAwLAogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBkdXBuIDIKICAgIGl0eG5fZmllbGQgUmVjZWl2ZXIKICAgIGR1cAogICAgaXR4bl9maWVsZCBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUzMy01MzgKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgc2VuZGVyOiBjYXJkRnVuZCwKICAgIC8vICAgICByZWNlaXZlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYW1vdW50OiAwLAogICAgLy8gICAgIGNsb3NlUmVtYWluZGVyVG86IFR4bi5zZW5kZXIsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGludGNfMCAvLyAxCiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NDMtNTQ2CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFtb3VudDogYm94Q29zdCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTQ0CiAgICAvLyByZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU0NQogICAgLy8gYW1vdW50OiBib3hDb3N0LAogICAgcHVzaGludCA2MDUwMCAvLyA2MDUwMAogICAgaXR4bl9maWVsZCBBbW91bnQKICAgIGl0eG5fZmllbGQgUmVjZWl2ZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU0My01NDYKICAgIC8vIGl0eG4ucGF5bWVudCh7CiAgICAvLyAgICAgcmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgYW1vdW50OiBib3hDb3N0LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzAgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkX2Z1bmRzID0gQm94TWFwPEFjY291bnQsIENhcmRGdW5kRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18xIC8vICJjZiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTQ5CiAgICAvLyB0aGlzLmNhcmRfZnVuZHMoY2FyZEZ1bmQpLmRlbGV0ZSgpOwogICAgYm94X2RlbAogICAgcG9wCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NTIKICAgIC8vIHRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLmNhcmRfZnVuZHNfYWN0aXZlX2NvdW50LnZhbHVlIC0gMTsKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODIKICAgIC8vIGNhcmRfZnVuZHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ2NmYWMnIH0pOwogICAgYnl0ZWMgNCAvLyAiY2ZhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU1MgogICAgLy8gdGhpcy5jYXJkX2Z1bmRzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUgLSAxOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIGludGNfMCAvLyAxCiAgICAtCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODIKICAgIC8vIGNhcmRfZnVuZHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ2NmYWMnIH0pOwogICAgYnl0ZWMgNCAvLyAiY2ZhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU1MgogICAgLy8gdGhpcy5jYXJkX2Z1bmRzX2FjdGl2ZV9jb3VudC52YWx1ZSA9IHRoaXMuY2FyZF9mdW5kc19hY3RpdmVfY291bnQudmFsdWUgLSAxOwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjUzMAogICAgLy8gY2FyZEZ1bmRDbG9zZShjYXJkRnVuZDogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKY2FyZEZ1bmRDbG9zZV9ib29sX2ZhbHNlQDQ6CiAgICBpbnRjXzEgLy8gMAogICAgYiBjYXJkRnVuZENsb3NlX2Jvb2xfbWVyZ2VANQoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZEZ1bmRSZWNvdmVyW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZEZ1bmRSZWNvdmVyOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTYyCiAgICAvLyBjYXJkRnVuZFJlY292ZXIoY2FyZEZ1bmQ6IEFjY291bnQsIG5ld0NhcmRGdW5kSG9sZGVyOiBBY2NvdW50KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTYzCiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZF9mdW5kcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRnVuZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMSAvLyAiY2YiCiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTY3CiAgICAvLyB0aGlzLmNhcmRfZnVuZHMoY2FyZEZ1bmQpLnZhbHVlLm93bmVyID0gbmV3Q2FyZEZ1bmRIb2xkZXI7CiAgICBpbnRjXzIgLy8gMzIKICAgIHVuY292ZXIgMgogICAgYm94X3JlcGxhY2UKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU2MgogICAgLy8gY2FyZEZ1bmRSZWNvdmVyKGNhcmRGdW5kOiBBY2NvdW50LCBuZXdDYXJkRnVuZEhvbGRlcjogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0QXNzZXRBbGxvd2xpc3RNYnJbcm91dGluZ10oKSAtPiB2b2lkOgpnZXRBc3NldEFsbG93bGlzdE1icjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3OQogICAgLy8gcmV0dXJuIEdsb2JhbC5hc3NldE9wdEluTWluQmFsYW5jZSArIEFTU0VUX1NFVFRMRU1FTlRfQUREUkVTU19DT1NUOwogICAgZ2xvYmFsIEFzc2V0T3B0SW5NaW5CYWxhbmNlCiAgICBpbnRjIDQgLy8gMTkzMDAKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3NgogICAgLy8gZ2V0QXNzZXRBbGxvd2xpc3RNYnIoKTogdWludDY0IHsKICAgIGl0b2IKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmFzc2V0QWxsb3dsaXN0QWRkW3JvdXRpbmddKCkgLT4gdm9pZDoKYXNzZXRBbGxvd2xpc3RBZGQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1ODgKICAgIC8vIGFzc2V0QWxsb3dsaXN0QWRkKG1icjogZ3R4bi5QYXltZW50VHhuLCBhc3NldDogQXNzZXQsIHNldHRsZW1lbnRBZGRyZXNzOiBBY2NvdW50KTogdm9pZCB7CiAgICB0eG4gR3JvdXBJbmRleAogICAgaW50Y18wIC8vIDEKICAgIC0KICAgIGR1cAogICAgZ3R4bnMgVHlwZUVudW0KICAgIGludGNfMCAvLyBwYXkKICAgID09CiAgICBhc3NlcnQgLy8gdHJhbnNhY3Rpb24gdHlwZSBpcyBwYXkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTg5CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU5MS01OTQKICAgIC8vIGFzc2VydE1hdGNoKG1iciwgewogICAgLy8gICAgIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhbW91bnQ6IHRoaXMuZ2V0QXNzZXRBbGxvd2xpc3RNYnIoKSwKICAgIC8vIH0pOwogICAgZGlnIDIKICAgIGd0eG5zIFJlY2VpdmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1OTIKICAgIC8vIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1OTEtNTk0CiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldEFzc2V0QWxsb3dsaXN0TWJyKCksCiAgICAvLyB9KTsKICAgID09CiAgICB1bmNvdmVyIDMKICAgIGd0eG5zIEFtb3VudAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTc5CiAgICAvLyByZXR1cm4gR2xvYmFsLmFzc2V0T3B0SW5NaW5CYWxhbmNlICsgQVNTRVRfU0VUVExFTUVOVF9BRERSRVNTX0NPU1Q7CiAgICBnbG9iYWwgQXNzZXRPcHRJbk1pbkJhbGFuY2UKICAgIGludGMgNCAvLyAxOTMwMAogICAgKwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTkxLTU5NAogICAgLy8gYXNzZXJ0TWF0Y2gobWJyLCB7CiAgICAvLyAgICAgcmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFtb3VudDogdGhpcy5nZXRBc3NldEFsbG93bGlzdE1icigpLAogICAgLy8gfSk7CiAgICA9PQogICAgJiYKICAgIGFzc2VydCAvLyBhc3NlcnQgdGFyZ2V0IGlzIG1hdGNoIGZvciBjb25kaXRpb25zCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1OTYtNjAxCiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogMCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTk3CiAgICAvLyBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU5OAogICAgLy8gYXNzZXRSZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBkdXAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYwMAogICAgLy8gYXNzZXRBbW91bnQ6IDAsCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZGlnIDMKICAgIGl0eG5fZmllbGQgWGZlckFzc2V0CiAgICBpdHhuX2ZpZWxkIEFzc2V0UmVjZWl2ZXIKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1OTYtNjAxCiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogMCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgcHVzaGludCA0IC8vIDQKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYwMwogICAgLy8gZW1pdDxBc3NldEFsbG93bGlzdEFkZGVkPih7IGFzc2V0OiBhc3NldCB9KTsKICAgIGRpZyAxCiAgICBpdG9iCiAgICBwdXNoYnl0ZXMgMHgyNjM2YmM3ZSAvLyBtZXRob2QgIkFzc2V0QWxsb3dsaXN0QWRkZWQodWludDY0KSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MDUKICAgIC8vIHRoaXMudXBkYXRlU2V0dGxlbWVudEFkZHJlc3MoYXNzZXQsIHNldHRsZW1lbnRBZGRyZXNzKTsKICAgIGNhbGxzdWIgdXBkYXRlU2V0dGxlbWVudEFkZHJlc3MKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU4OAogICAgLy8gYXNzZXRBbGxvd2xpc3RBZGQobWJyOiBndHhuLlBheW1lbnRUeG4sIGFzc2V0OiBBc3NldCwgc2V0dGxlbWVudEFkZHJlc3M6IEFjY291bnQpOiB2b2lkIHsKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmFzc2V0QWxsb3dsaXN0UmVtb3ZlW3JvdXRpbmddKCkgLT4gdm9pZDoKYXNzZXRBbGxvd2xpc3RSZW1vdmU6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MTMKICAgIC8vIGFzc2V0QWxsb3dsaXN0UmVtb3ZlKGFzc2V0OiBBc3NldCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjE0CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYxNy02MjMKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldENsb3NlVG86IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYxOAogICAgLy8gc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MTktNjIwCiAgICAvLyBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vIGFzc2V0Q2xvc2VUbzogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBkdXBuIDIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYyMgogICAgLy8gYXNzZXRBbW91bnQ6IDAsCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZGlnIDMKICAgIGl0eG5fZmllbGQgWGZlckFzc2V0CiAgICBpdHhuX2ZpZWxkIEFzc2V0Q2xvc2VUbwogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBpdHhuX2ZpZWxkIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjE3LTYyMwogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFzc2V0Q2xvc2VUbzogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogMCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgcHVzaGludCA0IC8vIDQKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYyNgogICAgLy8gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLmRlbGV0ZSgpOwogICAgaXRvYgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjAzCiAgICAvLyBzZXR0bGVtZW50X2FkZHJlc3MgPSBCb3hNYXA8QXNzZXQsIEFjY291bnQ+KHsga2V5UHJlZml4OiAnc2EnIH0pOwogICAgYnl0ZWMgOSAvLyAic2EiCiAgICBkaWcgMQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MjYKICAgIC8vIHRoaXMuc2V0dGxlbWVudF9hZGRyZXNzKGFzc2V0KS5kZWxldGUoKTsKICAgIGJveF9kZWwKICAgIHBvcAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjI4LTYzMQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIC8vICAgICBhbW91bnQ6IHRoaXMuZ2V0QXNzZXRBbGxvd2xpc3RNYnIoKSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjI5CiAgICAvLyByZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3OQogICAgLy8gcmV0dXJuIEdsb2JhbC5hc3NldE9wdEluTWluQmFsYW5jZSArIEFTU0VUX1NFVFRMRU1FTlRfQUREUkVTU19DT1NUOwogICAgZ2xvYmFsIEFzc2V0T3B0SW5NaW5CYWxhbmNlCiAgICBpbnRjIDQgLy8gMTkzMDAKICAgICsKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBpdHhuX2ZpZWxkIFJlY2VpdmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MjgtNjMxCiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFtb3VudDogdGhpcy5nZXRBc3NldEFsbG93bGlzdE1icigpLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzAgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjMzCiAgICAvLyBlbWl0PEFzc2V0QWxsb3dsaXN0UmVtb3ZlZD4oeyBhc3NldDogYXNzZXQgfSk7CiAgICBwdXNoYnl0ZXMgMHgwNjVjMDM3NCAvLyBtZXRob2QgIkFzc2V0QWxsb3dsaXN0UmVtb3ZlZCh1aW50NjQpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYxMwogICAgLy8gYXNzZXRBbGxvd2xpc3RSZW1vdmUoYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkRnVuZERlYml0W3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZEZ1bmREZWJpdDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY0NAogICAgLy8gY2FyZEZ1bmREZWJpdChjYXJkRnVuZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0LCBhbW91bnQ6IHVpbnQ2NCwgbm9uY2U6IHVpbnQ2NCwgcmVmOiBzdHJpbmcpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNAogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNQogICAgZHVwCiAgICBpbnRjXzEgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgcHVzaGludCAyIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgZXh0cmFjdCAyIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY0NQogICAgLy8gdGhpcy53aGVuTm90UGF1c2VkKCk7CiAgICBjYWxsc3ViIHdoZW5Ob3RQYXVzZWQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY0NgogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODAKICAgIC8vIGNhcmRfZnVuZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZEZ1bmREYXRhPih7IGtleVByZWZpeDogJ2NmJyB9KTsKICAgIGJ5dGVjXzEgLy8gImNmIgogICAgZGlnIDUKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjQ5CiAgICAvLyBjb25zdCBuZXh0Tm9uY2U6IHVpbnQ2NCA9IHRoaXMuY2FyZF9mdW5kcyhjYXJkRnVuZCkudmFsdWUubm9uY2U7CiAgICBkdXAKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICBwdXNoaW50IDk2IC8vIDk2CiAgICBleHRyYWN0X3VpbnQ2NAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjUwCiAgICAvLyBhc3NlcnQobmV4dE5vbmNlID09PSBub25jZSwgJ05PTkNFX0lOVkFMSUQnKTsKICAgIGR1cAogICAgZGlnIDQKICAgID09CiAgICBhc3NlcnQgLy8gTk9OQ0VfSU5WQUxJRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjUyLTY1OAogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IGNhcmRGdW5kLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBub3RlOiByZWYsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY1NAogICAgLy8gYXNzZXRSZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgZGlnIDMKICAgIGl0eG5fZmllbGQgTm90ZQogICAgZGlnIDUKICAgIGl0eG5fZmllbGQgQXNzZXRBbW91bnQKICAgIGRpZyA2CiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBkaWcgNgogICAgaXR4bl9maWVsZCBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY1Mi02NTgKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBjYXJkRnVuZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyAgICAgbm90ZTogcmVmLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjYwLTY2NgogICAgLy8gZW1pdDxEZWJpdD4oewogICAgLy8gICAgIGNhcmQ6IGNhcmRGdW5kLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBub25jZTogbm9uY2UsCiAgICAvLyAgICAgcmVmZXJlbmNlOiByZWYsCiAgICAvLyB9KTsKICAgIHVuY292ZXIgNQogICAgaXRvYgogICAgdW5jb3ZlciA2CiAgICBzd2FwCiAgICBjb25jYXQKICAgIHVuY292ZXIgNQogICAgaXRvYgogICAgY29uY2F0CiAgICB1bmNvdmVyIDQKICAgIGl0b2IKICAgIGNvbmNhdAogICAgZGlnIDMKICAgIGxlbgogICAgaXRvYgogICAgZXh0cmFjdCA2IDIKICAgIHVuY292ZXIgNAogICAgY29uY2F0CiAgICBzd2FwCiAgICBwdXNoYnl0ZXMgMHgwMDNhCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzIDB4OTk0YTEzNjcgLy8gbWV0aG9kICJEZWJpdChhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0LHN0cmluZykiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjY5CiAgICAvLyB0aGlzLmNhcmRfZnVuZHMoY2FyZEZ1bmQpLnZhbHVlLm5vbmNlID0gbmV4dE5vbmNlICsgMTsKICAgIGludGNfMCAvLyAxCiAgICArCiAgICBpdG9iCiAgICBwdXNoaW50IDk2IC8vIDk2CiAgICBzd2FwCiAgICBib3hfcmVwbGFjZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjQ0CiAgICAvLyBjYXJkRnVuZERlYml0KGNhcmRGdW5kOiBBY2NvdW50LCBhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCBub25jZTogdWludDY0LCByZWY6IHN0cmluZyk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0UmVmdW5kQWRkcmVzc1tyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldFJlZnVuZEFkZHJlc3M6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2NzkKICAgIC8vIHJldHVybiB0aGlzLnJlZnVuZF9hZGRyZXNzLnZhbHVlOwogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwNgogICAgLy8gcmVmdW5kX2FkZHJlc3MgPSBHbG9iYWxTdGF0ZTxBY2NvdW50Pih7IGtleTogJ3JhJyB9KTsKICAgIGJ5dGVjIDExIC8vICJyYSIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY3OQogICAgLy8gcmV0dXJuIHRoaXMucmVmdW5kX2FkZHJlc3MudmFsdWU7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njc3CiAgICAvLyBAYWJpbWV0aG9kKHsgcmVhZG9ubHk6IHRydWUgfSkKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLnNldFJlZnVuZEFkZHJlc3Nbcm91dGluZ10oKSAtPiB2b2lkOgpzZXRSZWZ1bmRBZGRyZXNzOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njg4CiAgICAvLyBzZXRSZWZ1bmRBZGRyZXNzKG5ld1JlZnVuZEFkZHJlc3M6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njg5CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwNgogICAgLy8gcmVmdW5kX2FkZHJlc3MgPSBHbG9iYWxTdGF0ZTxBY2NvdW50Pih7IGtleTogJ3JhJyB9KTsKICAgIGJ5dGVjIDExIC8vICJyYSIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY5MQogICAgLy8gdGhpcy5yZWZ1bmRfYWRkcmVzcy52YWx1ZSA9IG5ld1JlZnVuZEFkZHJlc3M7CiAgICBzd2FwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njg4CiAgICAvLyBzZXRSZWZ1bmRBZGRyZXNzKG5ld1JlZnVuZEFkZHJlc3M6IEFjY291bnQpOiB2b2lkIHsKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRGdW5kUmVmdW5kW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZEZ1bmRSZWZ1bmQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MDIKICAgIC8vIGNhcmRGdW5kUmVmdW5kKGNhcmRGdW5kOiBBY2NvdW50LCBhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCBub25jZTogdWludDY0KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDQKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcwMwogICAgLy8gdGhpcy53aGVuTm90UGF1c2VkKCk7CiAgICBjYWxsc3ViIHdoZW5Ob3RQYXVzZWQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcwNQogICAgLy8gYXNzZXJ0KFR4bi5zZW5kZXIgPT09IHRoaXMucmVmdW5kX2FkZHJlc3MudmFsdWUsICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIHR4biBTZW5kZXIKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMDYKICAgIC8vIHJlZnVuZF9hZGRyZXNzID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oeyBrZXk6ICdyYScgfSk7CiAgICBieXRlYyAxMSAvLyAicmEiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MDUKICAgIC8vIGFzc2VydChUeG4uc2VuZGVyID09PSB0aGlzLnJlZnVuZF9hZGRyZXNzLnZhbHVlLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgPT0KICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZF9mdW5kcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRnVuZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMSAvLyAiY2YiCiAgICBkaWcgNAogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MDgKICAgIC8vIGNvbnN0IG5leHROb25jZTogdWludDY0ID0gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZS5ub25jZTsKICAgIGR1cAogICAgYm94X2dldAogICAgYXNzZXJ0IC8vIEJveCBtdXN0IGhhdmUgdmFsdWUKICAgIHB1c2hpbnQgOTYgLy8gOTYKICAgIGV4dHJhY3RfdWludDY0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MDkKICAgIC8vIGFzc2VydChuZXh0Tm9uY2UgPT09IG5vbmNlLCAnTk9OQ0VfSU5WQUxJRCcpOwogICAgZHVwCiAgICBkaWcgMwogICAgPT0KICAgIGFzc2VydCAvLyBOT05DRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MTEtNzE2CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogYW1vdW50LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MTIKICAgIC8vIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgZGlnIDQKICAgIGl0eG5fZmllbGQgQXNzZXRBbW91bnQKICAgIGRpZyA1CiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgZGlnIDYKICAgIGl0eG5fZmllbGQgQXNzZXRSZWNlaXZlcgogICAgaXR4bl9maWVsZCBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcxMS03MTYKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBjYXJkRnVuZCwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIHB1c2hpbnQgNCAvLyA0CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MTgtNzIzCiAgICAvLyBlbWl0PFJlZnVuZD4oewogICAgLy8gICAgIGNhcmQ6IGNhcmRGdW5kLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBub25jZTogbm9uY2UsCiAgICAvLyB9KTsKICAgIHVuY292ZXIgNAogICAgaXRvYgogICAgdW5jb3ZlciA1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIHVuY292ZXIgNAogICAgaXRvYgogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGl0b2IKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzIDB4ZTM3YWFlNWMgLy8gbWV0aG9kICJSZWZ1bmQoYWRkcmVzcyx1aW50NjQsdWludDY0LHVpbnQ2NCkiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzI2CiAgICAvLyB0aGlzLmNhcmRfZnVuZHMoY2FyZEZ1bmQpLnZhbHVlLm5vbmNlID0gbmV4dE5vbmNlICsgMTsKICAgIGludGNfMCAvLyAxCiAgICArCiAgICBpdG9iCiAgICBwdXNoaW50IDk2IC8vIDk2CiAgICBzd2FwCiAgICBib3hfcmVwbGFjZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzAyCiAgICAvLyBjYXJkRnVuZFJlZnVuZChjYXJkRnVuZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0LCBhbW91bnQ6IHVpbnQ2NCwgbm9uY2U6IHVpbnQ2NCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0TmV4dFNldHRsZW1lbnROb25jZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldE5leHRTZXR0bGVtZW50Tm9uY2U6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MzYKICAgIC8vIHJldHVybiB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWU7CiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjAwCiAgICAvLyBzZXR0bGVtZW50X25vbmNlID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3NuJyB9KTsKICAgIGJ5dGVjIDcgLy8gInNuIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzM2CiAgICAvLyByZXR1cm4gdGhpcy5zZXR0bGVtZW50X25vbmNlLnZhbHVlOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjczNAogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICBpdG9iCiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXROZXh0Q2FyZEZ1bmROb25jZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldE5leHRDYXJkRnVuZE5vbmNlOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzQ1CiAgICAvLyBAYWJpbWV0aG9kKHsgcmVhZG9ubHk6IHRydWUgfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkX2Z1bmRzID0gQm94TWFwPEFjY291bnQsIENhcmRGdW5kRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18xIC8vICJjZiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzQ3CiAgICAvLyByZXR1cm4gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZS5ub25jZTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICBleHRyYWN0IDk2IDgKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc0NQogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZFdpdGhkcmF3YWxOb25jZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldENhcmRGdW5kV2l0aGRyYXdhbE5vbmNlOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzU2CiAgICAvLyBAYWJpbWV0aG9kKHsgcmVhZG9ubHk6IHRydWUgfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkX2Z1bmRzID0gQm94TWFwPEFjY291bnQsIENhcmRGdW5kRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18xIC8vICJjZiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzU4CiAgICAvLyByZXR1cm4gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZS53aXRoZHJhd2FsTm9uY2U7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgZXh0cmFjdCAxMDQgOAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzU2CiAgICAvLyBAYWJpbWV0aG9kKHsgcmVhZG9ubHk6IHRydWUgfSkKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmdldENhcmRGdW5kRGF0YVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldENhcmRGdW5kRGF0YToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc2NwogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZF9mdW5kcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRnVuZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMSAvLyAiY2YiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc2OQogICAgLy8gcmV0dXJuIHRoaXMuY2FyZF9mdW5kcyhjYXJkRnVuZCkudmFsdWU7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzY3CiAgICAvLyBAYWJpbWV0aG9kKHsgcmVhZG9ubHk6IHRydWUgfSkKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmdldFNldHRsZW1lbnRBZGRyZXNzW3JvdXRpbmddKCkgLT4gdm9pZDoKZ2V0U2V0dGxlbWVudEFkZHJlc3M6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzgKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzgwCiAgICAvLyByZXR1cm4gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlOwogICAgaXRvYgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjAzCiAgICAvLyBzZXR0bGVtZW50X2FkZHJlc3MgPSBCb3hNYXA8QXNzZXQsIEFjY291bnQ+KHsga2V5UHJlZml4OiAnc2EnIH0pOwogICAgYnl0ZWMgOSAvLyAic2EiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc4MAogICAgLy8gcmV0dXJuIHRoaXMuc2V0dGxlbWVudF9hZGRyZXNzKGFzc2V0KS52YWx1ZTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzgKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgYnl0ZWNfMCAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuc2V0U2V0dGxlbWVudEFkZHJlc3Nbcm91dGluZ10oKSAtPiB2b2lkOgpzZXRTZXR0bGVtZW50QWRkcmVzczoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc5MAogICAgLy8gc2V0U2V0dGxlbWVudEFkZHJlc3Moc2V0dGxlbWVudEFzc2V0OiBBc3NldCwgbmV3U2V0dGxlbWVudEFkZHJlc3M6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzkxCiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc5MwogICAgLy8gdGhpcy51cGRhdGVTZXR0bGVtZW50QWRkcmVzcyhzZXR0bGVtZW50QXNzZXQsIG5ld1NldHRsZW1lbnRBZGRyZXNzKTsKICAgIGNhbGxzdWIgdXBkYXRlU2V0dGxlbWVudEFkZHJlc3MKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc5MAogICAgLy8gc2V0U2V0dGxlbWVudEFkZHJlc3Moc2V0dGxlbWVudEFzc2V0OiBBc3NldCwgbmV3U2V0dGxlbWVudEFkZHJlc3M6IEFjY291bnQpOiB2b2lkIHsKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLnNldHRsZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CnNldHRsZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgwNAogICAgLy8gc2V0dGxlKGFzc2V0OiBBc3NldCwgYW1vdW50OiB1aW50NjQsIG5vbmNlOiB1aW50NjQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgwNQogICAgLy8gdGhpcy53aGVuTm90UGF1c2VkKCk7CiAgICBjYWxsc3ViIHdoZW5Ob3RQYXVzZWQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgwNgogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MDkKICAgIC8vIGFzc2VydCh0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWUgPT09IG5vbmNlLCAnTk9OQ0VfSU5WQUxJRCcpOwogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwMAogICAgLy8gc2V0dGxlbWVudF9ub25jZSA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICdzbicgfSk7CiAgICBieXRlYyA3IC8vICJzbiIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgwOQogICAgLy8gYXNzZXJ0KHRoaXMuc2V0dGxlbWVudF9ub25jZS52YWx1ZSA9PT0gbm9uY2UsICdOT05DRV9JTlZBTElEJyk7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgZHVwCiAgICBkaWcgMgogICAgPT0KICAgIGFzc2VydCAvLyBOT05DRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MTEtODE2CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IGFtb3VudCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODEyCiAgICAvLyBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgxMwogICAgLy8gYXNzZXRSZWNlaXZlcjogdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlLAogICAgZGlnIDQKICAgIGl0b2IKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwMwogICAgLy8gc2V0dGxlbWVudF9hZGRyZXNzID0gQm94TWFwPEFzc2V0LCBBY2NvdW50Pih7IGtleVByZWZpeDogJ3NhJyB9KTsKICAgIGJ5dGVjIDkgLy8gInNhIgogICAgZGlnIDEKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODEzCiAgICAvLyBhc3NldFJlY2VpdmVyOiB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUsCiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgZGlnIDUKICAgIGl0eG5fZmllbGQgQXNzZXRBbW91bnQKICAgIHVuY292ZXIgNgogICAgaXR4bl9maWVsZCBYZmVyQXNzZXQKICAgIGR1cAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICB1bmNvdmVyIDIKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MTEtODE2CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IGFtb3VudCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgcHVzaGludCA0IC8vIDQKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgxOC04MjMKICAgIC8vIGVtaXQ8U2V0dGxlbWVudD4oewogICAgLy8gICAgIHJlY2lwaWVudDogdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBub25jZTogbm9uY2UsCiAgICAvLyB9KTsKICAgIHN3YXAKICAgIGNvbmNhdAogICAgdW5jb3ZlciAzCiAgICBpdG9iCiAgICBjb25jYXQKICAgIHVuY292ZXIgMgogICAgaXRvYgogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHg1NTgwNDZlYyAvLyBtZXRob2QgIlNldHRsZW1lbnQoYWRkcmVzcyx1aW50NjQsdWludDY0LHVpbnQ2NCkiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODI2CiAgICAvLyB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWUgPSB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWUgKyAxOwogICAgaW50Y18wIC8vIDEKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwMAogICAgLy8gc2V0dGxlbWVudF9ub25jZSA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICdzbicgfSk7CiAgICBieXRlYyA3IC8vICJzbiIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgyNgogICAgLy8gdGhpcy5zZXR0bGVtZW50X25vbmNlLnZhbHVlID0gdGhpcy5zZXR0bGVtZW50X25vbmNlLnZhbHVlICsgMTsKICAgIHN3YXAKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MDQKICAgIC8vIHNldHRsZShhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCBub25jZTogdWludDY0KTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZEFzc2V0TWJyW3JvdXRpbmddKCkgLT4gdm9pZDoKZ2V0Q2FyZEZ1bmRBc3NldE1icjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgzNAogICAgLy8gcmV0dXJuIEdsb2JhbC5hc3NldE9wdEluTWluQmFsYW5jZTsKICAgIGdsb2JhbCBBc3NldE9wdEluTWluQmFsYW5jZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODMzCiAgICAvLyBnZXRDYXJkRnVuZEFzc2V0TWJyKCk6IHVpbnQ2NCB7CiAgICBpdG9iCiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkRnVuZEVuYWJsZUFzc2V0W3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZEZ1bmRFbmFibGVBc3NldDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg0NAogICAgLy8gY2FyZEZ1bmRFbmFibGVBc3NldChtYnI6IGd0eG4uUGF5bWVudFR4biwgY2FyZEZ1bmQ6IEFjY291bnQsIGFzc2V0OiBBc3NldCk6IHZvaWQgewogICAgdHhuIEdyb3VwSW5kZXgKICAgIGludGNfMCAvLyAxCiAgICAtCiAgICBkdXAKICAgIGd0eG5zIFR5cGVFbnVtCiAgICBpbnRjXzAgLy8gcGF5CiAgICA9PQogICAgYXNzZXJ0IC8vIHRyYW5zYWN0aW9uIHR5cGUgaXMgcGF5CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg0NQogICAgLy8gYXNzZXJ0KHRoaXMuaXNPd25lcigpIHx8IHRoaXMuaXNDYXJkRnVuZE93bmVyKGNhcmRGdW5kKSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgY2FsbHN1YiBpc093bmVyCiAgICBibnogY2FyZEZ1bmRFbmFibGVBc3NldF9ib29sX3RydWVAMwogICAgZGlnIDEKICAgIGNhbGxzdWIgaXNDYXJkRnVuZE93bmVyCiAgICBieiBjYXJkRnVuZEVuYWJsZUFzc2V0X2Jvb2xfZmFsc2VANAoKY2FyZEZ1bmRFbmFibGVBc3NldF9ib29sX3RydWVAMzoKICAgIGludGNfMCAvLyAxCgpjYXJkRnVuZEVuYWJsZUFzc2V0X2Jvb2xfbWVyZ2VANToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg0NQogICAgLy8gYXNzZXJ0KHRoaXMuaXNPd25lcigpIHx8IHRoaXMuaXNDYXJkRnVuZE93bmVyKGNhcmRGdW5kKSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgYXNzZXJ0IC8vIFNFTkRFUl9OT1RfQUxMT1dFRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODQ3LTg1MAogICAgLy8gYXNzZXJ0TWF0Y2gobWJyLCB7CiAgICAvLyAgICAgcmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFtb3VudDogdGhpcy5nZXRDYXJkRnVuZEFzc2V0TWJyKCksCiAgICAvLyB9KTsKICAgIGRpZyAyCiAgICBkdXAKICAgIGd0eG5zIFJlY2VpdmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4NDgKICAgIC8vIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4NDctODUwCiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kQXNzZXRNYnIoKSwKICAgIC8vIH0pOwogICAgPT0KICAgIHN3YXAKICAgIGd0eG5zIEFtb3VudAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODM0CiAgICAvLyByZXR1cm4gR2xvYmFsLmFzc2V0T3B0SW5NaW5CYWxhbmNlOwogICAgZ2xvYmFsIEFzc2V0T3B0SW5NaW5CYWxhbmNlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4NDctODUwCiAgICAvLyBhc3NlcnRNYXRjaChtYnIsIHsKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kQXNzZXRNYnIoKSwKICAgIC8vIH0pOwogICAgPT0KICAgICYmCiAgICBhc3NlcnQgLy8gYXNzZXJ0IHRhcmdldCBpcyBtYXRjaCBmb3IgY29uZGl0aW9ucwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODUyLTg1NQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kQXNzZXRNYnIoKSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODM0CiAgICAvLyByZXR1cm4gR2xvYmFsLmFzc2V0T3B0SW5NaW5CYWxhbmNlOwogICAgZ2xvYmFsIEFzc2V0T3B0SW5NaW5CYWxhbmNlCiAgICBpdHhuX2ZpZWxkIEFtb3VudAogICAgZGlnIDEKICAgIGR1cAogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODUyLTg1NQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kQXNzZXRNYnIoKSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaW50Y18wIC8vIDEKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg1NwogICAgLy8gdGhpcy5jYXJkRnVuZEFzc2V0T3B0SW4oY2FyZEZ1bmQsIGFzc2V0KTsKICAgIGRpZyAxCiAgICBjYWxsc3ViIGNhcmRGdW5kQXNzZXRPcHRJbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODQ0CiAgICAvLyBjYXJkRnVuZEVuYWJsZUFzc2V0KG1icjogZ3R4bi5QYXltZW50VHhuLCBjYXJkRnVuZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgpjYXJkRnVuZEVuYWJsZUFzc2V0X2Jvb2xfZmFsc2VANDoKICAgIGludGNfMSAvLyAwCiAgICBiIGNhcmRGdW5kRW5hYmxlQXNzZXRfYm9vbF9tZXJnZUA1CgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkRnVuZERpc2FibGVBc3NldFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNhcmRGdW5kRGlzYWJsZUFzc2V0OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODY2CiAgICAvLyBjYXJkRnVuZERpc2FibGVBc3NldChjYXJkRnVuZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg2NwogICAgLy8gYXNzZXJ0KHRoaXMuaXNPd25lcigpIHx8IHRoaXMuaXNDYXJkRnVuZE93bmVyKGNhcmRGdW5kKSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgY2FsbHN1YiBpc093bmVyCiAgICBibnogY2FyZEZ1bmREaXNhYmxlQXNzZXRfYm9vbF90cnVlQDMKICAgIGRpZyAxCiAgICBjYWxsc3ViIGlzQ2FyZEZ1bmRPd25lcgogICAgYnogY2FyZEZ1bmREaXNhYmxlQXNzZXRfYm9vbF9mYWxzZUA0CgpjYXJkRnVuZERpc2FibGVBc3NldF9ib29sX3RydWVAMzoKICAgIGludGNfMCAvLyAxCgpjYXJkRnVuZERpc2FibGVBc3NldF9ib29sX21lcmdlQDU6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4NjcKICAgIC8vIGFzc2VydCh0aGlzLmlzT3duZXIoKSB8fCB0aGlzLmlzQ2FyZEZ1bmRPd25lcihjYXJkRnVuZCksICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI0My0yNDkKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBjYXJkRnVuZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBjYXJkRnVuZCwKICAgIC8vICAgICBhc3NldENsb3NlVG86IGNhcmRGdW5kLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI0OAogICAgLy8gYXNzZXRBbW91bnQ6IDAsCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZHVwbiAyCiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgZGlnIDIKICAgIGR1cAogICAgaXR4bl9maWVsZCBBc3NldENsb3NlVG8KICAgIGR1cAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBkdXAKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNDMtMjQ5CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYXNzZXRDbG9zZVRvOiBjYXJkRnVuZCwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiAwLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjUxLTI1NQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICBzZW5kZXI6IGNhcmRGdW5kLAogICAgLy8gICAgIHJlY2VpdmVyOiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFtb3VudDogdGhpcy5nZXRDYXJkRnVuZEFzc2V0TWJyKCksCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI1MwogICAgLy8gcmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MzQKICAgIC8vIHJldHVybiBHbG9iYWwuYXNzZXRPcHRJbk1pbkJhbGFuY2U7CiAgICBnbG9iYWwgQXNzZXRPcHRJbk1pbkJhbGFuY2UKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBpdHhuX2ZpZWxkIFJlY2VpdmVyCiAgICBkdXAKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNTEtMjU1CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHNlbmRlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgcmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgYW1vdW50OiB0aGlzLmdldENhcmRGdW5kQXNzZXRNYnIoKSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaW50Y18wIC8vIDEKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI1Ny0yNjAKICAgIC8vIGVtaXQ8Q2FyZEZ1bmRBc3NldERpc2FibGVkPih7CiAgICAvLyAgICAgY2FyZEZ1bmQ6IGNhcmRGdW5kLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vIH0pOwogICAgc3dhcAogICAgaXRvYgogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHhkMTUzMTY3OCAvLyBtZXRob2QgIkNhcmRGdW5kQXNzZXREaXNhYmxlZChhZGRyZXNzLHVpbnQ2NCkiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODY2CiAgICAvLyBjYXJkRnVuZERpc2FibGVBc3NldChjYXJkRnVuZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgpjYXJkRnVuZERpc2FibGVBc3NldF9ib29sX2ZhbHNlQDQ6CiAgICBpbnRjXzEgLy8gMAogICAgYiBjYXJkRnVuZERpc2FibGVBc3NldF9ib29sX21lcmdlQDUKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRGdW5kSW5pdFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNhcmRGdW5kSW5pdFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg3OAogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydOb09wJ10gfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODg0CiAgICAvLyBhc3NlcnQodGhpcy5pc0NhcmRGdW5kT3duZXIoY2FyZEZ1bmQpLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBkaWcgMgogICAgY2FsbHN1YiBpc0NhcmRGdW5kT3duZXIKICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZF9mdW5kcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRnVuZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMSAvLyAiY2YiCiAgICBkaWcgMwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4ODUKICAgIC8vIGNvbnN0IGNhcmRGdW5kRGF0YSA9IGNsb25lKHRoaXMuY2FyZF9mdW5kcyhjYXJkRnVuZCkudmFsdWUpOwogICAgYm94X2dldAogICAgYXNzZXJ0IC8vIEJveCBtdXN0IGhhdmUgdmFsdWUKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg4NgogICAgLy8gY29uc3QgW2JhbGFuY2UsIF9vcHRlZEluXSA9IG9wLkFzc2V0SG9sZGluZy5hc3NldEJhbGFuY2UoY2FyZEZ1bmQsIGFzc2V0KTsKICAgIGRpZyAzCiAgICBkaWcgMwogICAgYXNzZXRfaG9sZGluZ19nZXQgQXNzZXRCYWxhbmNlCiAgICBwb3AKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg4NwogICAgLy8gYXNzZXJ0KGFtb3VudCA8PSBiYWxhbmNlLCAnSU5TVUZGSUNJRU5UX0JBTEFOQ0UnKTsKICAgIGRpZyAyCiAgICA+PQogICAgYXNzZXJ0IC8vIElOU1VGRklDSUVOVF9CQUxBTkNFCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4OTEKICAgIC8vIHJlY2lwaWVudDogVHhuLnNlbmRlciwKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg5NAogICAgLy8gY3JlYXRlZEF0OiBHbG9iYWwubGF0ZXN0VGltZXN0YW1wLAogICAgZ2xvYmFsIExhdGVzdFRpbWVzdGFtcAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODk1CiAgICAvLyBub25jZTogY2FyZEZ1bmREYXRhLndpdGhkcmF3YWxOb25jZSwKICAgIHVuY292ZXIgMgogICAgZXh0cmFjdCAxMDQgOAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODg5LTg5NgogICAgLy8gY29uc3Qgd2l0aGRyYXdhbDogUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdCA9IHsKICAgIC8vICAgICBjYXJkRnVuZDogY2FyZEZ1bmQsCiAgICAvLyAgICAgcmVjaXBpZW50OiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBjcmVhdGVkQXQ6IEdsb2JhbC5sYXRlc3RUaW1lc3RhbXAsCiAgICAvLyAgICAgbm9uY2U6IGNhcmRGdW5kRGF0YS53aXRoZHJhd2FsTm9uY2UsCiAgICAvLyB9OwogICAgdW5jb3ZlciA1CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgdW5jb3ZlciA0CiAgICBpdG9iCiAgICBjb25jYXQKICAgIHVuY292ZXIgMwogICAgaXRvYgogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGl0b2IKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgYnl0ZWNfMiAvLyAid3IiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4OTgKICAgIC8vIHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikudmFsdWUgPSBjbG9uZSh3aXRoZHJhd2FsKTsKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5NwogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg5OAogICAgLy8gdGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS52YWx1ZSA9IGNsb25lKHdpdGhkcmF3YWwpOwogICAgZGlnIDEKICAgIGJveF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkwMAogICAgLy8gZW1pdDxXaXRoZHJhd2FsUmVxdWVzdD4od2l0aGRyYXdhbCk7CiAgICBkdXAKICAgIGV4dHJhY3QgMCAzMgogICAgZGlnIDEKICAgIGV4dHJhY3QgMzIgMzIKICAgIGRpZyAyCiAgICBleHRyYWN0IDY0IDgKICAgIGRpZyAzCiAgICBleHRyYWN0IDcyIDgKICAgIGRpZyA0CiAgICBleHRyYWN0IDgwIDgKICAgIGRpZyA1CiAgICBleHRyYWN0IDg4IDgKICAgIHVuY292ZXIgNQogICAgdW5jb3ZlciA1CiAgICBjb25jYXQKICAgIHVuY292ZXIgNAogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzIDB4ZDg1ZjYyMGEgLy8gbWV0aG9kICJXaXRoZHJhd2FsUmVxdWVzdChhZGRyZXNzLGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsdWludDY0KSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4NzgKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnTm9PcCddIH0pCiAgICBieXRlY18wIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkRnVuZFdpdGhkcmF3YWxDYW5jZWxbcm91dGluZ10oKSAtPiB2b2lkOgpjYXJkRnVuZFdpdGhkcmF3YWxDYW5jZWw6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MDkKICAgIC8vIGNhcmRGdW5kV2l0aGRyYXdhbENhbmNlbChjYXJkRnVuZDogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MTAKICAgIC8vIGFzc2VydCh0aGlzLmlzQ2FyZEZ1bmRPd25lcihjYXJkRnVuZCksICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGNhbGxzdWIgaXNDYXJkRnVuZE93bmVyCiAgICBhc3NlcnQgLy8gU0VOREVSX05PVF9BTExPV0VECiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgYnl0ZWNfMiAvLyAid3IiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MTEKICAgIC8vIGFzc2VydCh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmV4aXN0cywgJ1dJVEhEUkFXQUxfUkVRVUVTVF9OT1RfRk9VTkQnKTsKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5NwogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkxMQogICAgLy8gYXNzZXJ0KHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikuZXhpc3RzLCAnV0lUSERSQVdBTF9SRVFVRVNUX05PVF9GT1VORCcpOwogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBhc3NlcnQgLy8gV0lUSERSQVdBTF9SRVFVRVNUX05PVF9GT1VORAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk3CiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTEyCiAgICAvLyBjb25zdCB3aXRoZHJhd2FsID0gY2xvbmUodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS52YWx1ZSk7CiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MTIKICAgIC8vIGNvbnN0IHdpdGhkcmF3YWwgPSBjbG9uZSh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLnZhbHVlKTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgYnl0ZWNfMiAvLyAid3IiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MTMKICAgIC8vIHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikuZGVsZXRlKCk7CiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MTMKICAgIC8vIHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikuZGVsZXRlKCk7CiAgICBib3hfZGVsCiAgICBwb3AKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkxNAogICAgLy8gZW1pdDxXaXRoZHJhd2FsUmVxdWVzdENhbmNlbGxlZD4od2l0aGRyYXdhbCk7CiAgICBkdXAKICAgIGV4dHJhY3QgMCAzMgogICAgZGlnIDEKICAgIGV4dHJhY3QgMzIgMzIKICAgIGRpZyAyCiAgICBleHRyYWN0IDY0IDgKICAgIGRpZyAzCiAgICBleHRyYWN0IDcyIDgKICAgIGRpZyA0CiAgICBleHRyYWN0IDgwIDgKICAgIHVuY292ZXIgNQogICAgZXh0cmFjdCA4OCA4CiAgICB1bmNvdmVyIDUKICAgIHVuY292ZXIgNQogICAgY29uY2F0CiAgICB1bmNvdmVyIDQKICAgIGNvbmNhdAogICAgdW5jb3ZlciAzCiAgICBjb25jYXQKICAgIHVuY292ZXIgMgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweDNmZDc4Mjk1IC8vIG1ldGhvZCAiV2l0aGRyYXdhbFJlcXVlc3RDYW5jZWxsZWQoYWRkcmVzcyxhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0LHVpbnQ2NCkiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTA5CiAgICAvLyBjYXJkRnVuZFdpdGhkcmF3YWxDYW5jZWwoY2FyZEZ1bmQ6IEFjY291bnQpOiB2b2lkIHsKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRGdW5kRXhlY3V0ZVBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNhcmRGdW5kRXhlY3V0ZVBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkyMQogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydOb09wJ10gfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTIzCiAgICAvLyBhc3NlcnQodGhpcy5pc0NhcmRGdW5kT3duZXIoY2FyZEZ1bmQpLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBkaWcgMQogICAgY2FsbHN1YiBpc0NhcmRGdW5kT3duZXIKICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5NwogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBieXRlY18yIC8vICJ3ciIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkyNAogICAgLy8gYXNzZXJ0KHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikuZXhpc3RzLCAnV0lUSERSQVdBTF9SRVFVRVNUX05PVF9GT1VORCcpOwogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk3CiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTI0CiAgICAvLyBhc3NlcnQodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5leGlzdHMsICdXSVRIRFJBV0FMX1JFUVVFU1RfTk9UX0ZPVU5EJyk7CiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIGFzc2VydCAvLyBXSVRIRFJBV0FMX1JFUVVFU1RfTk9UX0ZPVU5ECiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODAKICAgIC8vIGNhcmRfZnVuZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZEZ1bmREYXRhPih7IGtleVByZWZpeDogJ2NmJyB9KTsKICAgIGJ5dGVjXzEgLy8gImNmIgogICAgZGlnIDIKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTI1CiAgICAvLyBjb25zdCBjYXJkRnVuZERhdGEgPSBjbG9uZSh0aGlzLmNhcmRfZnVuZHMoY2FyZEZ1bmQpLnZhbHVlKTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgYnl0ZWNfMiAvLyAid3IiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MjYKICAgIC8vIGNvbnN0IHdpdGhkcmF3YWwgPSBjbG9uZSh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLnZhbHVlKTsKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5NwogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkyNgogICAgLy8gY29uc3Qgd2l0aGRyYXdhbCA9IGNsb25lKHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikudmFsdWUpOwogICAgYm94X2dldAogICAgYXNzZXJ0IC8vIEJveCBtdXN0IGhhdmUgdmFsdWUKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkyNwogICAgLy8gYXNzZXJ0KGFtb3VudCA8PSB3aXRoZHJhd2FsLmFtb3VudCwgJ0FNT1VOVF9JTlZBTElEJyk7CiAgICBkdXAKICAgIHB1c2hpbnQgNzIgLy8gNzIKICAgIGV4dHJhY3RfdWludDY0CiAgICBkaWcgMwogICAgPj0KICAgIGFzc2VydCAvLyBBTU9VTlRfSU5WQUxJRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTI4CiAgICAvLyBhc3NlcnQoY2FyZEZ1bmREYXRhLndpdGhkcmF3YWxOb25jZSA9PT0gd2l0aGRyYXdhbC5ub25jZSwgJ05PTkNFX0lOVkFMSUQnKTsKICAgIHN3YXAKICAgIHB1c2hpbnQgMTA0IC8vIDEwNAogICAgZXh0cmFjdF91aW50NjQKICAgIGRpZyAxCiAgICBwdXNoaW50IDg4IC8vIDg4CiAgICBleHRyYWN0X3VpbnQ2NAogICAgc3dhcAogICAgZGlnIDEKICAgID09CiAgICBhc3NlcnQgLy8gTk9OQ0VfSU5WQUxJRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTMwCiAgICAvLyBjb25zdCByZWxlYXNlVGltZTogdWludDY0ID0gd2l0aGRyYXdhbC5jcmVhdGVkQXQgKyB0aGlzLndpdGhkcmF3YWxfd2FpdF90aW1lLnZhbHVlOwogICAgZGlnIDEKICAgIHB1c2hpbnQgODAgLy8gODAKICAgIGV4dHJhY3RfdWludDY0CiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkwCiAgICAvLyB3aXRoZHJhd2FsX3dhaXRfdGltZSA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICd3d3QnIH0pOwogICAgYnl0ZWMgMTIgLy8gInd3dCIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkzMAogICAgLy8gY29uc3QgcmVsZWFzZVRpbWU6IHVpbnQ2NCA9IHdpdGhkcmF3YWwuY3JlYXRlZEF0ICsgdGhpcy53aXRoZHJhd2FsX3dhaXRfdGltZS52YWx1ZTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICBkaWcgMQogICAgKwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTMxCiAgICAvLyBhc3NlcnQoR2xvYmFsLmxhdGVzdFRpbWVzdGFtcCA+PSByZWxlYXNlVGltZSwgJ1dJVEhEUkFXQUxfVElNRV9JTlZBTElEJyk7CiAgICBnbG9iYWwgTGF0ZXN0VGltZXN0YW1wCiAgICA8PQogICAgYXNzZXJ0IC8vIFdJVEhEUkFXQUxfVElNRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MzYKICAgIC8vIHdpdGhkcmF3YWwuYXNzZXQsCiAgICB1bmNvdmVyIDIKICAgIHB1c2hpbnQgNjQgLy8gNjQKICAgIGV4dHJhY3RfdWludDY0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5MzQtOTQxCiAgICAvLyB0aGlzLndpdGhkcmF3RnVuZHMoCiAgICAvLyAgICAgY2FyZEZ1bmQsCiAgICAvLyAgICAgd2l0aGRyYXdhbC5hc3NldCwKICAgIC8vICAgICBhbW91bnQsCiAgICAvLyAgICAgd2l0aGRyYXdhbC5jcmVhdGVkQXQsCiAgICAvLyAgICAgd2l0aGRyYXdhbC5ub25jZSwKICAgIC8vICAgICBXaXRoZHJhd2FsVHlwZVBlcm1pc3Npb25MZXNzCiAgICAvLyApOwogICAgdW5jb3ZlciA0CiAgICBzd2FwCiAgICB1bmNvdmVyIDQKICAgIHVuY292ZXIgMwogICAgdW5jb3ZlciA0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NDAKICAgIC8vIFdpdGhkcmF3YWxUeXBlUGVybWlzc2lvbkxlc3MKICAgIGJ5dGVjIDE3IC8vICJwZXJtaXNzaW9ubGVzcyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjkzNC05NDEKICAgIC8vIHRoaXMud2l0aGRyYXdGdW5kcygKICAgIC8vICAgICBjYXJkRnVuZCwKICAgIC8vICAgICB3aXRoZHJhd2FsLmFzc2V0LAogICAgLy8gICAgIGFtb3VudCwKICAgIC8vICAgICB3aXRoZHJhd2FsLmNyZWF0ZWRBdCwKICAgIC8vICAgICB3aXRoZHJhd2FsLm5vbmNlLAogICAgLy8gICAgIFdpdGhkcmF3YWxUeXBlUGVybWlzc2lvbkxlc3MKICAgIC8vICk7CiAgICBjYWxsc3ViIHdpdGhkcmF3RnVuZHMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5NwogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBieXRlY18yIC8vICJ3ciIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjk0MgogICAgLy8gdGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5kZWxldGUoKTsKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5NwogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjk0MgogICAgLy8gdGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5kZWxldGUoKTsKICAgIGJveF9kZWwKICAgIHBvcAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTIxCiAgICAvLyBAYWJpbWV0aG9kKHsgYWxsb3dBY3Rpb25zOiBbJ05vT3AnXSB9KQogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZEZ1bmRFeGVjdXRlQXBwcm92ZWRXaXRoZHJhd2FsW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZEZ1bmRFeGVjdXRlQXBwcm92ZWRXaXRoZHJhd2FsOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTUzLTk2MAogICAgLy8gY2FyZEZ1bmRFeGVjdXRlQXBwcm92ZWRXaXRoZHJhd2FsKAogICAgLy8gICAgIGNhcmRGdW5kOiBBY2NvdW50LAogICAgLy8gICAgIGFzc2V0OiBBc3NldCwKICAgIC8vICAgICBhbW91bnQ6IHVpbnQ2NCwKICAgIC8vICAgICBleHBpcmVzQXQ6IHVpbnQ2NCwKICAgIC8vICAgICBub25jZTogdWludDY0LAogICAgLy8gICAgIHNpZ25hdHVyZTogYnl0ZXM8NjQ+CiAgICAvLyApOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cG4gMgogICAgbGVuCiAgICBpbnRjXzIgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgZHVwCiAgICB1bmNvdmVyIDIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGR1cAogICAgY292ZXIgMgogICAgY292ZXIgMwogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNAogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgZHVwCiAgICBjb3ZlciA0CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyA1CiAgICBkdXAKICAgIGxlbgogICAgaW50Y18zIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyA2CiAgICBkdXAKICAgIGNvdmVyIDYKICAgIGxlbgogICAgcHVzaGludCA2NCAvLyA2NAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgNjQ+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NjEKICAgIC8vIGFzc2VydCh0aGlzLmlzQ2FyZEZ1bmRPd25lcihjYXJkRnVuZCksICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGRpZyAyCiAgICBjYWxsc3ViIGlzQ2FyZEZ1bmRPd25lcgogICAgYXNzZXJ0IC8vIFNFTkRFUl9OT1RfQUxMT1dFRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkX2Z1bmRzID0gQm94TWFwPEFjY291bnQsIENhcmRGdW5kRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18xIC8vICJjZiIKICAgIGRpZyAzCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjk2MgogICAgLy8gY29uc3QgY2FyZEZ1bmREYXRhID0gY2xvbmUodGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZSk7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTY0CiAgICAvLyBhc3NlcnQoR2xvYmFsLmxhdGVzdFRpbWVzdGFtcCA8IGV4cGlyZXNBdCwgJ1dJVEhEUkFXQUxfVElNRV9JTlZBTElEJyk7CiAgICBnbG9iYWwgTGF0ZXN0VGltZXN0YW1wCiAgICBkaWcgMwogICAgPAogICAgYXNzZXJ0IC8vIFdJVEhEUkFXQUxfVElNRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NjUKICAgIC8vIGFzc2VydChjYXJkRnVuZERhdGEud2l0aGRyYXdhbE5vbmNlID09PSBub25jZSwgJ05PTkNFX0lOVkFMSUQnKTsKICAgIHB1c2hpbnQgMTA0IC8vIDEwNAogICAgZXh0cmFjdF91aW50NjQKICAgIGR1cAogICAgY292ZXIgNgogICAgZGlnIDEKICAgID09CiAgICBhc3NlcnQgLy8gTk9OQ0VfSU5WQUxJRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTY5CiAgICAvLyAuY29uY2F0KEJ5dGVzKFR4bi5zZW5kZXIuYnl0ZXMpKQogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTY4LTk2OQogICAgLy8gY29uc3Qgd2l0aGRyYXdhbEJ5dGVzOiBieXRlcyA9IEJ5dGVzKGNhcmRGdW5kLmJ5dGVzKQogICAgLy8gICAgIC5jb25jYXQoQnl0ZXMoVHhuLnNlbmRlci5ieXRlcykpCiAgICB1bmNvdmVyIDMKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTcwCiAgICAvLyAuY29uY2F0KG9wLml0b2IoYXNzZXQuaWQpKQogICAgdW5jb3ZlciA0CiAgICBpdG9iCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NjgtOTcwCiAgICAvLyBjb25zdCB3aXRoZHJhd2FsQnl0ZXM6IGJ5dGVzID0gQnl0ZXMoY2FyZEZ1bmQuYnl0ZXMpCiAgICAvLyAgICAgLmNvbmNhdChCeXRlcyhUeG4uc2VuZGVyLmJ5dGVzKSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2IoYXNzZXQuaWQpKQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NzEKICAgIC8vIC5jb25jYXQob3AuaXRvYihhbW91bnQpKQogICAgdW5jb3ZlciAzCiAgICBpdG9iCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NjgtOTcxCiAgICAvLyBjb25zdCB3aXRoZHJhd2FsQnl0ZXM6IGJ5dGVzID0gQnl0ZXMoY2FyZEZ1bmQuYnl0ZXMpCiAgICAvLyAgICAgLmNvbmNhdChCeXRlcyhUeG4uc2VuZGVyLmJ5dGVzKSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2IoYXNzZXQuaWQpKQogICAgLy8gICAgIC5jb25jYXQob3AuaXRvYihhbW91bnQpKQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NzIKICAgIC8vIC5jb25jYXQob3AuaXRvYihleHBpcmVzQXQpKQogICAgdW5jb3ZlciAyCiAgICBpdG9iCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NjgtOTcyCiAgICAvLyBjb25zdCB3aXRoZHJhd2FsQnl0ZXM6IGJ5dGVzID0gQnl0ZXMoY2FyZEZ1bmQuYnl0ZXMpCiAgICAvLyAgICAgLmNvbmNhdChCeXRlcyhUeG4uc2VuZGVyLmJ5dGVzKSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2IoYXNzZXQuaWQpKQogICAgLy8gICAgIC5jb25jYXQob3AuaXRvYihhbW91bnQpKQogICAgLy8gICAgIC5jb25jYXQob3AuaXRvYihleHBpcmVzQXQpKQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NzMKICAgIC8vIC5jb25jYXQob3AuaXRvYihub25jZSkpCiAgICBzd2FwCiAgICBpdG9iCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5NjgtOTczCiAgICAvLyBjb25zdCB3aXRoZHJhd2FsQnl0ZXM6IGJ5dGVzID0gQnl0ZXMoY2FyZEZ1bmQuYnl0ZXMpCiAgICAvLyAgICAgLmNvbmNhdChCeXRlcyhUeG4uc2VuZGVyLmJ5dGVzKSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2IoYXNzZXQuaWQpKQogICAgLy8gICAgIC5jb25jYXQob3AuaXRvYihhbW91bnQpKQogICAgLy8gICAgIC5jb25jYXQob3AuaXRvYihleHBpcmVzQXQpKQogICAgLy8gICAgIC5jb25jYXQob3AuaXRvYihub25jZSkpCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjk3NAogICAgLy8gLmNvbmNhdChCeXRlcyhHbG9iYWwuZ2VuZXNpc0hhc2gpKTsKICAgIGdsb2JhbCBHZW5lc2lzSGFzaAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTY4LTk3NAogICAgLy8gY29uc3Qgd2l0aGRyYXdhbEJ5dGVzOiBieXRlcyA9IEJ5dGVzKGNhcmRGdW5kLmJ5dGVzKQogICAgLy8gICAgIC5jb25jYXQoQnl0ZXMoVHhuLnNlbmRlci5ieXRlcykpCiAgICAvLyAgICAgLmNvbmNhdChvcC5pdG9iKGFzc2V0LmlkKSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2IoYW1vdW50KSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2IoZXhwaXJlc0F0KSkKICAgIC8vICAgICAuY29uY2F0KG9wLml0b2Iobm9uY2UpKQogICAgLy8gICAgIC5jb25jYXQoQnl0ZXMoR2xvYmFsLmdlbmVzaXNIYXNoKSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjk3NgogICAgLy8gY29uc3Qgd2l0aGRyYXdhbF9oYXNoID0gb3Auc2hhMjU2KHdpdGhkcmF3YWxCeXRlcyk7CiAgICBzaGEyNTYKCmNhcmRGdW5kRXhlY3V0ZUFwcHJvdmVkV2l0aGRyYXdhbF93aGlsZV90b3BANToKICAgIHB1c2hpbnQgMjUxMCAvLyAyNTEwCiAgICBnbG9iYWwgT3Bjb2RlQnVkZ2V0CiAgICA+CiAgICBieiBjYXJkRnVuZEV4ZWN1dGVBcHByb3ZlZFdpdGhkcmF3YWxfYWZ0ZXJfd2hpbGVAMTAKICAgIGl0eG5fYmVnaW4KICAgIHB1c2hpbnQgNiAvLyBhcHBsCiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBwdXNoaW50IDUgLy8gRGVsZXRlQXBwbGljYXRpb24KICAgIGl0eG5fZmllbGQgT25Db21wbGV0aW9uCiAgICBieXRlYyAxOCAvLyAweDA2ODEwMQogICAgaXR4bl9maWVsZCBBcHByb3ZhbFByb2dyYW0KICAgIGJ5dGVjIDE4IC8vIDB4MDY4MTAxCiAgICBpdHhuX2ZpZWxkIENsZWFyU3RhdGVQcm9ncmFtCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICBiIGNhcmRGdW5kRXhlY3V0ZUFwcHJvdmVkV2l0aGRyYXdhbF93aGlsZV90b3BANQoKY2FyZEZ1bmRFeGVjdXRlQXBwcm92ZWRXaXRoZHJhd2FsX2FmdGVyX3doaWxlQDEwOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTgyCiAgICAvLyBvcC5lZDI1NTE5dmVyaWZ5QmFyZSh3aXRoZHJhd2FsX2hhc2gsIHNpZ25hdHVyZSwgdGhpcy5lYXJseV93aXRoZHJhd2FsX3B1YmtleS52YWx1ZSksCiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkzCiAgICAvLyBlYXJseV93aXRoZHJhd2FsX3B1YmtleSA9IEdsb2JhbFN0YXRlPGJ5dGVzPDMyPj4oeyBrZXk6ICdld3BrJyB9KTsKICAgIGJ5dGVjIDEzIC8vICJld3BrIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTgyCiAgICAvLyBvcC5lZDI1NTE5dmVyaWZ5QmFyZSh3aXRoZHJhd2FsX2hhc2gsIHNpZ25hdHVyZSwgdGhpcy5lYXJseV93aXRoZHJhd2FsX3B1YmtleS52YWx1ZSksCiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgZGlnIDEKICAgIGRpZyA0CiAgICB1bmNvdmVyIDIKICAgIGVkMjU1MTl2ZXJpZnlfYmFyZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTgxLTk4NAogICAgLy8gYXNzZXJ0KAogICAgLy8gICAgIG9wLmVkMjU1MTl2ZXJpZnlCYXJlKHdpdGhkcmF3YWxfaGFzaCwgc2lnbmF0dXJlLCB0aGlzLmVhcmx5X3dpdGhkcmF3YWxfcHVia2V5LnZhbHVlKSwKICAgIC8vICAgICAnU0lHTkFUVVJFX0lOVkFMSUQnCiAgICAvLyApOwogICAgYXNzZXJ0IC8vIFNJR05BVFVSRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5ODcKICAgIC8vIHRoaXMud2l0aGRyYXdGdW5kcyhjYXJkRnVuZCwgYXNzZXQsIGFtb3VudCwgZXhwaXJlc0F0LCBjYXJkRnVuZERhdGEud2l0aGRyYXdhbE5vbmNlLCBXaXRoZHJhd2FsVHlwZUFwcHJvdmVkKTsKICAgIGRpZyA2CiAgICBkaWcgNgogICAgZGlnIDYKICAgIGRpZyA2CiAgICBkaWcgNQogICAgYnl0ZWMgMTkgLy8gImFwcHJvdmVkIgogICAgY2FsbHN1YiB3aXRoZHJhd0Z1bmRzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTcKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgYnl0ZWNfMiAvLyAid3IiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo5OTIKICAgIC8vIGlmICh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmV4aXN0cykgewogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk3CiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTkyCiAgICAvLyBpZiAodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5leGlzdHMpIHsKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgYnogY2FyZEZ1bmRFeGVjdXRlQXBwcm92ZWRXaXRoZHJhd2FsX2FmdGVyX2lmX2Vsc2VAMwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk3CiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTkzCiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmRlbGV0ZSgpOwogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk3CiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTkzCiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmRlbGV0ZSgpOwogICAgYm94X2RlbAogICAgcG9wCgpjYXJkRnVuZEV4ZWN1dGVBcHByb3ZlZFdpdGhkcmF3YWxfYWZ0ZXJfaWZfZWxzZUAzOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6OTUzLTk2MAogICAgLy8gY2FyZEZ1bmRFeGVjdXRlQXBwcm92ZWRXaXRoZHJhd2FsKAogICAgLy8gICAgIGNhcmRGdW5kOiBBY2NvdW50LAogICAgLy8gICAgIGFzc2V0OiBBc3NldCwKICAgIC8vICAgICBhbW91bnQ6IHVpbnQ2NCwKICAgIC8vICAgICBleHBpcmVzQXQ6IHVpbnQ2NCwKICAgIC8vICAgICBub25jZTogdWludDY0LAogICAgLy8gICAgIHNpZ25hdHVyZTogYnl0ZXM8NjQ+CiAgICAvLyApOiB2b2lkIHsKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czo6UmVjb3ZlcmFibGUucmVjb3ZlckFzc2V0W3JvdXRpbmddKCkgLT4gdm9pZDoKcmVjb3ZlckFzc2V0OgogICAgLy8gc3JjL3JvbGVzL1JlY292ZXJhYmxlLmFsZ28udHM6MzcKICAgIC8vIHJlY292ZXJBc3NldChhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCByZWNpcGllbnQ6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGR1cAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgc3dhcAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBjb3ZlciAzCiAgICBsZW4KICAgIGludGNfMiAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czozOAogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czo0MQogICAgLy8gaWYgKGFzc2V0LmlkKSB7CiAgICBieiByZWNvdmVyQXNzZXRfZWxzZV9ib2R5QDQKICAgIC8vIHNyYy9yb2xlcy9SZWNvdmVyYWJsZS5hbGdvLnRzOjQyLTQ2CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogcmVjaXBpZW50LAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIGRpZyAyCiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAoKcmVjb3ZlckFzc2V0X2FmdGVyX2lmX2Vsc2VANjoKICAgIC8vIHNyYy9yb2xlcy9SZWNvdmVyYWJsZS5hbGdvLnRzOjM3CiAgICAvLyByZWNvdmVyQXNzZXQoYXNzZXQ6IEFzc2V0LCBhbW91bnQ6IHVpbnQ2NCwgcmVjaXBpZW50OiBBY2NvdW50KTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgpyZWNvdmVyQXNzZXRfZWxzZV9ib2R5QDQ6CiAgICAvLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czo0OC01MQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICByZWNlaXZlcjogcmVjaXBpZW50LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICBpdHhuX2ZpZWxkIEFtb3VudAogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgaW50Y18wIC8vIDEKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMSAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIGIgcmVjb3ZlckFzc2V0X2FmdGVyX2lmX2Vsc2VANgoKCi8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjpQYXVzYWJsZS5wYXVzZXJbcm91dGluZ10oKSAtPiB2b2lkOgpwYXVzZXI6CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo1OQogICAgLy8gcmV0dXJuIHRoaXMuX3BhdXNlci52YWx1ZTsKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNAogICAgLy8gX3BhdXNlciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlYyA2IC8vICJfcGF1c2VyIgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NTkKICAgIC8vIHJldHVybiB0aGlzLl9wYXVzZXIudmFsdWU7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NTgKICAgIC8vIHBhdXNlcigpOiBBY2NvdW50IHsKICAgIGJ5dGVjXzAgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMCAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo6UGF1c2FibGUucGF1c2Vbcm91dGluZ10oKSAtPiB2b2lkOgpwYXVzZToKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjY3CiAgICAvLyB0aGlzLm9ubHlQYXVzZXIoKTsKICAgIGNhbGxzdWIgb25seVBhdXNlcgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzYKICAgIC8vIHBhdXNlZCA9IEdsb2JhbFN0YXRlPGJvb2xlYW4+KCk7CiAgICBieXRlYyA4IC8vICJwYXVzZWQiCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo2OQogICAgLy8gdGhpcy5wYXVzZWQudmFsdWUgPSB0cnVlOwogICAgaW50Y18wIC8vIDEKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo3MAogICAgLy8gZW1pdDxQYXVzZT4oe30pOwogICAgcHVzaGJ5dGVzIDB4Y2YyM2EzMGYKICAgIGxvZwogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NjYKICAgIC8vIHBhdXNlKCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjpQYXVzYWJsZS51bnBhdXNlW3JvdXRpbmddKCkgLT4gdm9pZDoKdW5wYXVzZToKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjc3CiAgICAvLyB0aGlzLm9ubHlQYXVzZXIoKTsKICAgIGNhbGxzdWIgb25seVBhdXNlcgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzYKICAgIC8vIHBhdXNlZCA9IEdsb2JhbFN0YXRlPGJvb2xlYW4+KCk7CiAgICBieXRlYyA4IC8vICJwYXVzZWQiCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo3OQogICAgLy8gdGhpcy5wYXVzZWQudmFsdWUgPSBmYWxzZTsKICAgIGludGNfMSAvLyAwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6ODAKICAgIC8vIGVtaXQ8VW5wYXVzZT4oe30pOwogICAgcHVzaGJ5dGVzIDB4YjE2M2VlMGIKICAgIGxvZwogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NzYKICAgIC8vIHVucGF1c2UoKTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6OlBhdXNhYmxlLnVwZGF0ZVBhdXNlcltyb3V0aW5nXSgpIC0+IHZvaWQ6CnVwZGF0ZVBhdXNlcjoKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjg2CiAgICAvLyB1cGRhdGVQYXVzZXIoX25ld1BhdXNlcjogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo4NwogICAgLy8gdGhpcy5vbmx5UGF1c2VyKCk7CiAgICBjYWxsc3ViIG9ubHlQYXVzZXIKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjg5CiAgICAvLyBhc3NlcnQoX25ld1BhdXNlciAhPT0gR2xvYmFsLnplcm9BZGRyZXNzKTsKICAgIGR1cAogICAgZ2xvYmFsIFplcm9BZGRyZXNzCiAgICAhPQogICAgYXNzZXJ0CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNAogICAgLy8gX3BhdXNlciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlYyA2IC8vICJfcGF1c2VyIgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6OTAKICAgIC8vIHRoaXMuX3BhdXNlci52YWx1ZSA9IF9uZXdQYXVzZXI7CiAgICBkaWcgMQogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjkxCiAgICAvLyBlbWl0PFBhdXNlckNoYW5nZWQ+KHsgbmV3QWRkcmVzczogdGhpcy5fcGF1c2VyLnZhbHVlIH0pOwogICAgcHVzaGJ5dGVzIDB4Y2M0MDkyM2MgLy8gbWV0aG9kICJQYXVzZXJDaGFuZ2VkKGFkZHJlc3MpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjg2CiAgICAvLyB1cGRhdGVQYXVzZXIoX25ld1BhdXNlcjogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6Ok93bmFibGUub3duZXJbcm91dGluZ10oKSAtPiB2b2lkOgpvd25lcjoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NjcKICAgIC8vIHJldHVybiB0aGlzLl9vd25lci52YWx1ZTsKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjQ2CiAgICAvLyBfb3duZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWNfMyAvLyAiX293bmVyIgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo2NwogICAgLy8gcmV0dXJuIHRoaXMuX293bmVyLnZhbHVlOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NjUKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgYnl0ZWNfMCAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18wIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6Ok93bmFibGUudHJhbnNmZXJPd25lcnNoaXBbcm91dGluZ10oKSAtPiB2b2lkOgp0cmFuc2Zlck93bmVyc2hpcDoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6OTIKICAgIC8vIHRyYW5zZmVyT3duZXJzaGlwKG5ld093bmVyOiBBY2NvdW50KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6OTMKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo5NQogICAgLy8gdGhpcy5fdHJhbnNmZXJPd25lcnNoaXAobmV3T3duZXIpOwogICAgY2FsbHN1YiBfdHJhbnNmZXJPd25lcnNoaXAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6OTIKICAgIC8vIHRyYW5zZmVyT3duZXJzaGlwKG5ld093bmVyOiBBY2NvdW50KTogdm9pZCB7CiAgICBpbnRjXzAgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5pc0NhcmRGdW5kT3duZXIoY2FyZEZ1bmQ6IGJ5dGVzKSAtPiB1aW50NjQ6CmlzQ2FyZEZ1bmRPd25lcjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIxNAogICAgLy8gcHJpdmF0ZSBpc0NhcmRGdW5kT3duZXIoY2FyZEZ1bmQ6IEFjY291bnQpOiBib29sZWFuIHsKICAgIHByb3RvIDEgMQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkX2Z1bmRzID0gQm94TWFwPEFjY291bnQsIENhcmRGdW5kRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18xIC8vICJjZiIKICAgIGZyYW1lX2RpZyAtMQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMTUKICAgIC8vIGFzc2VydCh0aGlzLmNhcmRfZnVuZHMoY2FyZEZ1bmQpLmV4aXN0cywgJ0NBUkRfRlVORF9OT1RfRk9VTkQnKTsKICAgIGR1cAogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBhc3NlcnQgLy8gQ0FSRF9GVU5EX05PVF9GT1VORAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjE2CiAgICAvLyByZXR1cm4gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZS5vd25lciA9PT0gVHhuLnNlbmRlcjsKICAgIGJveF9nZXQKICAgIHBvcAogICAgZXh0cmFjdCAzMiAzMgogICAgdHhuIFNlbmRlcgogICAgPT0KICAgIHJldHN1YgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZEZ1bmRBc3NldE9wdEluKGNhcmRGdW5kOiBieXRlcywgYXNzZXQ6IHVpbnQ2NCkgLT4gdm9pZDoKY2FyZEZ1bmRBc3NldE9wdEluOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjI0CiAgICAvLyBwcml2YXRlIGNhcmRGdW5kQXNzZXRPcHRJbihjYXJkRnVuZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICBwcm90byAyIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIyNgogICAgLy8gY29uc3QgW19hc3NldEJhbCwgb3B0ZWRJbl0gPSBvcC5Bc3NldEhvbGRpbmcuYXNzZXRCYWxhbmNlKEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLCBhc3NldCk7CiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgZnJhbWVfZGlnIC0xCiAgICBhc3NldF9ob2xkaW5nX2dldCBBc3NldEJhbGFuY2UKICAgIGJ1cnkgMQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjI3CiAgICAvLyBhc3NlcnQob3B0ZWRJbiwgJ0FTU0VUX05PVF9PUFRFRF9JTicpOwogICAgYXNzZXJ0IC8vIEFTU0VUX05PVF9PUFRFRF9JTgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjI5LTIzNAogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IGNhcmRGdW5kLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IGNhcmRGdW5kLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIzMwogICAgLy8gYXNzZXRBbW91bnQ6IDAsCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZnJhbWVfZGlnIC0xCiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgZnJhbWVfZGlnIC0yCiAgICBpdHhuX2ZpZWxkIEFzc2V0UmVjZWl2ZXIKICAgIGZyYW1lX2RpZyAtMgogICAgaXR4bl9maWVsZCBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIyOS0yMzQKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBjYXJkRnVuZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBjYXJkRnVuZCwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiAwLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18xIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjM2LTIzOQogICAgLy8gZW1pdDxDYXJkRnVuZEFzc2V0RW5hYmxlZD4oewogICAgLy8gICAgIGNhcmRGdW5kOiBjYXJkRnVuZCwKICAgIC8vICAgICBhc3NldDogYXNzZXQsCiAgICAvLyB9KTsKICAgIGZyYW1lX2RpZyAtMQogICAgaXRvYgogICAgZnJhbWVfZGlnIC0yCiAgICBzd2FwCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweDI0OGEwNTFlIC8vIG1ldGhvZCAiQ2FyZEZ1bmRBc3NldEVuYWJsZWQoYWRkcmVzcyx1aW50NjQpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIHJldHN1YgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIud2l0aGRyYXdGdW5kcyhjYXJkRnVuZDogYnl0ZXMsIGFzc2V0OiB1aW50NjQsIGFtb3VudDogdWludDY0LCB0aW1lc3RhbXA6IHVpbnQ2NCwgbm9uY2U6IHVpbnQ2NCwgd2l0aGRyYXdhbFR5cGU6IGJ5dGVzKSAtPiB2b2lkOgp3aXRoZHJhd0Z1bmRzOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjYzLTI3MAogICAgLy8gcHJpdmF0ZSB3aXRoZHJhd0Z1bmRzKAogICAgLy8gICAgIGNhcmRGdW5kOiBBY2NvdW50LAogICAgLy8gICAgIGFzc2V0OiBBc3NldCwKICAgIC8vICAgICBhbW91bnQ6IHVpbnQ2NCwKICAgIC8vICAgICB0aW1lc3RhbXA6IHVpbnQ2NCwKICAgIC8vICAgICBub25jZTogdWludDY0LAogICAgLy8gICAgIHdpdGhkcmF3YWxUeXBlOiBzdHJpbmcKICAgIC8vICk6IHZvaWQgewogICAgcHJvdG8gNiAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNzIKICAgIC8vIGlmIChhbW91bnQgPiAwKSB7CiAgICBmcmFtZV9kaWcgLTQKICAgIGJ6IHdpdGhkcmF3RnVuZHNfYWZ0ZXJfaWZfZWxzZUAzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNzMtMjc4CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI3NQogICAgLy8gYXNzZXRSZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIHR4biBTZW5kZXIKICAgIGZyYW1lX2RpZyAtNAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZnJhbWVfZGlnIC01CiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBmcmFtZV9kaWcgLTYKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNzMtMjc4CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZEZ1bmQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIHB1c2hpbnQgNCAvLyA0CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzEgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0Cgp3aXRoZHJhd0Z1bmRzX2FmdGVyX2lmX2Vsc2VAMzoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4NAogICAgLy8gcmVjaXBpZW50OiBUeG4uc2VuZGVyLAogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mjg3CiAgICAvLyBjcmVhdGVkQXQ6IHdpdGhkcmF3YWxUeXBlID09PSBXaXRoZHJhd2FsVHlwZVBlcm1pc3Npb25MZXNzID8gdGltZXN0YW1wIDogMCwKICAgIGZyYW1lX2RpZyAtMQogICAgYnl0ZWMgMTcgLy8gInBlcm1pc3Npb25sZXNzIgogICAgPT0KICAgIGludGNfMSAvLyAwCiAgICBmcmFtZV9kaWcgLTMKICAgIHVuY292ZXIgMgogICAgc2VsZWN0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyODgKICAgIC8vIGV4cGlyZXNBdDogd2l0aGRyYXdhbFR5cGUgPT09IFdpdGhkcmF3YWxUeXBlQXBwcm92ZWQgPyB0aW1lc3RhbXAgOiAwLAogICAgZnJhbWVfZGlnIC0xCiAgICBieXRlYyAxOSAvLyAiYXBwcm92ZWQiCiAgICA9PQogICAgaW50Y18xIC8vIDAKICAgIGZyYW1lX2RpZyAtMwogICAgdW5jb3ZlciAyCiAgICBzZWxlY3QKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4Mi0yOTEKICAgIC8vIGVtaXQ8V2l0aGRyYXdhbD4oewogICAgLy8gICAgIGNhcmRGdW5kOiBjYXJkRnVuZCwKICAgIC8vICAgICByZWNpcGllbnQ6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgYXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFtb3VudDogYW1vdW50LAogICAgLy8gICAgIGNyZWF0ZWRBdDogd2l0aGRyYXdhbFR5cGUgPT09IFdpdGhkcmF3YWxUeXBlUGVybWlzc2lvbkxlc3MgPyB0aW1lc3RhbXAgOiAwLAogICAgLy8gICAgIGV4cGlyZXNBdDogd2l0aGRyYXdhbFR5cGUgPT09IFdpdGhkcmF3YWxUeXBlQXBwcm92ZWQgPyB0aW1lc3RhbXAgOiAwLAogICAgLy8gICAgIG5vbmNlOiBub25jZSwKICAgIC8vICAgICB0eXBlOiB3aXRoZHJhd2FsVHlwZSwKICAgIC8vIH0pOwogICAgZnJhbWVfZGlnIC02CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgZnJhbWVfZGlnIC01CiAgICBpdG9iCiAgICBjb25jYXQKICAgIGZyYW1lX2RpZyAtNAogICAgaXRvYgogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGl0b2IKICAgIGNvbmNhdAogICAgc3dhcAogICAgaXRvYgogICAgY29uY2F0CiAgICBmcmFtZV9kaWcgLTIKICAgIGl0b2IKICAgIGNvbmNhdAogICAgZnJhbWVfZGlnIC0xCiAgICBsZW4KICAgIGl0b2IKICAgIGV4dHJhY3QgNiAyCiAgICBmcmFtZV9kaWcgLTEKICAgIGNvbmNhdAogICAgc3dhcAogICAgcHVzaGJ5dGVzIDB4MDA2YQogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweGJiNGRkMDA2IC8vIG1ldGhvZCAiV2l0aGRyYXdhbChhZGRyZXNzLGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsdWludDY0LHVpbnQ2NCxzdHJpbmcpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI5MwogICAgLy8gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZS53aXRoZHJhd2FsTm9uY2UgPSBub25jZSArIDE7CiAgICBmcmFtZV9kaWcgLTIKICAgIGludGNfMCAvLyAxCiAgICArCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODAKICAgIC8vIGNhcmRfZnVuZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZEZ1bmREYXRhPih7IGtleVByZWZpeDogJ2NmJyB9KTsKICAgIGJ5dGVjXzEgLy8gImNmIgogICAgZnJhbWVfZGlnIC02CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI5MwogICAgLy8gdGhpcy5jYXJkX2Z1bmRzKGNhcmRGdW5kKS52YWx1ZS53aXRoZHJhd2FsTm9uY2UgPSBub25jZSArIDE7CiAgICBzd2FwCiAgICBpdG9iCiAgICBwdXNoaW50IDEwNCAvLyAxMDQKICAgIHN3YXAKICAgIGJveF9yZXBsYWNlCiAgICByZXRzdWIKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLnVwZGF0ZVNldHRsZW1lbnRBZGRyZXNzKGFzc2V0OiB1aW50NjQsIG5ld1NldHRsZW1lbnRBZGRyZXNzOiBieXRlcykgLT4gdm9pZDoKdXBkYXRlU2V0dGxlbWVudEFkZHJlc3M6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyOTYKICAgIC8vIHByaXZhdGUgdXBkYXRlU2V0dGxlbWVudEFkZHJlc3MoYXNzZXQ6IEFzc2V0LCBuZXdTZXR0bGVtZW50QWRkcmVzczogQWNjb3VudCk6IHZvaWQgewogICAgcHJvdG8gMiAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyOTcKICAgIC8vIGNvbnN0IG9sZFNldHRsZW1lbnRBZGRyZXNzID0gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLmV4aXN0cwogICAgZnJhbWVfZGlnIC0yCiAgICBpdG9iCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMDMKICAgIC8vIHNldHRsZW1lbnRfYWRkcmVzcyA9IEJveE1hcDxBc3NldCwgQWNjb3VudD4oeyBrZXlQcmVmaXg6ICdzYScgfSk7CiAgICBieXRlYyA5IC8vICJzYSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgZHVwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyOTcKICAgIC8vIGNvbnN0IG9sZFNldHRsZW1lbnRBZGRyZXNzID0gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLmV4aXN0cwogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyOTctMjk5CiAgICAvLyBjb25zdCBvbGRTZXR0bGVtZW50QWRkcmVzcyA9IHRoaXMuc2V0dGxlbWVudF9hZGRyZXNzKGFzc2V0KS5leGlzdHMKICAgIC8vICAgICA/IHRoaXMuc2V0dGxlbWVudF9hZGRyZXNzKGFzc2V0KS52YWx1ZQogICAgLy8gICAgIDogR2xvYmFsLnplcm9BZGRyZXNzOwogICAgYnogdXBkYXRlU2V0dGxlbWVudEFkZHJlc3NfdGVybmFyeV9mYWxzZUAyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyOTgKICAgIC8vID8gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlCiAgICBmcmFtZV9kaWcgMAogICAgYm94X2dldAogICAgYXNzZXJ0IC8vIEJveCBtdXN0IGhhdmUgdmFsdWUKCnVwZGF0ZVNldHRsZW1lbnRBZGRyZXNzX3Rlcm5hcnlfbWVyZ2VAMzoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMwMAogICAgLy8gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlID0gbmV3U2V0dGxlbWVudEFkZHJlc3M7CiAgICBmcmFtZV9kaWcgMAogICAgZnJhbWVfZGlnIC0xCiAgICBib3hfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMDItMzA1CiAgICAvLyBlbWl0PFNldHRsZW1lbnRBZGRyZXNzQ2hhbmdlZD4oewogICAgLy8gICAgIG9sZFNldHRsZW1lbnRBZGRyZXNzOiBvbGRTZXR0bGVtZW50QWRkcmVzcywKICAgIC8vICAgICBuZXdTZXR0bGVtZW50QWRkcmVzczogbmV3U2V0dGxlbWVudEFkZHJlc3MsCiAgICAvLyB9KTsKICAgIGZyYW1lX2RpZyAtMQogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHhmZDUzNTM1OCAvLyBtZXRob2QgIlNldHRsZW1lbnRBZGRyZXNzQ2hhbmdlZChhZGRyZXNzLGFkZHJlc3MpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIHJldHN1YgoKdXBkYXRlU2V0dGxlbWVudEFkZHJlc3NfdGVybmFyeV9mYWxzZUAyOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mjk5CiAgICAvLyA6IEdsb2JhbC56ZXJvQWRkcmVzczsKICAgIGdsb2JhbCBaZXJvQWRkcmVzcwogICAgYiB1cGRhdGVTZXR0bGVtZW50QWRkcmVzc190ZXJuYXJ5X21lcmdlQDMKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmdldFBhcnRuZXJDaGFubmVsTWJyKHBhcnRuZXJDaGFubmVsTmFtZTogYnl0ZXMpIC0+IHVpbnQ2NDoKc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRQYXJ0bmVyQ2hhbm5lbE1icjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM4MAogICAgLy8gZ2V0UGFydG5lckNoYW5uZWxNYnIocGFydG5lckNoYW5uZWxOYW1lOiBzdHJpbmcpOiB1aW50NjQgewogICAgcHJvdG8gMSAxCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozODEKICAgIC8vIGNvbnN0IGJveENvc3Q6IHVpbnQ2NCA9IDI1MDAgKyA0MDAgKiAoMyArIDMyICsgQnl0ZXMocGFydG5lckNoYW5uZWxOYW1lKS5sZW5ndGgpOwogICAgZnJhbWVfZGlnIC0xCiAgICBsZW4KICAgIHB1c2hpbnQgMzUgLy8gMzUKICAgICsKICAgIHB1c2hpbnQgNDAwIC8vIDQwMAogICAgKgogICAgcHVzaGludCAyNTAwIC8vIDI1MDAKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM4MgogICAgLy8gcmV0dXJuIEdsb2JhbC5taW5CYWxhbmNlICsgR2xvYmFsLm1pbkJhbGFuY2UgKyBib3hDb3N0OwogICAgZ2xvYmFsIE1pbkJhbGFuY2UKICAgIGR1cAogICAgKwogICAgKwogICAgcmV0c3ViCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZE1icihhc3NldDogdWludDY0KSAtPiB1aW50NjQ6CnNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0Q2FyZEZ1bmRNYnI6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NTYKICAgIC8vIGdldENhcmRGdW5kTWJyKGFzc2V0OiBBc3NldCk6IHVpbnQ2NCB7CiAgICBwcm90byAxIDEKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ2MAogICAgLy8gY29uc3QgYXNzZXRNYnI6IHVpbnQ2NCA9IGFzc2V0LmlkID8gR2xvYmFsLmFzc2V0T3B0SW5NaW5CYWxhbmNlIDogMDsKICAgIGZyYW1lX2RpZyAtMQogICAgYnogc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZE1icl90ZXJuYXJ5X2ZhbHNlQDIKICAgIGdsb2JhbCBBc3NldE9wdEluTWluQmFsYW5jZQoKc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZE1icl90ZXJuYXJ5X21lcmdlQDM6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NjEKICAgIC8vIHJldHVybiBHbG9iYWwubWluQmFsYW5jZSArIGFzc2V0TWJyICsgYm94Q29zdDsKICAgIGdsb2JhbCBNaW5CYWxhbmNlCiAgICArCiAgICBwdXNoaW50IDYxMzAwIC8vIDYxMzAwCiAgICArCiAgICByZXRzdWIKCnNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0Q2FyZEZ1bmRNYnJfdGVybmFyeV9mYWxzZUAyOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDYwCiAgICAvLyBjb25zdCBhc3NldE1icjogdWludDY0ID0gYXNzZXQuaWQgPyBHbG9iYWwuYXNzZXRPcHRJbk1pbkJhbGFuY2UgOiAwOwogICAgaW50Y18xIC8vIDAKICAgIGIgc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRnVuZE1icl90ZXJuYXJ5X21lcmdlQDMKCgovLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo6UGF1c2FibGUud2hlbk5vdFBhdXNlZCgpIC0+IHZvaWQ6CndoZW5Ob3RQYXVzZWQ6CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo0MwogICAgLy8gYXNzZXJ0KCF0aGlzLnBhdXNlZC52YWx1ZSk7CiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzYKICAgIC8vIHBhdXNlZCA9IEdsb2JhbFN0YXRlPGJvb2xlYW4+KCk7CiAgICBieXRlYyA4IC8vICJwYXVzZWQiCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo0MwogICAgLy8gYXNzZXJ0KCF0aGlzLnBhdXNlZC52YWx1ZSk7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgIQogICAgYXNzZXJ0CiAgICByZXRzdWIKCgovLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo6UGF1c2FibGUub25seVBhdXNlcigpIC0+IHZvaWQ6Cm9ubHlQYXVzZXI6CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo1MAogICAgLy8gYXNzZXJ0KFR4bi5zZW5kZXIgPT09IHRoaXMuX3BhdXNlci52YWx1ZSk7CiAgICB0eG4gU2VuZGVyCiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzQKICAgIC8vIF9wYXVzZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWMgNiAvLyAiX3BhdXNlciIKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjUwCiAgICAvLyBhc3NlcnQoVHhuLnNlbmRlciA9PT0gdGhpcy5fcGF1c2VyLnZhbHVlKTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICA9PQogICAgYXNzZXJ0CiAgICByZXRzdWIKCgovLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjpPd25hYmxlLm9ubHlPd25lcigpIC0+IHZvaWQ6Cm9ubHlPd25lcjoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NTMKICAgIC8vIGFzc2VydChUeG4uc2VuZGVyID09PSB0aGlzLl9vd25lci52YWx1ZSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgdHhuIFNlbmRlcgogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NDYKICAgIC8vIF9vd25lciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlY18zIC8vICJfb3duZXIiCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjUzCiAgICAvLyBhc3NlcnQoVHhuLnNlbmRlciA9PT0gdGhpcy5fb3duZXIudmFsdWUsICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICA9PQogICAgYXNzZXJ0IC8vIFNFTkRFUl9OT1RfQUxMT1dFRAogICAgcmV0c3ViCgoKLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo6T3duYWJsZS5pc093bmVyKCkgLT4gdWludDY0Ogppc093bmVyOgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo2MQogICAgLy8gcmV0dXJuIFR4bi5zZW5kZXIgPT09IHRoaXMuX293bmVyLnZhbHVlOwogICAgdHhuIFNlbmRlcgogICAgaW50Y18xIC8vIDAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NDYKICAgIC8vIF9vd25lciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlY18zIC8vICJfb3duZXIiCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjYxCiAgICAvLyByZXR1cm4gVHhuLnNlbmRlciA9PT0gdGhpcy5fb3duZXIudmFsdWU7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgPT0KICAgIHJldHN1YgoKCi8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6Ok93bmFibGUuX3RyYW5zZmVyT3duZXJzaGlwKG5ld093bmVyOiBieXRlcykgLT4gdm9pZDoKX3RyYW5zZmVyT3duZXJzaGlwOgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo3NQogICAgLy8gcHJvdGVjdGVkIF90cmFuc2Zlck93bmVyc2hpcChuZXdPd25lcjogQWNjb3VudCk6IHZvaWQgewogICAgcHJvdG8gMSAwCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjc2CiAgICAvLyBjb25zdCBwcmV2aW91c093bmVyID0gdGhpcy5fb3duZXIuaGFzVmFsdWUgPyB0aGlzLl9vd25lci52YWx1ZSA6IEdsb2JhbC56ZXJvQWRkcmVzczsKICAgIGludGNfMSAvLyAwCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjQ2CiAgICAvLyBfb3duZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWNfMyAvLyAiX293bmVyIgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo3NgogICAgLy8gY29uc3QgcHJldmlvdXNPd25lciA9IHRoaXMuX293bmVyLmhhc1ZhbHVlID8gdGhpcy5fb3duZXIudmFsdWUgOiBHbG9iYWwuemVyb0FkZHJlc3M7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYnVyeSAxCiAgICBieiBfdHJhbnNmZXJPd25lcnNoaXBfdGVybmFyeV9mYWxzZUAyCiAgICBpbnRjXzEgLy8gMAogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo0NgogICAgLy8gX293bmVyID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oKTsKICAgIGJ5dGVjXzMgLy8gIl9vd25lciIKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NzYKICAgIC8vIGNvbnN0IHByZXZpb3VzT3duZXIgPSB0aGlzLl9vd25lci5oYXNWYWx1ZSA/IHRoaXMuX293bmVyLnZhbHVlIDogR2xvYmFsLnplcm9BZGRyZXNzOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKCl90cmFuc2Zlck93bmVyc2hpcF90ZXJuYXJ5X21lcmdlQDM6CiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjQ2CiAgICAvLyBfb3duZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWNfMyAvLyAiX293bmVyIgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo3NwogICAgLy8gdGhpcy5fb3duZXIudmFsdWUgPSBuZXdPd25lcjsKICAgIGZyYW1lX2RpZyAtMQogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NzktODIKICAgIC8vIGVtaXQ8T3duZXJzaGlwVHJhbnNmZXJyZWQ+KHsKICAgIC8vICAgICBwcmV2aW91c093bmVyOiBwcmV2aW91c093bmVyLAogICAgLy8gICAgIG5ld093bmVyOiBuZXdPd25lciwKICAgIC8vIH0pOwogICAgZnJhbWVfZGlnIC0xCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweDlhMjIzZWZiIC8vIG1ldGhvZCAiT3duZXJzaGlwVHJhbnNmZXJyZWQoYWRkcmVzcyxhZGRyZXNzKSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICByZXRzdWIKCl90cmFuc2Zlck93bmVyc2hpcF90ZXJuYXJ5X2ZhbHNlQDI6CiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjc2CiAgICAvLyBjb25zdCBwcmV2aW91c093bmVyID0gdGhpcy5fb3duZXIuaGFzVmFsdWUgPyB0aGlzLl9vd25lci52YWx1ZSA6IEdsb2JhbC56ZXJvQWRkcmVzczsKICAgIGdsb2JhbCBaZXJvQWRkcmVzcwogICAgYiBfdHJhbnNmZXJPd25lcnNoaXBfdGVybmFyeV9tZXJnZUAzCg==","clear":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBAYWxnb3JhbmRmb3VuZGF0aW9uL2FsZ29yYW5kLXR5cGVzY3JpcHQvYmFzZS1jb250cmFjdC5kLnRzOjpCYXNlQ29udHJhY3QuY2xlYXJTdGF0ZVByb2dyYW0oKSAtPiB1aW50NjQ6Cm1haW46CiAgICBwdXNoaW50IDEgLy8gMQogICAgcmV0dXJuCg=="},"byteCode":{"approval":"CyAFAQAgCOSWASYUBBUffHUCY2YCd3IGX293bmVyBGNmYWMEcGNhYwdfcGF1c2VyAnNuBnBhdXNlZAJzYQJwYwJyYQN3d3QEZXdwawRWHS/qBAuBAUM/CyACAAGABFYdL+o2GgCOAQABADEZgQUSMRgUEERCAACxMgoyDrIgIrIIsgcjshAisgGzgAQVH3x1MgpQsCNDDnBlcm1pc3Npb25sZXNzAwaBAQhhcHByb3ZlZIICBKDoGHIEnIahhTYaAI4CAS4BIjEZFEQxGEEBC4IlBKBQ9fEE4uu/hgS57IwYBD3YOM4EaQxZjwQifOOqBGd80PEEpOiahQRXO7RaBO2F76YELUbXLwRNrigfBAZ1Ww0Ee55rAgQA3ALEBGlke/QEdScaBwRERyXMBGWGY60EnZkqdgRRtH8GBEGe7/sE9Fj8GgQaJuL1BO+BaiUEGbV35wTqzjrzBBbK8KEE/45nugRlciDZBHhaG/kEsNlTswQBePlLBBtSnegEDK3RYwSxu7CoBOF7r7Q2GgCOJQB7AI0AngC5AVkBqQG8ApAC5QMCAw4DZwOzBEwEVwRoBOAE7AUCBRgFKwVBBVoFxAXNBiQGhQcVB20H2gihCOcI8gkCCRIJMgk8AIAEknB3PTYaAI4BABkAMRmBBRIxGBBEQgA4MRmBBBIxGBBEQgAnNhoBSRUkEkSIClwnBjEAZycEI2cnBSNnJwcjZycII2coMgpQsCJDiAosIkOICicjJwRlRBREIycFZUQURLEyCiMrZUSyCSOyCLIHIrIQI7IBsyJDNhoBSRUlEkQXiAn2JwxMZyJDNhoBSRUkEkSICeUnDUxnIkM2GgFJI1mBAghLARUSRFcCAIgJixYoTFCwIkMxFiIJSTgQIhJENhoBSSNZgQIISwEVEkRXAgBLATgHMgoSTwI4CEsCiAlZEhBEsScOshqBBbIZJw+yQicQskCBBrIQI7IBs7Q+SVcEAExXAAQoEkRJFSQSRLEyAbIISbIHIrIQI7IBsycKSwFQSbxISwK/IycFZUQiCCcFTGdLARUWVwYCTwJQSwGAAgAiUExQgAQskk3uTFCwKExQsCJDNhoBSRUkEkSICRmxMQCyCSOyCEmyB0myACKyECOyAbMnCkxQSb5EFYEjCIGQAwuBxBMIsTEAsgeyCCKyECOyAbO8SCMnBWVEIgknBUxnIkM2GgFJFSUSRBeICJ8WKExQsCJDMRYiCUk4ECISRDYaAUlOAkkVJBJENhoCSRUlEkQXSU4CTgMnCksBUL1FAUQxADIDTgJQTFAjFkxLAVBMUEsCOAcyChJPAzgISwOICEsSEESxJw6yGoEFshknD7JCJxCyQIEGshAjsgGztD5JVwQASU4CTgRXAAQoEkRJFSQSRFxATEEASzIQsTIBCLIISwGyByKyECOyAbNLAkEAB0sBSwOIBwEpSwJJTgJQSwK/IycEZUQiCCcETGcxAEsBUEsFUIAEtIleR0xQsChMULAiQyNC/7M2GgFJFSQSRIgH60AAB0mIBqpBADwiRLExALIJI7IIRwKyB0myACKyECOyAbOxMQCB1NgDsgiyByKyECOyAbMpTFC8SCMnBGVEIgknBExnIkMjQv/BNhoBSRUkEkQ2GgJJFSQSRIgHhSlPAlAkTwK7IkMyECEECBYoTFCwIkMxFiIJSTgQIhJENhoBSRUlEkQXNhoCSRUkEkSIB1FLAjgHMgoSTwM4CDIQIQQIEhBEsTIKSSOyEksDshGyFLIAgQSyECOyAbNLARaABCY2vH5MULCIBqwiQzYaAUkVJRJEF4gHCrEyCkcCI7ISSwOyEbIVshSyAIEEshAjsgGzFicJSwFQvEixMQAyECEECLIIsgcishAjsgGzgAQGXAN0TFCwIkM2GgFJFSQSRDYaAkkVJRJEFzYaA0kVJRJEFzYaBEkVJRJEFzYaBUkjWYECCEsBFRJEVwIAiAaBiAaQKUsFUEm+RIFgW0lLBBJEsTIKSwOyBUsFshJLBrIRshRLBrIAgQSyECOyAbNPBRZPBkxQTwUWUE8EFlBLAxUWVwYCTwRQTIACADpQTFCABJlKE2dMULAiCBaBYEy7IkMjJwtlRChMULAiQzYaAUkVJBJEiAYbJwtMZyJDNhoBSRUkEkQ2GgJJFSUSRBc2GgNJFSUSRBc2GgRJFSUSRBeIBd0xACMnC2VEEkQpSwRQSb5EgWBbSUsDEkSxMgpLBLISSwWyEUsGshSyAIEEshAjsgGzTwQWTwVMUE8EFlBPAxZQgATjeq5cTFCwIggWgWBMuyJDIycHZUQWKExQsCJDNhoBSRUkEkQpTFC+RFdgCChMULAiQzYaAUkVJBJEKUxQvkRXaAgoTFCwIkM2GgFJFSQSRClMUL5EKExQsCJDNhoBSRUlEkQXFicJTFC+RChMULAiQzYaAUkVJRJEFzYaAkkVJBJEiAUoiAS5IkM2GgFJFSUSRBc2GgJJFSUSRBc2GgNJFSUSRBeIBPOIBQIjJwdlRElLAhJEsTIKSwQWJwlLAVC+REsFshJPBrIRSbIUTwKyAIEEshAjsgGzTFBPAxZQTwIWUIAEVYBG7ExQsCIIJwdMZyJDMhAWKExQsCJDMRYiCUk4ECISRDYaAUkVJBJENhoCSRUlEkQXiASbQAAISwGIA1lBACoiREsCSTgHMgoSTDgIMhASEESxMhCyCEsBSbIHIrIQI7IBs0sBiANDIkMjQv/TNhoBSRUkEkQ2GgJJFSUSRBeIBE5AAAhLAYgDDEEAPiJEsSOyEkcCshFLAkmyFUmyFEmyAIEEshAjsgGzsTEAMhCyCLIHSbIAIrIQI7IBs0wWUIAE0VMWeExQsCJDI0L/vzYaAUkVJBJENhoCSRUlEkQXNhoDSRUlEkQXSwKIAqhEKUsDUL5ESwNLA3AASEsCD0QxADIHTwJXaAhPBU8DUE8EFlBPAxZQTwIWUExQKjEAUEsBv0lXACBLAVcgIEsCV0AISwNXSAhLBFdQCEsFV1gITwVPBVBPBFBPA1BPAlBMUIAE2F9iCkxQsChMULAiQzYaAUkVJBJEiAIsRCoxAFC9RQFEKjEAUL5EKjEAULxISVcAIEsBVyAgSwJXQAhLA1dICEsEV1AITwVXWAhPBU8FUE8EUE8DUE8CUExQgAQ/14KVTFCwIkM2GgFJFSQSRDYaAkkVJRJEF0sBiAHJRCoxAFC9RQFEKUsCUL5EKjEAUL5ESYFIW0sDD0RMgWhbSwGBWFtMSwESREsBgVBbIycMZURLAQgyBw5ETwKBQFtPBExPBE8DTwQnEYgBxCoxAFC8SCJDNhoBRwIVJBJENhoCSRUlEkQXSU8CNhoDSRUlEkQXSU4CTgM2GgRJFSUSRBdJTgQ2GgVJFSUSRBc2GgZJTgYVgUASREsCiAEqRClLA1C+RDIHSwMMRIFoW0lOBksBEkQxAE8DTFBPBBZQTwMWUE8CFlBMFlAyEVABgc4TMgwNQQAYsYEGshCBBbIZJxKyHicSsh8jsgGzQv/fIycNZURLAUsETwKEREsGSwZLBksGSwUnE4gBByoxAFC9RQFBAAYqMQBQvEgiQzYaAUkVJRJEF0k2GgJJFSUSRBdMNhoDSU4DFSQSRIgBu0EAE7FLArIRshKyFIEEshAjsgGzIkOxsgiyByKyECOyAbNC/+8jJwZlRChMULAiQ4gBficIImeABM8jow+wIkOIAW4nCCNngASxY+4LsCJDNhoBSRUkEkSIAVZJMgMTRCcGSwFngATMQJI8TFCwIkMjK2VEKExQsCJDNhoBSRUkEkSIATaIAUQiQ4oBASmL/1BJvUUBRL5IVyAgMQASiYoCADIKi/9wAEUBRLEjshKL/7IRi/6yFIv+sgCBBLIQI7IBs4v/Fov+TFCABCSKBR5MULCJigYAi/xBABmxMQCL/LISi/uyEbIUi/qyAIEEshAjsgGzMQCL/ycREiOL/U8CTYv/JxMSI4v9TwJNi/pPA1CL+xZQi/wWUE8CFlBMFlCL/hZQi/8VFlcGAov/UEyAAgBqUExQgAS7TdAGTFCwi/4iCCmL+lBMFoFoTLuJigIAi/4WJwlMUEm9RQFBABaLAL5EiwCL/7+L/1CABP1TU1hMULCJMgNC/+mKAQGL/xWBIwiBkAMLgcQTCDIBSQgIiYoBAYv/QQALMhAyAQiB9N4DCIkjQv/zIycIZUQURIkxACMnBmVEEkSJMQAjK2VEEkSJMQAjK2VEEomKAQAjK2VFAUEAFSMrZUQri/9ni/9QgASaIj77TFCwiTIDQv/q","clear":"C4EBQw=="},"events":[{"name":"OwnershipTransferred","args":[{"type":"address","name":"previousOwner"},{"type":"address","name":"newOwner"}]},{"name":"PartnerChannelCreated","args":[{"type":"address","name":"partnerChannel"},{"type":"string","name":"partnerChannelName"}]},{"name":"CardFundAssetEnabled","args":[{"type":"address","name":"cardFund"},{"type":"uint64","name":"asset"}]},{"name":"CardFundCreated","args":[{"type":"address","name":"cardFundOwner"},{"type":"address","name":"cardFund"},{"type":"address","name":"partnerChannel"}]},{"name":"AssetAllowlistAdded","args":[{"type":"uint64","name":"asset"}]},{"name":"SettlementAddressChanged","args":[{"type":"address","name":"oldSettlementAddress"},{"type":"address","name":"newSettlementAddress"}]},{"name":"AssetAllowlistRemoved","args":[{"type":"uint64","name":"asset"}]},{"name":"Debit","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"},{"type":"string","name":"reference"}]},{"name":"Refund","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]},{"name":"Settlement","args":[{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]},{"name":"CardFundAssetDisabled","args":[{"type":"address","name":"cardFund"},{"type":"uint64","name":"asset"}]},{"name":"WithdrawalRequest","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]},{"name":"WithdrawalRequestCancelled","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]},{"name":"Withdrawal","args":[{"type":"address","name":"cardFund"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"expiresAt"},{"type":"uint64","name":"nonce"},{"type":"string","name":"type"}]},{"name":"Pause","args":[]},{"name":"Unpause","args":[]},{"name":"PauserChanged","args":[{"type":"address","name":"newAddress"}]}],"templateVariables":{}} as unknown as Arc56Contract
+export const APP_SPEC: Arc56Contract = {"name":"Master","structs":{"CardData":[{"name":"owner","type":"address"},{"name":"address","type":"address"},{"name":"nonce","type":"uint64"},{"name":"withdrawalNonce","type":"uint64"}],"PermissionlessWithdrawalRequest":[{"name":"card","type":"address"},{"name":"recipient","type":"address"},{"name":"asset","type":"uint64"},{"name":"amount","type":"uint64"},{"name":"createdAt","type":"uint64"},{"name":"nonce","type":"uint64"}]},"methods":[{"name":"deploy","args":[{"type":"address","name":"owner"}],"returns":{"type":"address"},"actions":{"create":["NoOp"],"call":[]},"readonly":false,"desc":"Deploy the contract, setting the owner as provided and initializing global state.","events":[{"name":"OwnershipTransferred","args":[{"type":"address","name":"previousOwner"},{"type":"address","name":"newOwner"}]}],"recommendations":{}},{"name":"update","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["UpdateApplication"]},"readonly":false,"desc":"Allows the owner to update the smart contract","events":[],"recommendations":{}},{"name":"destroy","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["DeleteApplication"]},"readonly":false,"desc":"Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active cards","events":[],"recommendations":{}},{"name":"setWithdrawalTimeout","args":[{"type":"uint64","name":"seconds","desc":"New number of seconds to wait"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Set the number of seconds a withdrawal request must wait until being withdrawn","events":[],"recommendations":{}},{"name":"setEarlyWithdrawalPubkey","args":[{"type":"byte[32]","name":"pubkey","desc":"- The public key to set."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Sets the early withdrawal public key.","events":[],"recommendations":{}},{"name":"cardCreate","args":[{"type":"address","name":"cardOwner","desc":"The card holder who will own/control the card"},{"type":"uint64","name":"asset","desc":"Asset to opt-in to. 0 = No asset opt-in"}],"returns":{"type":"address","desc":"Newly generated account used by their card"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Create a card. This generates a brand new account and funds the minimum balance requirement\nfrom the contract (owner-sponsored). Only the owner can call this function.","events":[{"name":"CardAssetEnabled","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"}]},{"name":"CardCreated","args":[{"type":"address","name":"cardOwner"},{"type":"address","name":"card"}]}],"recommendations":{}},{"name":"cardClose","args":[{"type":"address","name":"card","desc":"Address to close"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Close account. This permanently removes the rekey and deletes the account from the ledger","events":[],"recommendations":{}},{"name":"cardRecover","args":[{"type":"address","name":"card","desc":"- The card to recover."},{"type":"address","name":"newCardHolder","desc":"- The address of the new card holder."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Recovers funds from an old card and transfers them to a new card.\nOnly the owner of the contract can perform this operation.","events":[],"recommendations":{}},{"name":"assetAllowlistAdd","args":[{"type":"uint64","name":"asset","desc":"The AssetID of the asset being transferred."},{"type":"address","name":"settlementAddress","desc":"The address settlements for this asset are sent to."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the master contract to flag intent of accepting an asset. The box MBR and asset\nopt-in are funded from the contract (owner-sponsored).","events":[{"name":"AssetAllowlistAdded","args":[{"type":"uint64","name":"asset"}]},{"name":"SettlementAddressChanged","args":[{"type":"address","name":"oldSettlementAddress"},{"type":"address","name":"newSettlementAddress"}]}],"recommendations":{}},{"name":"assetAllowlistRemove","args":[{"type":"uint64","name":"asset","desc":"- The AssetID of the asset being transferred."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the master contract to reject accepting an asset. The freed MBR remains in the\ncontract (owner-sponsored pool).","events":[{"name":"AssetAllowlistRemoved","args":[{"type":"uint64","name":"asset"}]}],"recommendations":{}},{"name":"cardDebit","args":[{"type":"address","name":"card","desc":"The card from which the asset will be debited."},{"type":"uint64","name":"asset","desc":"The asset to be debited."},{"type":"uint64","name":"amount","desc":"The amount of the asset to be debited."},{"type":"uint64","name":"nonce"},{"type":"string","name":"ref"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Debits the specified amount of the given asset from the card account.\nOnly the owner of the contract can perform this operation.","events":[{"name":"Debit","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"},{"type":"string","name":"reference"}]}],"recommendations":{}},{"name":"getRefundAddress","args":[],"returns":{"type":"address","desc":"The refund address."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the refund address.","events":[],"recommendations":{}},{"name":"setRefundAddress","args":[{"type":"address","name":"newRefundAddress","desc":"The new refund address to be set."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Sets the refund address.\nOnly the owner of the contract can call this method.","events":[],"recommendations":{}},{"name":"cardRefund","args":[{"type":"address","name":"card","desc":"- The card account to refund the asset to."},{"type":"uint64","name":"asset","desc":"- The asset to refund."},{"type":"uint64","name":"amount","desc":"- The amount of the asset to refund."},{"type":"uint64","name":"nonce"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Refunds a specified amount of an asset to a card account.\nOnly the owner of the contract can perform this operation.","events":[{"name":"Refund","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"getNextSettlementNonce","args":[],"returns":{"type":"uint64","desc":"The settlement nonce."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the next available nonce for settlements.","events":[],"recommendations":{}},{"name":"getNextCardNonce","args":[{"type":"address","name":"card","desc":"The card address."}],"returns":{"type":"uint64","desc":"The nonce for the card."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the next available nonce for the card.","events":[],"recommendations":{}},{"name":"getCardWithdrawalNonce","args":[{"type":"address","name":"card","desc":"The card address."}],"returns":{"type":"uint64","desc":"The withdrawal nonce for the card."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the next available withdrawal nonce for the card.","events":[],"recommendations":{}},{"name":"getCardData","args":[{"type":"address","name":"card","desc":"The address of the card."}],"returns":{"type":"(address,address,uint64,uint64)","struct":"CardData","desc":"The card data."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the card data for a given card address.","events":[],"recommendations":{}},{"name":"getSettlementAddress","args":[{"type":"uint64","name":"asset","desc":"The ID of the asset."}],"returns":{"type":"address","desc":"The settlement address for the asset."},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"desc":"Retrieves the settlement address for the specified asset.","events":[],"recommendations":{}},{"name":"setSettlementAddress","args":[{"type":"uint64","name":"settlementAsset","desc":"The ID of the settlement asset."},{"type":"address","name":"newSettlementAddress","desc":"The new settlement address to be set."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Sets the settlement address for a given settlement asset.\nOnly the owner of the contract can call this method.","events":[{"name":"SettlementAddressChanged","args":[{"type":"address","name":"oldSettlementAddress"},{"type":"address","name":"newSettlementAddress"}]}],"recommendations":{}},{"name":"settle","args":[{"type":"uint64","name":"asset","desc":"The asset to be transferred."},{"type":"uint64","name":"amount","desc":"The amount of the asset to be transferred."},{"type":"uint64","name":"nonce","desc":"The nonce to prevent duplicate settlements."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Settles a payment by transferring an asset to the specified recipient.\nOnly the owner of the contract can call this function.","events":[{"name":"Settlement","args":[{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"cardEnableAsset","args":[{"type":"address","name":"card","desc":"Address to add asset to"},{"type":"uint64","name":"asset","desc":"Asset to add"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is\nfunded from the contract (owner-sponsored). Only the owner can call this function.","events":[{"name":"CardAssetEnabled","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"}]}],"recommendations":{}},{"name":"cardDisableAsset","args":[{"type":"address","name":"card","desc":"- The address of the card."},{"type":"uint64","name":"asset","desc":"- The ID of the asset to be removed."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance\nrequirement of the account. The freed MBR remains within the card account.","events":[{"name":"CardAssetDisabled","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"}]}],"recommendations":{}},{"name":"cardWithdrawalRequest","args":[{"type":"address","name":"card","desc":"Address to withdraw from"},{"type":"uint64","name":"asset","desc":"Asset to withdraw"},{"type":"uint64","name":"amount","desc":"Amount to withdraw"}],"returns":{"type":"(address,address,uint64,uint64,uint64,uint64)","struct":"PermissionlessWithdrawalRequest"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the card holder to request a withdrawal of an amount of assets from the account","events":[{"name":"WithdrawalRequest","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"cardWithdrawalCancel","args":[{"type":"address","name":"card","desc":"Address to withdraw from"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the card holder to cancel a withdrawal request","events":[{"name":"WithdrawalRequestCancelled","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]}],"recommendations":{}},{"name":"cardWithdraw","args":[{"type":"address","name":"card","desc":"Address to withdraw from"},{"type":"uint64","name":"amount"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Allows the card holder to send an amount of assets from the account","events":[{"name":"Withdrawal","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"expiresAt"},{"type":"uint64","name":"nonce"},{"type":"string","name":"type"}]}],"recommendations":{}},{"name":"cardWithdrawPermissioned","args":[{"type":"address","name":"card","desc":"- The address of the card."},{"type":"uint64","name":"asset","desc":"- The ID of the asset to be withdrawn."},{"type":"uint64","name":"amount","desc":"- The amount of the withdrawal."},{"type":"uint64","name":"expiresAt","desc":"- The expiry of the withdrawal signature."},{"type":"uint64","name":"nonce"},{"type":"byte[64]","name":"signature","desc":"- The signature for early withdrawal."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.","events":[{"name":"Withdrawal","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"expiresAt"},{"type":"uint64","name":"nonce"},{"type":"string","name":"type"}]}],"recommendations":{}},{"name":"recoverAsset","args":[{"type":"uint64","name":"asset","desc":"Asset ID of the asset to recover. If 0, Algo will be recovered."},{"type":"uint64","name":"amount","desc":"Amount of the asset to recover. If Algos, remember the minimum balance requirement."},{"type":"address","name":"recipient","desc":"Address to send the recovered asset to."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Recover an asset sent to the contract by mistake. Only the owner can call this function.","events":[],"recommendations":{}},{"name":"pauser","args":[],"returns":{"type":"address","desc":"Pauser's address"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[],"recommendations":{}},{"name":"pause","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[{"name":"Pause","args":[]}],"recommendations":{}},{"name":"unpause","args":[],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[{"name":"Unpause","args":[]}],"recommendations":{}},{"name":"updatePauser","args":[{"type":"address","name":"_newPauser"}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"events":[{"name":"PauserChanged","args":[{"type":"address","name":"newAddress"}]}],"recommendations":{}},{"name":"owner","args":[],"returns":{"type":"address"},"actions":{"create":[],"call":["NoOp"]},"readonly":true,"events":[],"recommendations":{}},{"name":"transferOwnership","args":[{"type":"address","name":"newOwner","desc":"The address of the new owner."}],"returns":{"type":"void"},"actions":{"create":[],"call":["NoOp"]},"readonly":false,"desc":"Transfers the ownership of the contract to a new owner.\nRequires the caller to be the current owner.","events":[{"name":"OwnershipTransferred","args":[{"type":"address","name":"previousOwner"},{"type":"address","name":"newOwner"}]}],"recommendations":{}}],"arcs":[22,28],"networks":{},"state":{"schema":{"global":{"ints":4,"bytes":4},"local":{"ints":0,"bytes":0}},"keys":{"global":{"cards_active_count":{"keyType":"AVMString","valueType":"AVMUint64","key":"Y2ZhYw=="},"withdrawal_wait_time":{"keyType":"AVMString","valueType":"AVMUint64","key":"d3d0"},"early_withdrawal_pubkey":{"keyType":"AVMString","valueType":"AVMBytes","key":"ZXdwaw=="},"settlement_nonce":{"keyType":"AVMString","valueType":"AVMUint64","key":"c24="},"refund_address":{"keyType":"AVMString","valueType":"address","key":"cmE="},"_pauser":{"keyType":"AVMString","valueType":"address","key":"X3BhdXNlcg=="},"paused":{"keyType":"AVMString","valueType":"AVMUint64","key":"cGF1c2Vk"},"_owner":{"keyType":"AVMString","valueType":"address","key":"X293bmVy","desc":"Owner of the contract"}},"local":{},"box":{}},"maps":{"global":{},"local":{},"box":{"cards":{"keyType":"address","valueType":"CardData","prefix":"Y2Y="},"withdrawals":{"keyType":"address","valueType":"PermissionlessWithdrawalRequest","prefix":"d3I="},"settlement_address":{"keyType":"uint64","valueType":"address","prefix":"c2E="}}}},"bareActions":{"create":[],"call":[]},"sourceInfo":{"approval":{"sourceInfo":[{"pc":[1872],"errorMessage":"AMOUNT_INVALID"},{"pc":[2336],"errorMessage":"ASSET_NOT_OPTED_IN"},{"pc":[1006,1176,1267,1289,1311,1333,1420,1627,1759,1858,1864,2009,2521],"errorMessage":"Box must have value"},{"pc":[641],"errorMessage":"Bytes has valid prefix"},{"pc":[435],"errorMessage":"CARDS_STILL_ACTIVE"},{"pc":[2315],"errorMessage":"CARD_NOT_FOUND"},{"pc":[1638],"errorMessage":"INSUFFICIENT_BALANCE"},{"pc":[1014,1184,1407,1886,2025],"errorMessage":"NONCE_INVALID"},{"pc":[370],"errorMessage":"OnCompletion must be DeleteApplication && can only call when not creating"},{"pc":[117],"errorMessage":"OnCompletion must be NoOp"},{"pc":[382],"errorMessage":"OnCompletion must be UpdateApplication && can only call when not creating"},{"pc":[751,1169,1544,1621,1745,1844,2003,2570],"errorMessage":"SENDER_NOT_ALLOWED"},{"pc":[2099],"errorMessage":"SIGNATURE_INVALID"},{"pc":[1753,1852],"errorMessage":"WITHDRAWAL_REQUEST_NOT_FOUND"},{"pc":[1903,2015],"errorMessage":"WITHDRAWAL_TIME_INVALID"},{"pc":[433,442,698,783,1099,1167,1247,1402,1896,2091,2207,2281,2549,2559,2568,2577,2594],"errorMessage":"check GlobalState exists"},{"pc":[982],"errorMessage":"invalid array length header"},{"pc":[990],"errorMessage":"invalid number of bytes for arc4.dynamic_array<arc4.uint8>"},{"pc":[393,484,502,646,736,803,811,841,949,1113,1130,1262,1284,1306,1356,1478,1519,1597,1741,1829,1939,2162,2253,2295],"errorMessage":"invalid number of bytes for arc4.static_array<arc4.uint8, 32>"},{"pc":[1997],"errorMessage":"invalid number of bytes for arc4.static_array<arc4.uint8, 64>"},{"pc":[466,510,832,892,957,966,975,1138,1147,1156,1325,1347,1372,1381,1390,1486,1527,1605,1614,1837,1947,1959,1973,1985,2140,2150],"errorMessage":"invalid number of bytes for arc4.uint64"}],"pcOffsetMethod":"none"},"clear":{"sourceInfo":[],"pcOffsetMethod":"none"}},"source":{"approval":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBAYWxnb3JhbmRmb3VuZGF0aW9uL2FsZ29yYW5kLXR5cGVzY3JpcHQvYXJjNC9pbmRleC5kLnRzOjpDb250cmFjdC5hcHByb3ZhbFByb2dyYW0oKSAtPiB1aW50NjQ6Cm1haW46CiAgICBpbnRjYmxvY2sgMCAxIDggMzIKICAgIGJ5dGVjYmxvY2sgImNmIiAweDE1MWY3Yzc1ICJ3ciIgIl9vd25lciIgImNmYWMiICJfcGF1c2VyIiAic24iICJwYXVzZWQiICJzYSIgInJhIiAid3d0IiAiZXdwayIgInBlcm1pc3Npb25sZXNzIiAweDA2ODEwMSAiYXBwcm92ZWQiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxNzcKICAgIC8vIGV4cG9ydCBjbGFzcyBNYXN0ZXIgZXh0ZW5kcyBSZWNvdmVyYWJsZSB7CiAgICBwdXNoYnl0ZXNzIDB4YTBlODE4NzIgMHg5Yzg2YTE4NSAvLyBtZXRob2QgInVwZGF0ZSgpdm9pZCIsIG1ldGhvZCAiZGVzdHJveSgpdm9pZCIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIG1haW5fdXBkYXRlX3JvdXRlQDIgbWFpbl9kZXN0cm95X3JvdXRlQDMKCm1haW5fc3dpdGNoX2Nhc2VfbmV4dEA0OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTc3CiAgICAvLyBleHBvcnQgY2xhc3MgTWFzdGVyIGV4dGVuZHMgUmVjb3ZlcmFibGUgewogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgYXNzZXJ0IC8vIE9uQ29tcGxldGlvbiBtdXN0IGJlIE5vT3AKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICBieiBtYWluX2NyZWF0ZV9Ob09wQDM4CiAgICBwdXNoYnl0ZXNzIDB4YTA1MGY1ZjEgMHhlMmViYmY4NiAweDViMjc3MTQzIDB4NDdiYjlkZmQgMHgzZmExMjM4YiAweDdjNzIyNzQ3IDB4NGRhZTI4MWYgMHhkM2M3YTY1MiAweDdiOWU2YjAyIDB4MDBkYzAyYzQgMHhlZmM1Mjk5MyAweDc1MjcxYTA3IDB4Y2JlZTJiYTEgMHhjODQ0ZjY0YiAweDc0NWRiZjE2IDB4NTFiNDdmMDYgMHg0MTllZWZmYiAweGY0NThmYzFhIDB4NGY2N2Y5MWQgMHg5NTM3ZDUwOSAweGEyMTgxZTI0IDB4YWRhMDlhMWMgMHg1YjIwY2MxMyAweGZlZWZkYzc3IDB4Nzg1YTFiZjkgMHhiMGQ5NTNiMyAweDAxNzhmOTRiIDB4MWI1MjlkZTggMHgwY2FkZDE2MyAweGIxYmJiMGE4IDB4ZTE3YmFmYjQgLy8gbWV0aG9kICJzZXRXaXRoZHJhd2FsVGltZW91dCh1aW50NjQpdm9pZCIsIG1ldGhvZCAic2V0RWFybHlXaXRoZHJhd2FsUHVia2V5KGJ5dGVbMzJdKXZvaWQiLCBtZXRob2QgImNhcmRDcmVhdGUoYWRkcmVzcyx1aW50NjQpYWRkcmVzcyIsIG1ldGhvZCAiY2FyZENsb3NlKGFkZHJlc3Mpdm9pZCIsIG1ldGhvZCAiY2FyZFJlY292ZXIoYWRkcmVzcyxhZGRyZXNzKXZvaWQiLCBtZXRob2QgImFzc2V0QWxsb3dsaXN0QWRkKHVpbnQ2NCxhZGRyZXNzKXZvaWQiLCBtZXRob2QgImFzc2V0QWxsb3dsaXN0UmVtb3ZlKHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJjYXJkRGViaXQoYWRkcmVzcyx1aW50NjQsdWludDY0LHVpbnQ2NCxzdHJpbmcpdm9pZCIsIG1ldGhvZCAiZ2V0UmVmdW5kQWRkcmVzcygpYWRkcmVzcyIsIG1ldGhvZCAic2V0UmVmdW5kQWRkcmVzcyhhZGRyZXNzKXZvaWQiLCBtZXRob2QgImNhcmRSZWZ1bmQoYWRkcmVzcyx1aW50NjQsdWludDY0LHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJnZXROZXh0U2V0dGxlbWVudE5vbmNlKCl1aW50NjQiLCBtZXRob2QgImdldE5leHRDYXJkTm9uY2UoYWRkcmVzcyl1aW50NjQiLCBtZXRob2QgImdldENhcmRXaXRoZHJhd2FsTm9uY2UoYWRkcmVzcyl1aW50NjQiLCBtZXRob2QgImdldENhcmREYXRhKGFkZHJlc3MpKGFkZHJlc3MsYWRkcmVzcyx1aW50NjQsdWludDY0KSIsIG1ldGhvZCAiZ2V0U2V0dGxlbWVudEFkZHJlc3ModWludDY0KWFkZHJlc3MiLCBtZXRob2QgInNldFNldHRsZW1lbnRBZGRyZXNzKHVpbnQ2NCxhZGRyZXNzKXZvaWQiLCBtZXRob2QgInNldHRsZSh1aW50NjQsdWludDY0LHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJjYXJkRW5hYmxlQXNzZXQoYWRkcmVzcyx1aW50NjQpdm9pZCIsIG1ldGhvZCAiY2FyZERpc2FibGVBc3NldChhZGRyZXNzLHVpbnQ2NCl2b2lkIiwgbWV0aG9kICJjYXJkV2l0aGRyYXdhbFJlcXVlc3QoYWRkcmVzcyx1aW50NjQsdWludDY0KShhZGRyZXNzLGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsdWludDY0KSIsIG1ldGhvZCAiY2FyZFdpdGhkcmF3YWxDYW5jZWwoYWRkcmVzcyl2b2lkIiwgbWV0aG9kICJjYXJkV2l0aGRyYXcoYWRkcmVzcyx1aW50NjQpdm9pZCIsIG1ldGhvZCAiY2FyZFdpdGhkcmF3UGVybWlzc2lvbmVkKGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsdWludDY0LGJ5dGVbNjRdKXZvaWQiLCBtZXRob2QgInJlY292ZXJBc3NldCh1aW50NjQsdWludDY0LGFkZHJlc3Mpdm9pZCIsIG1ldGhvZCAicGF1c2VyKClhZGRyZXNzIiwgbWV0aG9kICJwYXVzZSgpdm9pZCIsIG1ldGhvZCAidW5wYXVzZSgpdm9pZCIsIG1ldGhvZCAidXBkYXRlUGF1c2VyKGFkZHJlc3Mpdm9pZCIsIG1ldGhvZCAib3duZXIoKWFkZHJlc3MiLCBtZXRob2QgInRyYW5zZmVyT3duZXJzaGlwKGFkZHJlc3Mpdm9pZCIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIHNldFdpdGhkcmF3YWxUaW1lb3V0IHNldEVhcmx5V2l0aGRyYXdhbFB1YmtleSBjYXJkQ3JlYXRlIGNhcmRDbG9zZSBjYXJkUmVjb3ZlciBhc3NldEFsbG93bGlzdEFkZCBhc3NldEFsbG93bGlzdFJlbW92ZSBjYXJkRGViaXQgZ2V0UmVmdW5kQWRkcmVzcyBzZXRSZWZ1bmRBZGRyZXNzIGNhcmRSZWZ1bmQgZ2V0TmV4dFNldHRsZW1lbnROb25jZSBnZXROZXh0Q2FyZE5vbmNlIGdldENhcmRXaXRoZHJhd2FsTm9uY2UgZ2V0Q2FyZERhdGEgZ2V0U2V0dGxlbWVudEFkZHJlc3Mgc2V0U2V0dGxlbWVudEFkZHJlc3Mgc2V0dGxlIGNhcmRFbmFibGVBc3NldCBjYXJkRGlzYWJsZUFzc2V0IGNhcmRXaXRoZHJhd2FsUmVxdWVzdCBjYXJkV2l0aGRyYXdhbENhbmNlbCBjYXJkV2l0aGRyYXcgY2FyZFdpdGhkcmF3UGVybWlzc2lvbmVkIHJlY292ZXJBc3NldCBwYXVzZXIgcGF1c2UgdW5wYXVzZSB1cGRhdGVQYXVzZXIgb3duZXIgdHJhbnNmZXJPd25lcnNoaXAKICAgIGVycgoKbWFpbl9jcmVhdGVfTm9PcEAzODoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE3NwogICAgLy8gZXhwb3J0IGNsYXNzIE1hc3RlciBleHRlbmRzIFJlY292ZXJhYmxlIHsKICAgIHB1c2hieXRlcyAweDkyNzA3NzNkIC8vIG1ldGhvZCAiZGVwbG95KGFkZHJlc3MpYWRkcmVzcyIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIGRlcGxveQogICAgZXJyCgptYWluX2Rlc3Ryb3lfcm91dGVAMzoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMyNgogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydEZWxldGVBcHBsaWNhdGlvbiddIH0pCiAgICB0eG4gT25Db21wbGV0aW9uCiAgICBwdXNoaW50IDUgLy8gRGVsZXRlQXBwbGljYXRpb24KICAgID09CiAgICB0eG4gQXBwbGljYXRpb25JRAogICAgJiYKICAgIGFzc2VydCAvLyBPbkNvbXBsZXRpb24gbXVzdCBiZSBEZWxldGVBcHBsaWNhdGlvbiAmJiBjYW4gb25seSBjYWxsIHdoZW4gbm90IGNyZWF0aW5nCiAgICBiIGRlc3Ryb3kKCm1haW5fdXBkYXRlX3JvdXRlQDI6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMTgKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnVXBkYXRlQXBwbGljYXRpb24nXSB9KQogICAgdHhuIE9uQ29tcGxldGlvbgogICAgcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCiAgICA9PQogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgICYmCiAgICBhc3NlcnQgLy8gT25Db21wbGV0aW9uIG11c3QgYmUgVXBkYXRlQXBwbGljYXRpb24gJiYgY2FuIG9ubHkgY2FsbCB3aGVuIG5vdCBjcmVhdGluZwogICAgYiB1cGRhdGUKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmRlcGxveVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmRlcGxveToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMwMQogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydOb09wJ10sIG9uQ3JlYXRlOiAncmVxdWlyZScgfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzAzCiAgICAvLyB0aGlzLl90cmFuc2Zlck93bmVyc2hpcChvd25lcik7CiAgICBjYWxsc3ViIF90cmFuc2Zlck93bmVyc2hpcAogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzQKICAgIC8vIF9wYXVzZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWMgNSAvLyAiX3BhdXNlciIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMwNAogICAgLy8gdGhpcy5fcGF1c2VyLnZhbHVlID0gVHhuLnNlbmRlcjsKICAgIHR4biBTZW5kZXIKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODIKICAgIC8vIGNhcmRzX2FjdGl2ZV9jb3VudCA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICdjZmFjJyB9KTsKICAgIGJ5dGVjIDQgLy8gImNmYWMiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMDgKICAgIC8vIHRoaXMuY2FyZHNfYWN0aXZlX2NvdW50LnZhbHVlID0gMDsKICAgIGludGNfMCAvLyAwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk1CiAgICAvLyBzZXR0bGVtZW50X25vbmNlID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3NuJyB9KTsKICAgIGJ5dGVjIDYgLy8gInNuIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzA5CiAgICAvLyB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWUgPSAwOwogICAgaW50Y18wIC8vIDAKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNgogICAgLy8gcGF1c2VkID0gR2xvYmFsU3RhdGU8Ym9vbGVhbj4oKTsKICAgIGJ5dGVjIDcgLy8gInBhdXNlZCIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMxMAogICAgLy8gdGhpcy5wYXVzZWQudmFsdWUgPSBmYWxzZTsKICAgIGludGNfMCAvLyAwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzAxCiAgICAvLyBAYWJpbWV0aG9kKHsgYWxsb3dBY3Rpb25zOiBbJ05vT3AnXSwgb25DcmVhdGU6ICdyZXF1aXJlJyB9KQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMTIKICAgIC8vIHJldHVybiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzczsKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMDEKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnTm9PcCddLCBvbkNyZWF0ZTogJ3JlcXVpcmUnIH0pCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIudXBkYXRlW3JvdXRpbmddKCkgLT4gdm9pZDoKdXBkYXRlOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzIwCiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMxOAogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydVcGRhdGVBcHBsaWNhdGlvbiddIH0pCiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5kZXN0cm95W3JvdXRpbmddKCkgLT4gdm9pZDoKZGVzdHJveToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMyOAogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzEKICAgIC8vIGFzc2VydCghdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUsICdDQVJEU19TVElMTF9BQ1RJVkUnKTsKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODIKICAgIC8vIGNhcmRzX2FjdGl2ZV9jb3VudCA9IEdsb2JhbFN0YXRlPHVpbnQ2ND4oeyBrZXk6ICdjZmFjJyB9KTsKICAgIGJ5dGVjIDQgLy8gImNmYWMiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzEKICAgIC8vIGFzc2VydCghdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUsICdDQVJEU19TVElMTF9BQ1RJVkUnKTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICAhCiAgICBhc3NlcnQgLy8gQ0FSRFNfU1RJTExfQUNUSVZFCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzMtMzM3CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhbW91bnQ6IDAsCiAgICAvLyAgICAgY2xvc2VSZW1haW5kZXJUbzogdGhpcy5vd25lcigpLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzQKICAgIC8vIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjY3CiAgICAvLyByZXR1cm4gdGhpcy5fb3duZXIudmFsdWU7CiAgICBpbnRjXzAgLy8gMAogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo0NgogICAgLy8gX293bmVyID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oKTsKICAgIGJ5dGVjXzMgLy8gIl9vd25lciIKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NjcKICAgIC8vIHJldHVybiB0aGlzLl9vd25lci52YWx1ZTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICBpdHhuX2ZpZWxkIENsb3NlUmVtYWluZGVyVG8KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjMzNQogICAgLy8gYW1vdW50OiAwLAogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBpdHhuX2ZpZWxkIFJlY2VpdmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozMzMtMzM3CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhbW91bnQ6IDAsCiAgICAvLyAgICAgY2xvc2VSZW1haW5kZXJUbzogdGhpcy5vd25lcigpLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzEgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzI2CiAgICAvLyBAYWJpbWV0aG9kKHsgYWxsb3dBY3Rpb25zOiBbJ0RlbGV0ZUFwcGxpY2F0aW9uJ10gfSkKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLnNldFdpdGhkcmF3YWxUaW1lb3V0W3JvdXRpbmddKCkgLT4gdm9pZDoKc2V0V2l0aGRyYXdhbFRpbWVvdXQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNDUKICAgIC8vIHNldFdpdGhkcmF3YWxUaW1lb3V0KHNlY29uZHM6IHVpbnQ2NCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzQ2CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4NQogICAgLy8gd2l0aGRyYXdhbF93YWl0X3RpbWUgPSBHbG9iYWxTdGF0ZTx1aW50NjQ+KHsga2V5OiAnd3d0JyB9KTsKICAgIGJ5dGVjIDEwIC8vICJ3d3QiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNDgKICAgIC8vIHRoaXMud2l0aGRyYXdhbF93YWl0X3RpbWUudmFsdWUgPSBzZWNvbmRzOwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM0NQogICAgLy8gc2V0V2l0aGRyYXdhbFRpbWVvdXQoc2Vjb25kczogdWludDY0KTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5zZXRFYXJseVdpdGhkcmF3YWxQdWJrZXlbcm91dGluZ10oKSAtPiB2b2lkOgpzZXRFYXJseVdpdGhkcmF3YWxQdWJrZXk6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNTUKICAgIC8vIHNldEVhcmx5V2l0aGRyYXdhbFB1YmtleShwdWJrZXk6IGJ5dGVzPDMyPik6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNTYKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTg4CiAgICAvLyBlYXJseV93aXRoZHJhd2FsX3B1YmtleSA9IEdsb2JhbFN0YXRlPGJ5dGVzPDMyPj4oeyBrZXk6ICdld3BrJyB9KTsKICAgIGJ5dGVjIDExIC8vICJld3BrIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzU4CiAgICAvLyB0aGlzLmVhcmx5X3dpdGhkcmF3YWxfcHVia2V5LnZhbHVlID0gcHVia2V5OwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM1NQogICAgLy8gc2V0RWFybHlXaXRoZHJhd2FsUHVia2V5KHB1YmtleTogYnl0ZXM8MzI+KTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkQ3JlYXRlW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZENyZWF0ZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM2OAogICAgLy8gY2FyZENyZWF0ZShjYXJkT3duZXI6IEFjY291bnQsIGFzc2V0OiBBc3NldCk6IEFjY291bnQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwbiAyCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICBkdXAKICAgIHVuY292ZXIgMgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzY5CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM3MwogICAgLy8gYWRkcmVzczogR2xvYmFsLnplcm9BZGRyZXNzLAogICAgZ2xvYmFsIFplcm9BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNzEtMzc2CiAgICAvLyBjb25zdCBjYXJkRGF0YTogQ2FyZERhdGEgPSB7CiAgICAvLyAgICAgb3duZXI6IGNhcmRPd25lciwKICAgIC8vICAgICBhZGRyZXNzOiBHbG9iYWwuemVyb0FkZHJlc3MsCiAgICAvLyAgICAgbm9uY2U6IDAsCiAgICAvLyAgICAgd2l0aGRyYXdhbE5vbmNlOiAwLAogICAgLy8gfTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mzc0CiAgICAvLyBub25jZTogMCwKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNzEtMzc2CiAgICAvLyBjb25zdCBjYXJkRGF0YTogQ2FyZERhdGEgPSB7CiAgICAvLyAgICAgb3duZXI6IGNhcmRPd25lciwKICAgIC8vICAgICBhZGRyZXNzOiBHbG9iYWwuemVyb0FkZHJlc3MsCiAgICAvLyAgICAgbm9uY2U6IDAsCiAgICAvLyAgICAgd2l0aGRyYXdhbE5vbmNlOiAwLAogICAgLy8gfTsKICAgIGl0b2IKICAgIHN3YXAKICAgIGRpZyAxCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzgwLTM4NAogICAgLy8gY29uc3QgY2FyZEFkZHIgPSBhcmM0LmFiaUNhbGw8dHlwZW9mIENvbnRyb2xsZWRBZGRyZXNzLnByb3RvdHlwZS5uZXc+KHsKICAgIC8vICAgICBhcHByb3ZhbFByb2dyYW06IGNvbXBpbGVkQ2FyZC5hcHByb3ZhbFByb2dyYW0sCiAgICAvLyAgICAgY2xlYXJTdGF0ZVByb2dyYW06IGNvbXBpbGVkQ2FyZC5jbGVhclN0YXRlUHJvZ3JhbSwKICAgIC8vICAgICBvbkNvbXBsZXRpb246IE9uQ29tcGxldGVBY3Rpb24uRGVsZXRlQXBwbGljYXRpb24sCiAgICAvLyB9KS5yZXR1cm5WYWx1ZTsKICAgIGl0eG5fYmVnaW4KICAgIHB1c2hieXRlcyAweDU2MWQyZmVhIC8vIG1ldGhvZCAibmV3KClhZGRyZXNzIgogICAgaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM4MwogICAgLy8gb25Db21wbGV0aW9uOiBPbkNvbXBsZXRlQWN0aW9uLkRlbGV0ZUFwcGxpY2F0aW9uLAogICAgcHVzaGludCA1IC8vIDUKICAgIGl0eG5fZmllbGQgT25Db21wbGV0aW9uCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozNzkKICAgIC8vIGNvbnN0IGNvbXBpbGVkQ2FyZCA9IGNvbXBpbGUoQ29udHJvbGxlZEFkZHJlc3MpOwogICAgcHVzaGJ5dGVzIGJhc2U2NChDNEVCUXc9PSkKICAgIGl0eG5fZmllbGQgQ2xlYXJTdGF0ZVByb2dyYW1QYWdlcwogICAgcHVzaGJ5dGVzIGJhc2U2NChDeUFDQUFHQUJGWWRMK28yR2dDT0FRQUJBREVaZ1FVU01SZ1VFRVJDQUFDeE1nb3lEcklnSXJJSXNnY2pzaEFpc2dHemdBUVZIM3gxTWdwUXNDTkQpCiAgICBpdHhuX2ZpZWxkIEFwcHJvdmFsUHJvZ3JhbVBhZ2VzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czozODAtMzg0CiAgICAvLyBjb25zdCBjYXJkQWRkciA9IGFyYzQuYWJpQ2FsbDx0eXBlb2YgQ29udHJvbGxlZEFkZHJlc3MucHJvdG90eXBlLm5ldz4oewogICAgLy8gICAgIGFwcHJvdmFsUHJvZ3JhbTogY29tcGlsZWRDYXJkLmFwcHJvdmFsUHJvZ3JhbSwKICAgIC8vICAgICBjbGVhclN0YXRlUHJvZ3JhbTogY29tcGlsZWRDYXJkLmNsZWFyU3RhdGVQcm9ncmFtLAogICAgLy8gICAgIG9uQ29tcGxldGlvbjogT25Db21wbGV0ZUFjdGlvbi5EZWxldGVBcHBsaWNhdGlvbiwKICAgIC8vIH0pLnJldHVyblZhbHVlOwogICAgcHVzaGludCA2IC8vIGFwcGwKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMCAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIGl0eG4gTGFzdExvZwogICAgZHVwCiAgICBleHRyYWN0IDQgMAogICAgZHVwCiAgICBjb3ZlciAyCiAgICBjb3ZlciA0CiAgICBleHRyYWN0IDAgNAogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICA9PQogICAgYXNzZXJ0IC8vIEJ5dGVzIGhhcyB2YWxpZCBwcmVmaXgKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mzg3CiAgICAvLyBjYXJkRGF0YS5hZGRyZXNzID0gY2FyZEFkZHI7CiAgICByZXBsYWNlMiAzMgogICAgc3dhcAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzkwCiAgICAvLyBjb25zdCBhc3NldE1icjogdWludDY0ID0gYXNzZXQuaWQgPyBHbG9iYWwuYXNzZXRPcHRJbk1pbkJhbGFuY2UgOiAwOwogICAgYnogY2FyZENyZWF0ZV90ZXJuYXJ5X2ZhbHNlQDQKICAgIGdsb2JhbCBBc3NldE9wdEluTWluQmFsYW5jZQoKY2FyZENyZWF0ZV90ZXJuYXJ5X21lcmdlQDU6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozOTEtMzk0CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBjYXJkQWRkciwKICAgIC8vICAgICBhbW91bnQ6IEdsb2JhbC5taW5CYWxhbmNlICsgYXNzZXRNYnIsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM5MwogICAgLy8gYW1vdW50OiBHbG9iYWwubWluQmFsYW5jZSArIGFzc2V0TWJyLAogICAgZ2xvYmFsIE1pbkJhbGFuY2UKICAgICsKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBkaWcgMQogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MzkxLTM5NAogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogY2FyZEFkZHIsCiAgICAvLyAgICAgYW1vdW50OiBHbG9iYWwubWluQmFsYW5jZSArIGFzc2V0TWJyLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzEgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mzk3CiAgICAvLyBpZiAoYXNzZXQuaWQpIHsKICAgIGRpZyAyCiAgICBieiBjYXJkQ3JlYXRlX2FmdGVyX2lmX2Vsc2VAOAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mzk4CiAgICAvLyB0aGlzLmNhcmRBc3NldE9wdEluKGNhcmRBZGRyLCBhc3NldCk7CiAgICBkaWcgMQogICAgZGlnIDMKICAgIGNhbGxzdWIgY2FyZEFzc2V0T3B0SW4KCmNhcmRDcmVhdGVfYWZ0ZXJfaWZfZWxzZUA4OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18wIC8vICJjZiIKICAgIGRpZyAyCiAgICBkdXAKICAgIGNvdmVyIDIKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDAyCiAgICAvLyB0aGlzLmNhcmRzKGNhcmRBZGRyKS52YWx1ZSA9IGNsb25lKGNhcmREYXRhKTsKICAgIGRpZyAyCiAgICBib3hfcHV0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MDUKICAgIC8vIHRoaXMuY2FyZHNfYWN0aXZlX2NvdW50LnZhbHVlID0gdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUgKyAxOwogICAgaW50Y18wIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ2NmYWMnIH0pOwogICAgYnl0ZWMgNCAvLyAiY2ZhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQwNQogICAgLy8gdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLmNhcmRzX2FjdGl2ZV9jb3VudC52YWx1ZSArIDE7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgaW50Y18xIC8vIDEKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ2NmYWMnIH0pOwogICAgYnl0ZWMgNCAvLyAiY2ZhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQwNQogICAgLy8gdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLmNhcmRzX2FjdGl2ZV9jb3VudC52YWx1ZSArIDE7CiAgICBzd2FwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDA3LTQxMAogICAgLy8gZW1pdDxDYXJkQ3JlYXRlZD4oewogICAgLy8gICAgIGNhcmRPd25lcjogY2FyZE93bmVyLAogICAgLy8gICAgIGNhcmQ6IGNhcmRBZGRyLAogICAgLy8gfSk7CiAgICBkaWcgNAogICAgZGlnIDEKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzIDB4ZjUzMzQwNDQgLy8gbWV0aG9kICJDYXJkQ3JlYXRlZChhZGRyZXNzLGFkZHJlc3MpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjM2OAogICAgLy8gY2FyZENyZWF0ZShjYXJkT3duZXI6IEFjY291bnQsIGFzc2V0OiBBc3NldCk6IEFjY291bnQgewogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKY2FyZENyZWF0ZV90ZXJuYXJ5X2ZhbHNlQDQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czozOTAKICAgIC8vIGNvbnN0IGFzc2V0TWJyOiB1aW50NjQgPSBhc3NldC5pZCA/IEdsb2JhbC5hc3NldE9wdEluTWluQmFsYW5jZSA6IDA7CiAgICBpbnRjXzAgLy8gMAogICAgYiBjYXJkQ3JlYXRlX3Rlcm5hcnlfbWVyZ2VANQoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZENsb3NlW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZENsb3NlOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDIwCiAgICAvLyBjYXJkQ2xvc2UoY2FyZDogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjEKICAgIC8vIGFzc2VydCh0aGlzLmlzT3duZXIoKSB8fCB0aGlzLmlzQ2FyZE93bmVyKGNhcmQpLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBjYWxsc3ViIGlzT3duZXIKICAgIGJueiBjYXJkQ2xvc2VfYm9vbF90cnVlQDMKICAgIGR1cAogICAgY2FsbHN1YiBpc0NhcmRPd25lcgogICAgYnogY2FyZENsb3NlX2Jvb2xfZmFsc2VANAoKY2FyZENsb3NlX2Jvb2xfdHJ1ZUAzOgogICAgaW50Y18xIC8vIDEKCmNhcmRDbG9zZV9ib29sX21lcmdlQDU6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjEKICAgIC8vIGFzc2VydCh0aGlzLmlzT3duZXIoKSB8fCB0aGlzLmlzQ2FyZE93bmVyKGNhcmQpLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBhc3NlcnQgLy8gU0VOREVSX05PVF9BTExPV0VECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjUtNDMwCiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHNlbmRlcjogY2FyZCwKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiAwLAogICAgLy8gICAgIGNsb3NlUmVtYWluZGVyVG86IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjcKICAgIC8vIHJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjkKICAgIC8vIGNsb3NlUmVtYWluZGVyVG86IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgZHVwCiAgICBpdHhuX2ZpZWxkIENsb3NlUmVtYWluZGVyVG8KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQyOAogICAgLy8gYW1vdW50OiAwLAogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgQW1vdW50CiAgICBpdHhuX2ZpZWxkIFJlY2VpdmVyCiAgICBkdXBuIDIKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MjUtNDMwCiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHNlbmRlcjogY2FyZCwKICAgIC8vICAgICByZWNlaXZlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYW1vdW50OiAwLAogICAgLy8gICAgIGNsb3NlUmVtYWluZGVyVG86IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzEgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18wIC8vICJjZiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDMzCiAgICAvLyB0aGlzLmNhcmRzKGNhcmQpLmRlbGV0ZSgpOwogICAgYm94X2RlbAogICAgcG9wCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0MzYKICAgIC8vIHRoaXMuY2FyZHNfYWN0aXZlX2NvdW50LnZhbHVlID0gdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUgLSAxOwogICAgaW50Y18wIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ2NmYWMnIH0pOwogICAgYnl0ZWMgNCAvLyAiY2ZhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQzNgogICAgLy8gdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLmNhcmRzX2FjdGl2ZV9jb3VudC52YWx1ZSAtIDE7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgaW50Y18xIC8vIDEKICAgIC0KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MgogICAgLy8gY2FyZHNfYWN0aXZlX2NvdW50ID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ2NmYWMnIH0pOwogICAgYnl0ZWMgNCAvLyAiY2ZhYyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQzNgogICAgLy8gdGhpcy5jYXJkc19hY3RpdmVfY291bnQudmFsdWUgPSB0aGlzLmNhcmRzX2FjdGl2ZV9jb3VudC52YWx1ZSAtIDE7CiAgICBzd2FwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDIwCiAgICAvLyBjYXJkQ2xvc2UoY2FyZDogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKY2FyZENsb3NlX2Jvb2xfZmFsc2VANDoKICAgIGludGNfMCAvLyAwCiAgICBiIGNhcmRDbG9zZV9ib29sX21lcmdlQDUKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRSZWNvdmVyW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZFJlY292ZXI6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NDYKICAgIC8vIGNhcmRSZWNvdmVyKGNhcmQ6IEFjY291bnQsIG5ld0NhcmRIb2xkZXI6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NDcKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18wIC8vICJjZiIKICAgIHVuY292ZXIgMgogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NTEKICAgIC8vIHRoaXMuY2FyZHMoY2FyZCkudmFsdWUub3duZXIgPSBuZXdDYXJkSG9sZGVyOwogICAgaW50Y18wIC8vIDAKICAgIHVuY292ZXIgMgogICAgYm94X3JlcGxhY2UKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ0NgogICAgLy8gY2FyZFJlY292ZXIoY2FyZDogQWNjb3VudCwgbmV3Q2FyZEhvbGRlcjogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuYXNzZXRBbGxvd2xpc3RBZGRbcm91dGluZ10oKSAtPiB2b2lkOgphc3NldEFsbG93bGlzdEFkZDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ2MwogICAgLy8gYXNzZXRBbGxvd2xpc3RBZGQoYXNzZXQ6IEFzc2V0LCBzZXR0bGVtZW50QWRkcmVzczogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NjQKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDY2LTQ3MQogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ2NwogICAgLy8gc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NjgKICAgIC8vIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgZHVwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NzAKICAgIC8vIGFzc2V0QW1vdW50OiAwLAogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgQXNzZXRBbW91bnQKICAgIGRpZyAzCiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBpdHhuX2ZpZWxkIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDY2LTQ3MQogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIHB1c2hpbnQgNCAvLyA0CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NzMKICAgIC8vIGVtaXQ8QXNzZXRBbGxvd2xpc3RBZGRlZD4oeyBhc3NldDogYXNzZXQgfSk7CiAgICBkaWcgMQogICAgaXRvYgogICAgcHVzaGJ5dGVzIDB4MjYzNmJjN2UgLy8gbWV0aG9kICJBc3NldEFsbG93bGlzdEFkZGVkKHVpbnQ2NCkiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDc1CiAgICAvLyB0aGlzLnVwZGF0ZVNldHRsZW1lbnRBZGRyZXNzKGFzc2V0LCBzZXR0bGVtZW50QWRkcmVzcyk7CiAgICBjYWxsc3ViIHVwZGF0ZVNldHRsZW1lbnRBZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0NjMKICAgIC8vIGFzc2V0QWxsb3dsaXN0QWRkKGFzc2V0OiBBc3NldCwgc2V0dGxlbWVudEFkZHJlc3M6IEFjY291bnQpOiB2b2lkIHsKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmFzc2V0QWxsb3dsaXN0UmVtb3ZlW3JvdXRpbmddKCkgLT4gdm9pZDoKYXNzZXRBbGxvd2xpc3RSZW1vdmU6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0ODQKICAgIC8vIGFzc2V0QWxsb3dsaXN0UmVtb3ZlKGFzc2V0OiBBc3NldCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDg1CiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ4OC00OTQKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldENsb3NlVG86IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ4OQogICAgLy8gc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIGdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0OTAtNDkxCiAgICAvLyBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vIGFzc2V0Q2xvc2VUbzogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBkdXBuIDIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ5MwogICAgLy8gYXNzZXRBbW91bnQ6IDAsCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZGlnIDMKICAgIGl0eG5fZmllbGQgWGZlckFzc2V0CiAgICBpdHhuX2ZpZWxkIEFzc2V0Q2xvc2VUbwogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBpdHhuX2ZpZWxkIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDg4LTQ5NAogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgLy8gICAgIGFzc2V0Q2xvc2VUbzogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogMCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgcHVzaGludCA0IC8vIDQKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMCAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ5NwogICAgLy8gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLmRlbGV0ZSgpOwogICAgaXRvYgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk4CiAgICAvLyBzZXR0bGVtZW50X2FkZHJlc3MgPSBCb3hNYXA8QXNzZXQsIEFjY291bnQ+KHsga2V5UHJlZml4OiAnc2EnIH0pOwogICAgYnl0ZWMgOCAvLyAic2EiCiAgICBkaWcgMQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo0OTcKICAgIC8vIHRoaXMuc2V0dGxlbWVudF9hZGRyZXNzKGFzc2V0KS5kZWxldGUoKTsKICAgIGJveF9kZWwKICAgIHBvcAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NDk5CiAgICAvLyBlbWl0PEFzc2V0QWxsb3dsaXN0UmVtb3ZlZD4oeyBhc3NldDogYXNzZXQgfSk7CiAgICBwdXNoYnl0ZXMgMHgwNjVjMDM3NCAvLyBtZXRob2QgIkFzc2V0QWxsb3dsaXN0UmVtb3ZlZCh1aW50NjQpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjQ4NAogICAgLy8gYXNzZXRBbGxvd2xpc3RSZW1vdmUoYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkRGViaXRbcm91dGluZ10oKSAtPiB2b2lkOgpjYXJkRGViaXQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MTAKICAgIC8vIGNhcmREZWJpdChjYXJkOiBBY2NvdW50LCBhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCBub25jZTogdWludDY0LCByZWY6IHN0cmluZyk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAzCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyA0CiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyA1CiAgICBkdXAKICAgIGludGNfMCAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBwdXNoaW50IDIgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5keW5hbWljX2FycmF5PGFyYzQudWludDg+CiAgICBleHRyYWN0IDIgMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTExCiAgICAvLyB0aGlzLndoZW5Ob3RQYXVzZWQoKTsKICAgIGNhbGxzdWIgd2hlbk5vdFBhdXNlZAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTEyCiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMCAvLyAiY2YiCiAgICBkaWcgNQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MTUKICAgIC8vIGNvbnN0IG5leHROb25jZTogdWludDY0ID0gdGhpcy5jYXJkcyhjYXJkKS52YWx1ZS5ub25jZTsKICAgIGR1cAogICAgYm94X2dldAogICAgYXNzZXJ0IC8vIEJveCBtdXN0IGhhdmUgdmFsdWUKICAgIHB1c2hpbnQgNjQgLy8gNjQKICAgIGV4dHJhY3RfdWludDY0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MTYKICAgIC8vIGFzc2VydChuZXh0Tm9uY2UgPT09IG5vbmNlLCAnTk9OQ0VfSU5WQUxJRCcpOwogICAgZHVwCiAgICBkaWcgNAogICAgPT0KICAgIGFzc2VydCAvLyBOT05DRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MTgtNTI0CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyAgICAgbm90ZTogcmVmLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MjAKICAgIC8vIGFzc2V0UmVjZWl2ZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKICAgIGRpZyAzCiAgICBpdHhuX2ZpZWxkIE5vdGUKICAgIGRpZyA1CiAgICBpdHhuX2ZpZWxkIEFzc2V0QW1vdW50CiAgICBkaWcgNgogICAgaXR4bl9maWVsZCBYZmVyQXNzZXQKICAgIGl0eG5fZmllbGQgQXNzZXRSZWNlaXZlcgogICAgZGlnIDYKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MTgtNTI0CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyAgICAgbm90ZTogcmVmLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTI2LTUzMgogICAgLy8gZW1pdDxEZWJpdD4oewogICAgLy8gICAgIGNhcmQ6IGNhcmQsCiAgICAvLyAgICAgYXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFtb3VudDogYW1vdW50LAogICAgLy8gICAgIG5vbmNlOiBub25jZSwKICAgIC8vICAgICByZWZlcmVuY2U6IHJlZiwKICAgIC8vIH0pOwogICAgdW5jb3ZlciA1CiAgICBpdG9iCiAgICB1bmNvdmVyIDYKICAgIHN3YXAKICAgIGNvbmNhdAogICAgdW5jb3ZlciA1CiAgICBpdG9iCiAgICBjb25jYXQKICAgIHVuY292ZXIgNAogICAgaXRvYgogICAgY29uY2F0CiAgICBkaWcgMwogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgdW5jb3ZlciA0CiAgICBjb25jYXQKICAgIHN3YXAKICAgIHB1c2hieXRlcyAweDAwM2EKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHg5OTRhMTM2NyAvLyBtZXRob2QgIkRlYml0KGFkZHJlc3MsdWludDY0LHVpbnQ2NCx1aW50NjQsc3RyaW5nKSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MzUKICAgIC8vIHRoaXMuY2FyZHMoY2FyZCkudmFsdWUubm9uY2UgPSBuZXh0Tm9uY2UgKyAxOwogICAgaW50Y18xIC8vIDEKICAgICsKICAgIGl0b2IKICAgIHB1c2hpbnQgNjQgLy8gNjQKICAgIHN3YXAKICAgIGJveF9yZXBsYWNlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1MTAKICAgIC8vIGNhcmREZWJpdChjYXJkOiBBY2NvdW50LCBhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCBub25jZTogdWludDY0LCByZWY6IHN0cmluZyk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0UmVmdW5kQWRkcmVzc1tyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldFJlZnVuZEFkZHJlc3M6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NDUKICAgIC8vIHJldHVybiB0aGlzLnJlZnVuZF9hZGRyZXNzLnZhbHVlOwogICAgaW50Y18wIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwMQogICAgLy8gcmVmdW5kX2FkZHJlc3MgPSBHbG9iYWxTdGF0ZTxBY2NvdW50Pih7IGtleTogJ3JhJyB9KTsKICAgIGJ5dGVjIDkgLy8gInJhIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTQ1CiAgICAvLyByZXR1cm4gdGhpcy5yZWZ1bmRfYWRkcmVzcy52YWx1ZTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NDMKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuc2V0UmVmdW5kQWRkcmVzc1tyb3V0aW5nXSgpIC0+IHZvaWQ6CnNldFJlZnVuZEFkZHJlc3M6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NTQKICAgIC8vIHNldFJlZnVuZEFkZHJlc3MobmV3UmVmdW5kQWRkcmVzczogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NTUKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjAxCiAgICAvLyByZWZ1bmRfYWRkcmVzcyA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KHsga2V5OiAncmEnIH0pOwogICAgYnl0ZWMgOSAvLyAicmEiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NTcKICAgIC8vIHRoaXMucmVmdW5kX2FkZHJlc3MudmFsdWUgPSBuZXdSZWZ1bmRBZGRyZXNzOwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU1NAogICAgLy8gc2V0UmVmdW5kQWRkcmVzcyhuZXdSZWZ1bmRBZGRyZXNzOiBBY2NvdW50KTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkUmVmdW5kW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZFJlZnVuZDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU2OAogICAgLy8gY2FyZFJlZnVuZChjYXJkOiBBY2NvdW50LCBhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCBub25jZTogdWludDY0KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18zIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDMKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDQKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU2OQogICAgLy8gdGhpcy53aGVuTm90UGF1c2VkKCk7CiAgICBjYWxsc3ViIHdoZW5Ob3RQYXVzZWQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3MQogICAgLy8gYXNzZXJ0KFR4bi5zZW5kZXIgPT09IHRoaXMucmVmdW5kX2FkZHJlc3MudmFsdWUsICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIHR4biBTZW5kZXIKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMDEKICAgIC8vIHJlZnVuZF9hZGRyZXNzID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oeyBrZXk6ICdyYScgfSk7CiAgICBieXRlYyA5IC8vICJyYSIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3MQogICAgLy8gYXNzZXJ0KFR4bi5zZW5kZXIgPT09IHRoaXMucmVmdW5kX2FkZHJlc3MudmFsdWUsICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICA9PQogICAgYXNzZXJ0IC8vIFNFTkRFUl9OT1RfQUxMT1dFRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18wIC8vICJjZiIKICAgIGRpZyA0CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3NAogICAgLy8gY29uc3QgbmV4dE5vbmNlOiB1aW50NjQgPSB0aGlzLmNhcmRzKGNhcmQpLnZhbHVlLm5vbmNlOwogICAgZHVwCiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgcHVzaGludCA2NCAvLyA2NAogICAgZXh0cmFjdF91aW50NjQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3NQogICAgLy8gYXNzZXJ0KG5leHROb25jZSA9PT0gbm9uY2UsICdOT05DRV9JTlZBTElEJyk7CiAgICBkdXAKICAgIGRpZyAzCiAgICA9PQogICAgYXNzZXJ0IC8vIE5PTkNFX0lOVkFMSUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjU3Ny01ODIKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBjYXJkLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IGFtb3VudCwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NTc4CiAgICAvLyBzZW5kZXI6IEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLAogICAgZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKICAgIGRpZyA0CiAgICBpdHhuX2ZpZWxkIEFzc2V0QW1vdW50CiAgICBkaWcgNQogICAgaXR4bl9maWVsZCBYZmVyQXNzZXQKICAgIGRpZyA2CiAgICBpdHhuX2ZpZWxkIEFzc2V0UmVjZWl2ZXIKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NzctNTgyCiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogY2FyZCwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIHB1c2hpbnQgNCAvLyA0CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1ODQtNTg5CiAgICAvLyBlbWl0PFJlZnVuZD4oewogICAgLy8gICAgIGNhcmQ6IGNhcmQsCiAgICAvLyAgICAgYXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFtb3VudDogYW1vdW50LAogICAgLy8gICAgIG5vbmNlOiBub25jZSwKICAgIC8vIH0pOwogICAgdW5jb3ZlciA0CiAgICBpdG9iCiAgICB1bmNvdmVyIDUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgdW5jb3ZlciA0CiAgICBpdG9iCiAgICBjb25jYXQKICAgIHVuY292ZXIgMwogICAgaXRvYgogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHhlMzdhYWU1YyAvLyBtZXRob2QgIlJlZnVuZChhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0KSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1OTIKICAgIC8vIHRoaXMuY2FyZHMoY2FyZCkudmFsdWUubm9uY2UgPSBuZXh0Tm9uY2UgKyAxOwogICAgaW50Y18xIC8vIDEKICAgICsKICAgIGl0b2IKICAgIHB1c2hpbnQgNjQgLy8gNjQKICAgIHN3YXAKICAgIGJveF9yZXBsYWNlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo1NjgKICAgIC8vIGNhcmRSZWZ1bmQoY2FyZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0LCBhbW91bnQ6IHVpbnQ2NCwgbm9uY2U6IHVpbnQ2NCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0TmV4dFNldHRsZW1lbnROb25jZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldE5leHRTZXR0bGVtZW50Tm9uY2U6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MDIKICAgIC8vIHJldHVybiB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWU7CiAgICBpbnRjXzAgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk1CiAgICAvLyBzZXR0bGVtZW50X25vbmNlID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3NuJyB9KTsKICAgIGJ5dGVjIDYgLy8gInNuIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjAyCiAgICAvLyByZXR1cm4gdGhpcy5zZXR0bGVtZW50X25vbmNlLnZhbHVlOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYwMAogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICBpdG9iCiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXROZXh0Q2FyZE5vbmNlW3JvdXRpbmddKCkgLT4gdm9pZDoKZ2V0TmV4dENhcmROb25jZToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYxMQogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18zIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMCAvLyAiY2YiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYxMwogICAgLy8gcmV0dXJuIHRoaXMuY2FyZHMoY2FyZCkudmFsdWUubm9uY2U7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgZXh0cmFjdCA2NCA4CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MTEKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0Q2FyZFdpdGhkcmF3YWxOb25jZVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldENhcmRXaXRoZHJhd2FsTm9uY2U6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MjIKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxODAKICAgIC8vIGNhcmRzID0gQm94TWFwPEFjY291bnQsIENhcmREYXRhPih7IGtleVByZWZpeDogJ2NmJyB9KTsKICAgIGJ5dGVjXzAgLy8gImNmIgogICAgc3dhcAogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MjQKICAgIC8vIHJldHVybiB0aGlzLmNhcmRzKGNhcmQpLnZhbHVlLndpdGhkcmF3YWxOb25jZTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICBleHRyYWN0IDcyIDgKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjYyMgogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5nZXRDYXJkRGF0YVtyb3V0aW5nXSgpIC0+IHZvaWQ6CmdldENhcmREYXRhOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjMzCiAgICAvLyBAYWJpbWV0aG9kKHsgcmVhZG9ubHk6IHRydWUgfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18wIC8vICJjZiIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjM1CiAgICAvLyByZXR1cm4gdGhpcy5jYXJkcyhjYXJkKS52YWx1ZTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2MzMKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuZ2V0U2V0dGxlbWVudEFkZHJlc3Nbcm91dGluZ10oKSAtPiB2b2lkOgpnZXRTZXR0bGVtZW50QWRkcmVzczoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY0NAogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2NDYKICAgIC8vIHJldHVybiB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWU7CiAgICBpdG9iCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTgKICAgIC8vIHNldHRsZW1lbnRfYWRkcmVzcyA9IEJveE1hcDxBc3NldCwgQWNjb3VudD4oeyBrZXlQcmVmaXg6ICdzYScgfSk7CiAgICBieXRlYyA4IC8vICJzYSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjQ2CiAgICAvLyByZXR1cm4gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlOwogICAgYm94X2dldAogICAgYXNzZXJ0IC8vIEJveCBtdXN0IGhhdmUgdmFsdWUKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY0NAogICAgLy8gQGFiaW1ldGhvZCh7IHJlYWRvbmx5OiB0cnVlIH0pCiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5zZXRTZXR0bGVtZW50QWRkcmVzc1tyb3V0aW5nXSgpIC0+IHZvaWQ6CnNldFNldHRsZW1lbnRBZGRyZXNzOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjU2CiAgICAvLyBzZXRTZXR0bGVtZW50QWRkcmVzcyhzZXR0bGVtZW50QXNzZXQ6IEFzc2V0LCBuZXdTZXR0bGVtZW50QWRkcmVzczogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2NTcKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjU5CiAgICAvLyB0aGlzLnVwZGF0ZVNldHRsZW1lbnRBZGRyZXNzKHNldHRsZW1lbnRBc3NldCwgbmV3U2V0dGxlbWVudEFkZHJlc3MpOwogICAgY2FsbHN1YiB1cGRhdGVTZXR0bGVtZW50QWRkcmVzcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjU2CiAgICAvLyBzZXRTZXR0bGVtZW50QWRkcmVzcyhzZXR0bGVtZW50QXNzZXQ6IEFzc2V0LCBuZXdTZXR0bGVtZW50QWRkcmVzczogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuc2V0dGxlW3JvdXRpbmddKCkgLT4gdm9pZDoKc2V0dGxlOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjcwCiAgICAvLyBzZXR0bGUoYXNzZXQ6IEFzc2V0LCBhbW91bnQ6IHVpbnQ2NCwgbm9uY2U6IHVpbnQ2NCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjcxCiAgICAvLyB0aGlzLndoZW5Ob3RQYXVzZWQoKTsKICAgIGNhbGxzdWIgd2hlbk5vdFBhdXNlZAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjcyCiAgICAvLyB0aGlzLm9ubHlPd25lcigpOwogICAgY2FsbHN1YiBvbmx5T3duZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY3NQogICAgLy8gYXNzZXJ0KHRoaXMuc2V0dGxlbWVudF9ub25jZS52YWx1ZSA9PT0gbm9uY2UsICdOT05DRV9JTlZBTElEJyk7CiAgICBpbnRjXzAgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk1CiAgICAvLyBzZXR0bGVtZW50X25vbmNlID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3NuJyB9KTsKICAgIGJ5dGVjIDYgLy8gInNuIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njc1CiAgICAvLyBhc3NlcnQodGhpcy5zZXR0bGVtZW50X25vbmNlLnZhbHVlID09PSBub25jZSwgJ05PTkNFX0lOVkFMSUQnKTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICBkdXAKICAgIGRpZyAyCiAgICA9PQogICAgYXNzZXJ0IC8vIE5PTkNFX0lOVkFMSUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY3Ny02ODIKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogYW1vdW50LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2NzgKICAgIC8vIHNlbmRlcjogR2xvYmFsLmN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MsCiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njc5CiAgICAvLyBhc3NldFJlY2VpdmVyOiB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUsCiAgICBkaWcgNAogICAgaXRvYgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk4CiAgICAvLyBzZXR0bGVtZW50X2FkZHJlc3MgPSBCb3hNYXA8QXNzZXQsIEFjY291bnQ+KHsga2V5UHJlZml4OiAnc2EnIH0pOwogICAgYnl0ZWMgOCAvLyAic2EiCiAgICBkaWcgMQogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2NzkKICAgIC8vIGFzc2V0UmVjZWl2ZXI6IHRoaXMuc2V0dGxlbWVudF9hZGRyZXNzKGFzc2V0KS52YWx1ZSwKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICBkaWcgNQogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgdW5jb3ZlciA2CiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgZHVwCiAgICBpdHhuX2ZpZWxkIEFzc2V0UmVjZWl2ZXIKICAgIHVuY292ZXIgMgogICAgaXR4bl9maWVsZCBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY3Ny02ODIKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBHbG9iYWwuY3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcywKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogYW1vdW50LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Njg0LTY4OQogICAgLy8gZW1pdDxTZXR0bGVtZW50Pih7CiAgICAvLyAgICAgcmVjaXBpZW50OiB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUsCiAgICAvLyAgICAgYXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFtb3VudDogYW1vdW50LAogICAgLy8gICAgIG5vbmNlOiBub25jZSwKICAgIC8vIH0pOwogICAgc3dhcAogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGl0b2IKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBpdG9iCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweDU1ODA0NmVjIC8vIG1ldGhvZCAiU2V0dGxlbWVudChhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0KSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo2OTIKICAgIC8vIHRoaXMuc2V0dGxlbWVudF9ub25jZS52YWx1ZSA9IHRoaXMuc2V0dGxlbWVudF9ub25jZS52YWx1ZSArIDE7CiAgICBpbnRjXzEgLy8gMQogICAgKwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTk1CiAgICAvLyBzZXR0bGVtZW50X25vbmNlID0gR2xvYmFsU3RhdGU8dWludDY0Pih7IGtleTogJ3NuJyB9KTsKICAgIGJ5dGVjIDYgLy8gInNuIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NjkyCiAgICAvLyB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWUgPSB0aGlzLnNldHRsZW1lbnRfbm9uY2UudmFsdWUgKyAxOwogICAgc3dhcAogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjY3MAogICAgLy8gc2V0dGxlKGFzc2V0OiBBc3NldCwgYW1vdW50OiB1aW50NjQsIG5vbmNlOiB1aW50NjQpOiB2b2lkIHsKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRFbmFibGVBc3NldFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNhcmRFbmFibGVBc3NldDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcwMwogICAgLy8gY2FyZEVuYWJsZUFzc2V0KGNhcmQ6IEFjY291bnQsIGFzc2V0OiBBc3NldCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MDQKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzA2LTcwOQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICByZWNlaXZlcjogY2FyZCwKICAgIC8vICAgICBhbW91bnQ6IEdsb2JhbC5hc3NldE9wdEluTWluQmFsYW5jZSwKICAgIC8vIH0pLnN1Ym1pdCgpOwogICAgaXR4bl9iZWdpbgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzA4CiAgICAvLyBhbW91bnQ6IEdsb2JhbC5hc3NldE9wdEluTWluQmFsYW5jZSwKICAgIGdsb2JhbCBBc3NldE9wdEluTWluQmFsYW5jZQogICAgaXR4bl9maWVsZCBBbW91bnQKICAgIGRpZyAxCiAgICBpdHhuX2ZpZWxkIFJlY2VpdmVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MDYtNzA5CiAgICAvLyBpdHhuLnBheW1lbnQoewogICAgLy8gICAgIHJlY2VpdmVyOiBjYXJkLAogICAgLy8gICAgIGFtb3VudDogR2xvYmFsLmFzc2V0T3B0SW5NaW5CYWxhbmNlLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpbnRjXzEgLy8gMQogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzExCiAgICAvLyB0aGlzLmNhcmRBc3NldE9wdEluKGNhcmQsIGFzc2V0KTsKICAgIGNhbGxzdWIgY2FyZEFzc2V0T3B0SW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcwMwogICAgLy8gY2FyZEVuYWJsZUFzc2V0KGNhcmQ6IEFjY291bnQsIGFzc2V0OiBBc3NldCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZERpc2FibGVBc3NldFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNhcmREaXNhYmxlQXNzZXQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MjEKICAgIC8vIGNhcmREaXNhYmxlQXNzZXQoY2FyZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18zIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcyMgogICAgLy8gYXNzZXJ0KHRoaXMuaXNPd25lcigpIHx8IHRoaXMuaXNDYXJkT3duZXIoY2FyZCksICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGNhbGxzdWIgaXNPd25lcgogICAgYm56IGNhcmREaXNhYmxlQXNzZXRfYm9vbF90cnVlQDMKICAgIGRpZyAxCiAgICBjYWxsc3ViIGlzQ2FyZE93bmVyCiAgICBieiBjYXJkRGlzYWJsZUFzc2V0X2Jvb2xfZmFsc2VANAoKY2FyZERpc2FibGVBc3NldF9ib29sX3RydWVAMzoKICAgIGludGNfMSAvLyAxCgpjYXJkRGlzYWJsZUFzc2V0X2Jvb2xfbWVyZ2VANToKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcyMgogICAgLy8gYXNzZXJ0KHRoaXMuaXNPd25lcigpIHx8IHRoaXMuaXNDYXJkT3duZXIoY2FyZCksICdTRU5ERVJfTk9UX0FMTE9XRUQnKTsKICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIzOC0yNDQKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBjYXJkLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IGNhcmQsCiAgICAvLyAgICAgYXNzZXRDbG9zZVRvOiBjYXJkLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI0MwogICAgLy8gYXNzZXRBbW91bnQ6IDAsCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgZHVwbiAyCiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgZGlnIDIKICAgIGR1cAogICAgaXR4bl9maWVsZCBBc3NldENsb3NlVG8KICAgIGR1cAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBkdXAKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMzgtMjQ0CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBjYXJkLAogICAgLy8gICAgIGFzc2V0Q2xvc2VUbzogY2FyZCwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiAwLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjQ2LTI0OQogICAgLy8gZW1pdDxDYXJkQXNzZXREaXNhYmxlZD4oewogICAgLy8gICAgIGNhcmQ6IGNhcmQsCiAgICAvLyAgICAgYXNzZXQ6IGFzc2V0LAogICAgLy8gfSk7CiAgICBzd2FwCiAgICBpdG9iCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweDgwZDc3ZjMxIC8vIG1ldGhvZCAiQ2FyZEFzc2V0RGlzYWJsZWQoYWRkcmVzcyx1aW50NjQpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjcyMQogICAgLy8gY2FyZERpc2FibGVBc3NldChjYXJkOiBBY2NvdW50LCBhc3NldDogQXNzZXQpOiB2b2lkIHsKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCmNhcmREaXNhYmxlQXNzZXRfYm9vbF9mYWxzZUA0OgogICAgaW50Y18wIC8vIDAKICAgIGIgY2FyZERpc2FibGVBc3NldF9ib29sX21lcmdlQDUKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRXaXRoZHJhd2FsUmVxdWVzdFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNhcmRXaXRoZHJhd2FsUmVxdWVzdDoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjczMwogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydOb09wJ10gfSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzM1CiAgICAvLyBhc3NlcnQodGhpcy5pc0NhcmRPd25lcihjYXJkKSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgZGlnIDIKICAgIGNhbGxzdWIgaXNDYXJkT3duZXIKICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMCAvLyAiY2YiCiAgICBkaWcgMwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MzYKICAgIC8vIGNvbnN0IGNhcmREYXRhID0gY2xvbmUodGhpcy5jYXJkcyhjYXJkKS52YWx1ZSk7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzM3CiAgICAvLyBjb25zdCBbYmFsYW5jZSwgX29wdGVkSW5dID0gb3AuQXNzZXRIb2xkaW5nLmFzc2V0QmFsYW5jZShjYXJkLCBhc3NldCk7CiAgICBkaWcgMwogICAgZGlnIDMKICAgIGFzc2V0X2hvbGRpbmdfZ2V0IEFzc2V0QmFsYW5jZQogICAgcG9wCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3MzgKICAgIC8vIGFzc2VydChhbW91bnQgPD0gYmFsYW5jZSwgJ0lOU1VGRklDSUVOVF9CQUxBTkNFJyk7CiAgICBkaWcgMgogICAgPj0KICAgIGFzc2VydCAvLyBJTlNVRkZJQ0lFTlRfQkFMQU5DRQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzQyCiAgICAvLyByZWNpcGllbnQ6IFR4bi5zZW5kZXIsCiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NDUKICAgIC8vIGNyZWF0ZWRBdDogR2xvYmFsLmxhdGVzdFRpbWVzdGFtcCwKICAgIGdsb2JhbCBMYXRlc3RUaW1lc3RhbXAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc0NgogICAgLy8gbm9uY2U6IGNhcmREYXRhLndpdGhkcmF3YWxOb25jZSwKICAgIHVuY292ZXIgMgogICAgZXh0cmFjdCA3MiA4CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NDAtNzQ3CiAgICAvLyBjb25zdCB3aXRoZHJhd2FsOiBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0ID0gewogICAgLy8gICAgIGNhcmQ6IGNhcmQsCiAgICAvLyAgICAgcmVjaXBpZW50OiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBjcmVhdGVkQXQ6IEdsb2JhbC5sYXRlc3RUaW1lc3RhbXAsCiAgICAvLyAgICAgbm9uY2U6IGNhcmREYXRhLndpdGhkcmF3YWxOb25jZSwKICAgIC8vIH07CiAgICB1bmNvdmVyIDUKICAgIHVuY292ZXIgMwogICAgY29uY2F0CiAgICB1bmNvdmVyIDQKICAgIGl0b2IKICAgIGNvbmNhdAogICAgdW5jb3ZlciAzCiAgICBpdG9iCiAgICBjb25jYXQKICAgIHVuY292ZXIgMgogICAgaXRvYgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5MgogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBieXRlY18yIC8vICJ3ciIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc0OQogICAgLy8gdGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS52YWx1ZSA9IGNsb25lKHdpdGhkcmF3YWwpOwogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzQ5CiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLnZhbHVlID0gY2xvbmUod2l0aGRyYXdhbCk7CiAgICBkaWcgMQogICAgYm94X3B1dAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzUxCiAgICAvLyBlbWl0PFdpdGhkcmF3YWxSZXF1ZXN0Pih3aXRoZHJhd2FsKTsKICAgIGR1cAogICAgZXh0cmFjdCAwIDMyCiAgICBkaWcgMQogICAgZXh0cmFjdCAzMiAzMgogICAgZGlnIDIKICAgIGV4dHJhY3QgNjQgOAogICAgZGlnIDMKICAgIGV4dHJhY3QgNzIgOAogICAgZGlnIDQKICAgIGV4dHJhY3QgODAgOAogICAgZGlnIDUKICAgIGV4dHJhY3QgODggOAogICAgdW5jb3ZlciA1CiAgICB1bmNvdmVyIDUKICAgIGNvbmNhdAogICAgdW5jb3ZlciA0CiAgICBjb25jYXQKICAgIHVuY292ZXIgMwogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHhkODVmNjIwYSAvLyBtZXRob2QgIldpdGhkcmF3YWxSZXF1ZXN0KGFkZHJlc3MsYWRkcmVzcyx1aW50NjQsdWludDY0LHVpbnQ2NCx1aW50NjQpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjczMwogICAgLy8gQGFiaW1ldGhvZCh7IGFsbG93QWN0aW9uczogWydOb09wJ10gfSkKICAgIGJ5dGVjXzEgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLmNhcmRXaXRoZHJhd2FsQ2FuY2VsW3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZFdpdGhkcmF3YWxDYW5jZWw6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NjAKICAgIC8vIGNhcmRXaXRoZHJhd2FsQ2FuY2VsKGNhcmQ6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzMgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzYxCiAgICAvLyBhc3NlcnQodGhpcy5pc0NhcmRPd25lcihjYXJkKSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgY2FsbHN1YiBpc0NhcmRPd25lcgogICAgYXNzZXJ0IC8vIFNFTkRFUl9OT1RfQUxMT1dFRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzYyCiAgICAvLyBhc3NlcnQodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5leGlzdHMsICdXSVRIRFJBV0FMX1JFUVVFU1RfTk9UX0ZPVU5EJyk7CiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTIKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NjIKICAgIC8vIGFzc2VydCh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmV4aXN0cywgJ1dJVEhEUkFXQUxfUkVRVUVTVF9OT1RfRk9VTkQnKTsKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgYXNzZXJ0IC8vIFdJVEhEUkFXQUxfUkVRVUVTVF9OT1RfRk9VTkQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5MgogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBieXRlY18yIC8vICJ3ciIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc2MwogICAgLy8gY29uc3Qgd2l0aGRyYXdhbCA9IGNsb25lKHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikudmFsdWUpOwogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzYzCiAgICAvLyBjb25zdCB3aXRoZHJhd2FsID0gY2xvbmUodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS52YWx1ZSk7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzY0CiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmRlbGV0ZSgpOwogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzY0CiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmRlbGV0ZSgpOwogICAgYm94X2RlbAogICAgcG9wCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NjUKICAgIC8vIGVtaXQ8V2l0aGRyYXdhbFJlcXVlc3RDYW5jZWxsZWQ+KHdpdGhkcmF3YWwpOwogICAgZHVwCiAgICBleHRyYWN0IDAgMzIKICAgIGRpZyAxCiAgICBleHRyYWN0IDMyIDMyCiAgICBkaWcgMgogICAgZXh0cmFjdCA2NCA4CiAgICBkaWcgMwogICAgZXh0cmFjdCA3MiA4CiAgICBkaWcgNAogICAgZXh0cmFjdCA4MCA4CiAgICB1bmNvdmVyIDUKICAgIGV4dHJhY3QgODggOAogICAgdW5jb3ZlciA1CiAgICB1bmNvdmVyIDUKICAgIGNvbmNhdAogICAgdW5jb3ZlciA0CiAgICBjb25jYXQKICAgIHVuY292ZXIgMwogICAgY29uY2F0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHgzZmQ3ODI5NSAvLyBtZXRob2QgIldpdGhkcmF3YWxSZXF1ZXN0Q2FuY2VsbGVkKGFkZHJlc3MsYWRkcmVzcyx1aW50NjQsdWludDY0LHVpbnQ2NCx1aW50NjQpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc2MAogICAgLy8gY2FyZFdpdGhkcmF3YWxDYW5jZWwoY2FyZDogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIuY2FyZFdpdGhkcmF3W3JvdXRpbmddKCkgLT4gdm9pZDoKY2FyZFdpdGhkcmF3OgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzcyCiAgICAvLyBAYWJpbWV0aG9kKHsgYWxsb3dBY3Rpb25zOiBbJ05vT3AnXSB9KQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzQKICAgIC8vIGFzc2VydCh0aGlzLmlzQ2FyZE93bmVyKGNhcmQpLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICBkaWcgMQogICAgY2FsbHN1YiBpc0NhcmRPd25lcgogICAgYXNzZXJ0IC8vIFNFTkRFUl9OT1RfQUxMT1dFRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Nzc1CiAgICAvLyBhc3NlcnQodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5leGlzdHMsICdXSVRIRFJBV0FMX1JFUVVFU1RfTk9UX0ZPVU5EJyk7CiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTIKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzUKICAgIC8vIGFzc2VydCh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmV4aXN0cywgJ1dJVEhEUkFXQUxfUkVRVUVTVF9OT1RfRk9VTkQnKTsKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgYXNzZXJ0IC8vIFdJVEhEUkFXQUxfUkVRVUVTVF9OT1RfRk9VTkQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMCAvLyAiY2YiCiAgICBkaWcgMgogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzYKICAgIC8vIGNvbnN0IGNhcmREYXRhID0gY2xvbmUodGhpcy5jYXJkcyhjYXJkKS52YWx1ZSk7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Nzc3CiAgICAvLyBjb25zdCB3aXRoZHJhd2FsID0gY2xvbmUodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS52YWx1ZSk7CiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoxOTIKICAgIC8vIHdpdGhkcmF3YWxzID0gQm94TWFwPEFjY291bnQsIFBlcm1pc3Npb25sZXNzV2l0aGRyYXdhbFJlcXVlc3Q+KHsga2V5UHJlZml4OiAnd3InIH0pOwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzcKICAgIC8vIGNvbnN0IHdpdGhkcmF3YWwgPSBjbG9uZSh0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLnZhbHVlKTsKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBCb3ggbXVzdCBoYXZlIHZhbHVlCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzgKICAgIC8vIGFzc2VydChhbW91bnQgPD0gd2l0aGRyYXdhbC5hbW91bnQsICdBTU9VTlRfSU5WQUxJRCcpOwogICAgZHVwCiAgICBwdXNoaW50IDcyIC8vIDcyCiAgICBleHRyYWN0X3VpbnQ2NAogICAgZGlnIDMKICAgID49CiAgICBhc3NlcnQgLy8gQU1PVU5UX0lOVkFMSUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc3OQogICAgLy8gYXNzZXJ0KGNhcmREYXRhLndpdGhkcmF3YWxOb25jZSA9PT0gd2l0aGRyYXdhbC5ub25jZSwgJ05PTkNFX0lOVkFMSUQnKTsKICAgIHN3YXAKICAgIHB1c2hpbnQgNzIgLy8gNzIKICAgIGV4dHJhY3RfdWludDY0CiAgICBkaWcgMQogICAgcHVzaGludCA4OCAvLyA4OAogICAgZXh0cmFjdF91aW50NjQKICAgIHN3YXAKICAgIGRpZyAxCiAgICA9PQogICAgYXNzZXJ0IC8vIE5PTkNFX0lOVkFMSUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc4MQogICAgLy8gY29uc3QgcmVsZWFzZVRpbWU6IHVpbnQ2NCA9IHdpdGhkcmF3YWwuY3JlYXRlZEF0ICsgdGhpcy53aXRoZHJhd2FsX3dhaXRfdGltZS52YWx1ZTsKICAgIGRpZyAxCiAgICBwdXNoaW50IDgwIC8vIDgwCiAgICBleHRyYWN0X3VpbnQ2NAogICAgaW50Y18wIC8vIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4NQogICAgLy8gd2l0aGRyYXdhbF93YWl0X3RpbWUgPSBHbG9iYWxTdGF0ZTx1aW50NjQ+KHsga2V5OiAnd3d0JyB9KTsKICAgIGJ5dGVjIDEwIC8vICJ3d3QiCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3ODEKICAgIC8vIGNvbnN0IHJlbGVhc2VUaW1lOiB1aW50NjQgPSB3aXRoZHJhd2FsLmNyZWF0ZWRBdCArIHRoaXMud2l0aGRyYXdhbF93YWl0X3RpbWUudmFsdWU7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgZGlnIDEKICAgICsKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc4MgogICAgLy8gYXNzZXJ0KEdsb2JhbC5sYXRlc3RUaW1lc3RhbXAgPj0gcmVsZWFzZVRpbWUsICdXSVRIRFJBV0FMX1RJTUVfSU5WQUxJRCcpOwogICAgZ2xvYmFsIExhdGVzdFRpbWVzdGFtcAogICAgPD0KICAgIGFzc2VydCAvLyBXSVRIRFJBV0FMX1RJTUVfSU5WQUxJRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Nzg3CiAgICAvLyB3aXRoZHJhd2FsLmFzc2V0LAogICAgdW5jb3ZlciAyCiAgICBwdXNoaW50IDY0IC8vIDY0CiAgICBleHRyYWN0X3VpbnQ2NAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Nzg1LTc5MgogICAgLy8gdGhpcy53aXRoZHJhd0Z1bmRzKAogICAgLy8gICAgIGNhcmQsCiAgICAvLyAgICAgd2l0aGRyYXdhbC5hc3NldCwKICAgIC8vICAgICBhbW91bnQsCiAgICAvLyAgICAgd2l0aGRyYXdhbC5jcmVhdGVkQXQsCiAgICAvLyAgICAgd2l0aGRyYXdhbC5ub25jZSwKICAgIC8vICAgICBXaXRoZHJhd2FsVHlwZVBlcm1pc3Npb25MZXNzCiAgICAvLyApOwogICAgdW5jb3ZlciA0CiAgICBzd2FwCiAgICB1bmNvdmVyIDQKICAgIHVuY292ZXIgMwogICAgdW5jb3ZlciA0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3OTEKICAgIC8vIFdpdGhkcmF3YWxUeXBlUGVybWlzc2lvbkxlc3MKICAgIGJ5dGVjIDEyIC8vICJwZXJtaXNzaW9ubGVzcyIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjc4NS03OTIKICAgIC8vIHRoaXMud2l0aGRyYXdGdW5kcygKICAgIC8vICAgICBjYXJkLAogICAgLy8gICAgIHdpdGhkcmF3YWwuYXNzZXQsCiAgICAvLyAgICAgYW1vdW50LAogICAgLy8gICAgIHdpdGhkcmF3YWwuY3JlYXRlZEF0LAogICAgLy8gICAgIHdpdGhkcmF3YWwubm9uY2UsCiAgICAvLyAgICAgV2l0aGRyYXdhbFR5cGVQZXJtaXNzaW9uTGVzcwogICAgLy8gKTsKICAgIGNhbGxzdWIgd2l0aGRyYXdGdW5kcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzkzCiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmRlbGV0ZSgpOwogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6NzkzCiAgICAvLyB0aGlzLndpdGhkcmF3YWxzKFR4bi5zZW5kZXIpLmRlbGV0ZSgpOwogICAgYm94X2RlbAogICAgcG9wCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo3NzIKICAgIC8vIEBhYmltZXRob2QoeyBhbGxvd0FjdGlvbnM6IFsnTm9PcCddIH0pCiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkV2l0aGRyYXdQZXJtaXNzaW9uZWRbcm91dGluZ10oKSAtPiB2b2lkOgpjYXJkV2l0aGRyYXdQZXJtaXNzaW9uZWQ6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MDQtODExCiAgICAvLyBjYXJkV2l0aGRyYXdQZXJtaXNzaW9uZWQoCiAgICAvLyAgICAgY2FyZDogQWNjb3VudCwKICAgIC8vICAgICBhc3NldDogQXNzZXQsCiAgICAvLyAgICAgYW1vdW50OiB1aW50NjQsCiAgICAvLyAgICAgZXhwaXJlc0F0OiB1aW50NjQsCiAgICAvLyAgICAgbm9uY2U6IHVpbnQ2NCwKICAgIC8vICAgICBzaWduYXR1cmU6IGJ5dGVzPDY0PgogICAgLy8gKTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXBuIDIKICAgIGxlbgogICAgaW50Y18zIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGR1cAogICAgdW5jb3ZlciAyCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAzCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDgKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDY0CiAgICBidG9pCiAgICBkdXAKICAgIGNvdmVyIDIKICAgIGNvdmVyIDMKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDQKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGR1cAogICAgY292ZXIgNAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNgogICAgZHVwCiAgICBjb3ZlciA2CiAgICBsZW4KICAgIHB1c2hpbnQgNjQgLy8gNjQKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDY0PgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODEyCiAgICAvLyBhc3NlcnQodGhpcy5pc0NhcmRPd25lcihjYXJkKSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgZGlnIDIKICAgIGNhbGxzdWIgaXNDYXJkT3duZXIKICAgIGFzc2VydCAvLyBTRU5ERVJfTk9UX0FMTE9XRUQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMCAvLyAiY2YiCiAgICBkaWcgMwogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MTMKICAgIC8vIGNvbnN0IGNhcmREYXRhID0gY2xvbmUodGhpcy5jYXJkcyhjYXJkKS52YWx1ZSk7CiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODE1CiAgICAvLyBhc3NlcnQoR2xvYmFsLmxhdGVzdFRpbWVzdGFtcCA8IGV4cGlyZXNBdCwgJ1dJVEhEUkFXQUxfVElNRV9JTlZBTElEJyk7CiAgICBnbG9iYWwgTGF0ZXN0VGltZXN0YW1wCiAgICBkaWcgMwogICAgPAogICAgYXNzZXJ0IC8vIFdJVEhEUkFXQUxfVElNRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MTYKICAgIC8vIGFzc2VydChjYXJkRGF0YS53aXRoZHJhd2FsTm9uY2UgPT09IG5vbmNlLCAnTk9OQ0VfSU5WQUxJRCcpOwogICAgcHVzaGludCA3MiAvLyA3MgogICAgZXh0cmFjdF91aW50NjQKICAgIGR1cAogICAgY292ZXIgNgogICAgZGlnIDEKICAgID09CiAgICBhc3NlcnQgLy8gTk9OQ0VfSU5WQUxJRAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODIwCiAgICAvLyByZWNpcGllbnQ6IFR4bi5zZW5kZXIsCiAgICB0eG4gU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MjUKICAgIC8vIGdlbmVzaXNIYXNoOiBHbG9iYWwuZ2VuZXNpc0hhc2gsCiAgICBnbG9iYWwgR2VuZXNpc0hhc2gKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgxOC04MjYKICAgIC8vIGNvbnN0IHdpdGhkcmF3YWw6IEFwcHJvdmVkV2l0aGRyYXdhbFJlcXVlc3QgPSB7CiAgICAvLyAgICAgY2FyZCwKICAgIC8vICAgICByZWNpcGllbnQ6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgYXNzZXQsCiAgICAvLyAgICAgYW1vdW50LAogICAgLy8gICAgIGV4cGlyZXNBdCwKICAgIC8vICAgICBub25jZSwKICAgIC8vICAgICBnZW5lc2lzSGFzaDogR2xvYmFsLmdlbmVzaXNIYXNoLAogICAgLy8gfTsKICAgIHVuY292ZXIgNAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIHVuY292ZXIgNQogICAgaXRvYgogICAgY29uY2F0CiAgICB1bmNvdmVyIDQKICAgIGl0b2IKICAgIGNvbmNhdAogICAgdW5jb3ZlciAzCiAgICBpdG9iCiAgICBjb25jYXQKICAgIHVuY292ZXIgMgogICAgaXRvYgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgyOAogICAgLy8gY29uc3Qgd2l0aGRyYXdhbF9oYXNoID0gb3Auc2hhMjU2KGFyYzQuZW5jb2RlQXJjNCh3aXRoZHJhd2FsKSk7CiAgICBzaGEyNTYKCmNhcmRXaXRoZHJhd1Blcm1pc3Npb25lZF93aGlsZV90b3BANToKICAgIHB1c2hpbnQgMjUxMCAvLyAyNTEwCiAgICBnbG9iYWwgT3Bjb2RlQnVkZ2V0CiAgICA+CiAgICBieiBjYXJkV2l0aGRyYXdQZXJtaXNzaW9uZWRfYWZ0ZXJfd2hpbGVAMTAKICAgIGl0eG5fYmVnaW4KICAgIHB1c2hpbnQgNiAvLyBhcHBsCiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBwdXNoaW50IDUgLy8gRGVsZXRlQXBwbGljYXRpb24KICAgIGl0eG5fZmllbGQgT25Db21wbGV0aW9uCiAgICBieXRlYyAxMyAvLyAweDA2ODEwMQogICAgaXR4bl9maWVsZCBBcHByb3ZhbFByb2dyYW0KICAgIGJ5dGVjIDEzIC8vIDB4MDY4MTAxCiAgICBpdHhuX2ZpZWxkIENsZWFyU3RhdGVQcm9ncmFtCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICBiIGNhcmRXaXRoZHJhd1Blcm1pc3Npb25lZF93aGlsZV90b3BANQoKY2FyZFdpdGhkcmF3UGVybWlzc2lvbmVkX2FmdGVyX3doaWxlQDEwOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODM0CiAgICAvLyBvcC5lZDI1NTE5dmVyaWZ5QmFyZSh3aXRoZHJhd2FsX2hhc2gsIHNpZ25hdHVyZSwgdGhpcy5lYXJseV93aXRoZHJhd2FsX3B1YmtleS52YWx1ZSksCiAgICBpbnRjXzAgLy8gMAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTg4CiAgICAvLyBlYXJseV93aXRoZHJhd2FsX3B1YmtleSA9IEdsb2JhbFN0YXRlPGJ5dGVzPDMyPj4oeyBrZXk6ICdld3BrJyB9KTsKICAgIGJ5dGVjIDExIC8vICJld3BrIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODM0CiAgICAvLyBvcC5lZDI1NTE5dmVyaWZ5QmFyZSh3aXRoZHJhd2FsX2hhc2gsIHNpZ25hdHVyZSwgdGhpcy5lYXJseV93aXRoZHJhd2FsX3B1YmtleS52YWx1ZSksCiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgZGlnIDEKICAgIGRpZyA0CiAgICB1bmNvdmVyIDIKICAgIGVkMjU1MTl2ZXJpZnlfYmFyZQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODMzLTgzNgogICAgLy8gYXNzZXJ0KAogICAgLy8gICAgIG9wLmVkMjU1MTl2ZXJpZnlCYXJlKHdpdGhkcmF3YWxfaGFzaCwgc2lnbmF0dXJlLCB0aGlzLmVhcmx5X3dpdGhkcmF3YWxfcHVia2V5LnZhbHVlKSwKICAgIC8vICAgICAnU0lHTkFUVVJFX0lOVkFMSUQnCiAgICAvLyApOwogICAgYXNzZXJ0IC8vIFNJR05BVFVSRV9JTlZBTElECiAgICAvLyBzcmMvQmFhbnguYWxnby50czo4MzkKICAgIC8vIHRoaXMud2l0aGRyYXdGdW5kcyhjYXJkLCBhc3NldCwgYW1vdW50LCBleHBpcmVzQXQsIGNhcmREYXRhLndpdGhkcmF3YWxOb25jZSwgV2l0aGRyYXdhbFR5cGVBcHByb3ZlZCk7CiAgICBkaWcgNgogICAgZGlnIDYKICAgIGRpZyA2CiAgICBkaWcgNgogICAgZGlnIDUKICAgIGJ5dGVjIDE0IC8vICJhcHByb3ZlZCIKICAgIGNhbGxzdWIgd2l0aGRyYXdGdW5kcwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTkyCiAgICAvLyB3aXRoZHJhd2FscyA9IEJveE1hcDxBY2NvdW50LCBQZXJtaXNzaW9ubGVzc1dpdGhkcmF3YWxSZXF1ZXN0Pih7IGtleVByZWZpeDogJ3dyJyB9KTsKICAgIGJ5dGVjXzIgLy8gIndyIgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6ODQ0CiAgICAvLyBpZiAodGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5leGlzdHMpIHsKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5MgogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg0NAogICAgLy8gaWYgKHRoaXMud2l0aGRyYXdhbHMoVHhuLnNlbmRlcikuZXhpc3RzKSB7CiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIGJ6IGNhcmRXaXRoZHJhd1Blcm1pc3Npb25lZF9hZnRlcl9pZl9lbHNlQDMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5MgogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBieXRlY18yIC8vICJ3ciIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg0NQogICAgLy8gdGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5kZWxldGUoKTsKICAgIHR4biBTZW5kZXIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5MgogICAgLy8gd2l0aGRyYXdhbHMgPSBCb3hNYXA8QWNjb3VudCwgUGVybWlzc2lvbmxlc3NXaXRoZHJhd2FsUmVxdWVzdD4oeyBrZXlQcmVmaXg6ICd3cicgfSk7CiAgICBjb25jYXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjg0NQogICAgLy8gdGhpcy53aXRoZHJhd2FscyhUeG4uc2VuZGVyKS5kZWxldGUoKTsKICAgIGJveF9kZWwKICAgIHBvcAoKY2FyZFdpdGhkcmF3UGVybWlzc2lvbmVkX2FmdGVyX2lmX2Vsc2VAMzoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjgwNC04MTEKICAgIC8vIGNhcmRXaXRoZHJhd1Blcm1pc3Npb25lZCgKICAgIC8vICAgICBjYXJkOiBBY2NvdW50LAogICAgLy8gICAgIGFzc2V0OiBBc3NldCwKICAgIC8vICAgICBhbW91bnQ6IHVpbnQ2NCwKICAgIC8vICAgICBleHBpcmVzQXQ6IHVpbnQ2NCwKICAgIC8vICAgICBub25jZTogdWludDY0LAogICAgLy8gICAgIHNpZ25hdHVyZTogYnl0ZXM8NjQ+CiAgICAvLyApOiB2b2lkIHsKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czo6UmVjb3ZlcmFibGUucmVjb3ZlckFzc2V0W3JvdXRpbmddKCkgLT4gdm9pZDoKcmVjb3ZlckFzc2V0OgogICAgLy8gc3JjL3JvbGVzL1JlY292ZXJhYmxlLmFsZ28udHM6MzcKICAgIC8vIHJlY292ZXJBc3NldChhc3NldDogQXNzZXQsIGFtb3VudDogdWludDY0LCByZWNpcGllbnQ6IEFjY291bnQpOiB2b2lkIHsKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzIgLy8gOAogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC51aW50NjQKICAgIGJ0b2kKICAgIGR1cAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgYnRvaQogICAgc3dhcAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwogICAgZHVwCiAgICBjb3ZlciAzCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czozOAogICAgLy8gdGhpcy5vbmx5T3duZXIoKTsKICAgIGNhbGxzdWIgb25seU93bmVyCiAgICAvLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czo0MQogICAgLy8gaWYgKGFzc2V0LmlkKSB7CiAgICBieiByZWNvdmVyQXNzZXRfZWxzZV9ib2R5QDQKICAgIC8vIHNyYy9yb2xlcy9SZWNvdmVyYWJsZS5hbGdvLnRzOjQyLTQ2CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogcmVjaXBpZW50LAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIGl0eG5fYmVnaW4KICAgIGRpZyAyCiAgICBpdHhuX2ZpZWxkIFhmZXJBc3NldAogICAgaXR4bl9maWVsZCBBc3NldEFtb3VudAogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBwdXNoaW50IDQgLy8gNAogICAgaXR4bl9maWVsZCBUeXBlRW51bQogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgRmVlCiAgICBpdHhuX3N1Ym1pdAoKcmVjb3ZlckFzc2V0X2FmdGVyX2lmX2Vsc2VANjoKICAgIC8vIHNyYy9yb2xlcy9SZWNvdmVyYWJsZS5hbGdvLnRzOjM3CiAgICAvLyByZWNvdmVyQXNzZXQoYXNzZXQ6IEFzc2V0LCBhbW91bnQ6IHVpbnQ2NCwgcmVjaXBpZW50OiBBY2NvdW50KTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgpyZWNvdmVyQXNzZXRfZWxzZV9ib2R5QDQ6CiAgICAvLyBzcmMvcm9sZXMvUmVjb3ZlcmFibGUuYWxnby50czo0OC01MQogICAgLy8gaXR4bi5wYXltZW50KHsKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICByZWNlaXZlcjogcmVjaXBpZW50LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICBpdHhuX2ZpZWxkIEFtb3VudAogICAgaXR4bl9maWVsZCBSZWNlaXZlcgogICAgaW50Y18xIC8vIDEKICAgIGl0eG5fZmllbGQgVHlwZUVudW0KICAgIGludGNfMCAvLyAwCiAgICBpdHhuX2ZpZWxkIEZlZQogICAgaXR4bl9zdWJtaXQKICAgIGIgcmVjb3ZlckFzc2V0X2FmdGVyX2lmX2Vsc2VANgoKCi8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjpQYXVzYWJsZS5wYXVzZXJbcm91dGluZ10oKSAtPiB2b2lkOgpwYXVzZXI6CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo1OQogICAgLy8gcmV0dXJuIHRoaXMuX3BhdXNlci52YWx1ZTsKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNAogICAgLy8gX3BhdXNlciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlYyA1IC8vICJfcGF1c2VyIgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NTkKICAgIC8vIHJldHVybiB0aGlzLl9wYXVzZXIudmFsdWU7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NTgKICAgIC8vIHBhdXNlcigpOiBBY2NvdW50IHsKICAgIGJ5dGVjXzEgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo6UGF1c2FibGUucGF1c2Vbcm91dGluZ10oKSAtPiB2b2lkOgpwYXVzZToKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjY3CiAgICAvLyB0aGlzLm9ubHlQYXVzZXIoKTsKICAgIGNhbGxzdWIgb25seVBhdXNlcgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzYKICAgIC8vIHBhdXNlZCA9IEdsb2JhbFN0YXRlPGJvb2xlYW4+KCk7CiAgICBieXRlYyA3IC8vICJwYXVzZWQiCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo2OQogICAgLy8gdGhpcy5wYXVzZWQudmFsdWUgPSB0cnVlOwogICAgaW50Y18xIC8vIDEKICAgIGFwcF9nbG9iYWxfcHV0CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo3MAogICAgLy8gZW1pdDxQYXVzZT4oe30pOwogICAgcHVzaGJ5dGVzIDB4Y2YyM2EzMGYKICAgIGxvZwogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NjYKICAgIC8vIHBhdXNlKCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjpQYXVzYWJsZS51bnBhdXNlW3JvdXRpbmddKCkgLT4gdm9pZDoKdW5wYXVzZToKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjc3CiAgICAvLyB0aGlzLm9ubHlQYXVzZXIoKTsKICAgIGNhbGxzdWIgb25seVBhdXNlcgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6MzYKICAgIC8vIHBhdXNlZCA9IEdsb2JhbFN0YXRlPGJvb2xlYW4+KCk7CiAgICBieXRlYyA3IC8vICJwYXVzZWQiCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo3OQogICAgLy8gdGhpcy5wYXVzZWQudmFsdWUgPSBmYWxzZTsKICAgIGludGNfMCAvLyAwCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6ODAKICAgIC8vIGVtaXQ8VW5wYXVzZT4oe30pOwogICAgcHVzaGJ5dGVzIDB4YjE2M2VlMGIKICAgIGxvZwogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NzYKICAgIC8vIHVucGF1c2UoKTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6OlBhdXNhYmxlLnVwZGF0ZVBhdXNlcltyb3V0aW5nXSgpIC0+IHZvaWQ6CnVwZGF0ZVBhdXNlcjoKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjg2CiAgICAvLyB1cGRhdGVQYXVzZXIoX25ld1BhdXNlcjogQWNjb3VudCk6IHZvaWQgewogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMyAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czo4NwogICAgLy8gdGhpcy5vbmx5UGF1c2VyKCk7CiAgICBjYWxsc3ViIG9ubHlQYXVzZXIKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjg5CiAgICAvLyBhc3NlcnQoX25ld1BhdXNlciAhPT0gR2xvYmFsLnplcm9BZGRyZXNzKTsKICAgIGR1cAogICAgZ2xvYmFsIFplcm9BZGRyZXNzCiAgICAhPQogICAgYXNzZXJ0CiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNAogICAgLy8gX3BhdXNlciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlYyA1IC8vICJfcGF1c2VyIgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6OTAKICAgIC8vIHRoaXMuX3BhdXNlci52YWx1ZSA9IF9uZXdQYXVzZXI7CiAgICBkaWcgMQogICAgYXBwX2dsb2JhbF9wdXQKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjkxCiAgICAvLyBlbWl0PFBhdXNlckNoYW5nZWQ+KHsgbmV3QWRkcmVzczogdGhpcy5fcGF1c2VyLnZhbHVlIH0pOwogICAgcHVzaGJ5dGVzIDB4Y2M0MDkyM2MgLy8gbWV0aG9kICJQYXVzZXJDaGFuZ2VkKGFkZHJlc3MpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjg2CiAgICAvLyB1cGRhdGVQYXVzZXIoX25ld1BhdXNlcjogQWNjb3VudCk6IHZvaWQgewogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6Ok93bmFibGUub3duZXJbcm91dGluZ10oKSAtPiB2b2lkOgpvd25lcjoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NjcKICAgIC8vIHJldHVybiB0aGlzLl9vd25lci52YWx1ZTsKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjQ2CiAgICAvLyBfb3duZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWNfMyAvLyAiX293bmVyIgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo2NwogICAgLy8gcmV0dXJuIHRoaXMuX293bmVyLnZhbHVlOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NjUKICAgIC8vIEBhYmltZXRob2QoeyByZWFkb25seTogdHJ1ZSB9KQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6Ok93bmFibGUudHJhbnNmZXJPd25lcnNoaXBbcm91dGluZ10oKSAtPiB2b2lkOgp0cmFuc2Zlck93bmVyc2hpcDoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6OTIKICAgIC8vIHRyYW5zZmVyT3duZXJzaGlwKG5ld093bmVyOiBBY2NvdW50KTogdm9pZCB7CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18zIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6OTMKICAgIC8vIHRoaXMub25seU93bmVyKCk7CiAgICBjYWxsc3ViIG9ubHlPd25lcgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo5NQogICAgLy8gdGhpcy5fdHJhbnNmZXJPd25lcnNoaXAobmV3T3duZXIpOwogICAgY2FsbHN1YiBfdHJhbnNmZXJPd25lcnNoaXAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6OTIKICAgIC8vIHRyYW5zZmVyT3duZXJzaGlwKG5ld093bmVyOiBBY2NvdW50KTogdm9pZCB7CiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5pc0NhcmRPd25lcihjYXJkOiBieXRlcykgLT4gdWludDY0Ogppc0NhcmRPd25lcjoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIwOQogICAgLy8gcHJpdmF0ZSBpc0NhcmRPd25lcihjYXJkOiBBY2NvdW50KTogYm9vbGVhbiB7CiAgICBwcm90byAxIDEKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE4MAogICAgLy8gY2FyZHMgPSBCb3hNYXA8QWNjb3VudCwgQ2FyZERhdGE+KHsga2V5UHJlZml4OiAnY2YnIH0pOwogICAgYnl0ZWNfMCAvLyAiY2YiCiAgICBmcmFtZV9kaWcgLTEKICAgIGNvbmNhdAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjEwCiAgICAvLyBhc3NlcnQodGhpcy5jYXJkcyhjYXJkKS5leGlzdHMsICdDQVJEX05PVF9GT1VORCcpOwogICAgZHVwCiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIGFzc2VydCAvLyBDQVJEX05PVF9GT1VORAogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjExCiAgICAvLyByZXR1cm4gdGhpcy5jYXJkcyhjYXJkKS52YWx1ZS5vd25lciA9PT0gVHhuLnNlbmRlcjsKICAgIGJveF9nZXQKICAgIHBvcAogICAgZXh0cmFjdCAwIDMyCiAgICB0eG4gU2VuZGVyCiAgICA9PQogICAgcmV0c3ViCgoKLy8gc3JjL0JhYW54LmFsZ28udHM6Ok1hc3Rlci5jYXJkQXNzZXRPcHRJbihjYXJkOiBieXRlcywgYXNzZXQ6IHVpbnQ2NCkgLT4gdm9pZDoKY2FyZEFzc2V0T3B0SW46CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMTkKICAgIC8vIHByaXZhdGUgY2FyZEFzc2V0T3B0SW4oY2FyZDogQWNjb3VudCwgYXNzZXQ6IEFzc2V0KTogdm9pZCB7CiAgICBwcm90byAyIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjIyMQogICAgLy8gY29uc3QgW19hc3NldEJhbCwgb3B0ZWRJbl0gPSBvcC5Bc3NldEhvbGRpbmcuYXNzZXRCYWxhbmNlKEdsb2JhbC5jdXJyZW50QXBwbGljYXRpb25BZGRyZXNzLCBhc3NldCk7CiAgICBnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwogICAgZnJhbWVfZGlnIC0xCiAgICBhc3NldF9ob2xkaW5nX2dldCBBc3NldEJhbGFuY2UKICAgIGJ1cnkgMQogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjIyCiAgICAvLyBhc3NlcnQob3B0ZWRJbiwgJ0FTU0VUX05PVF9PUFRFRF9JTicpOwogICAgYXNzZXJ0IC8vIEFTU0VUX05PVF9PUFRFRF9JTgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjI0LTIyOQogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IGNhcmQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogY2FyZCwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiAwLAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMjgKICAgIC8vIGFzc2V0QW1vdW50OiAwLAogICAgaW50Y18wIC8vIDAKICAgIGl0eG5fZmllbGQgQXNzZXRBbW91bnQKICAgIGZyYW1lX2RpZyAtMQogICAgaXR4bl9maWVsZCBYZmVyQXNzZXQKICAgIGZyYW1lX2RpZyAtMgogICAgaXR4bl9maWVsZCBBc3NldFJlY2VpdmVyCiAgICBmcmFtZV9kaWcgLTIKICAgIGl0eG5fZmllbGQgU2VuZGVyCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMjQtMjI5CiAgICAvLyBpdHhuLmFzc2V0VHJhbnNmZXIoewogICAgLy8gICAgIHNlbmRlcjogY2FyZCwKICAgIC8vICAgICBhc3NldFJlY2VpdmVyOiBjYXJkLAogICAgLy8gICAgIHhmZXJBc3NldDogYXNzZXQsCiAgICAvLyAgICAgYXNzZXRBbW91bnQ6IDAsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIHB1c2hpbnQgNCAvLyA0CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyMzEtMjM0CiAgICAvLyBlbWl0PENhcmRBc3NldEVuYWJsZWQ+KHsKICAgIC8vICAgICBjYXJkOiBjYXJkLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vIH0pOwogICAgZnJhbWVfZGlnIC0xCiAgICBpdG9iCiAgICBmcmFtZV9kaWcgLTIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzIDB4NTcxOWNlZDEgLy8gbWV0aG9kICJDYXJkQXNzZXRFbmFibGVkKGFkZHJlc3MsdWludDY0KSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICByZXRzdWIKCgovLyBzcmMvQmFhbnguYWxnby50czo6TWFzdGVyLndpdGhkcmF3RnVuZHMoY2FyZDogYnl0ZXMsIGFzc2V0OiB1aW50NjQsIGFtb3VudDogdWludDY0LCB0aW1lc3RhbXA6IHVpbnQ2NCwgbm9uY2U6IHVpbnQ2NCwgd2l0aGRyYXdhbFR5cGU6IGJ5dGVzKSAtPiB2b2lkOgp3aXRoZHJhd0Z1bmRzOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjUyLTI1OQogICAgLy8gcHJpdmF0ZSB3aXRoZHJhd0Z1bmRzKAogICAgLy8gICAgIGNhcmQ6IEFjY291bnQsCiAgICAvLyAgICAgYXNzZXQ6IEFzc2V0LAogICAgLy8gICAgIGFtb3VudDogdWludDY0LAogICAgLy8gICAgIHRpbWVzdGFtcDogdWludDY0LAogICAgLy8gICAgIG5vbmNlOiB1aW50NjQsCiAgICAvLyAgICAgd2l0aGRyYXdhbFR5cGU6IHN0cmluZwogICAgLy8gKTogdm9pZCB7CiAgICBwcm90byA2IDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI2MQogICAgLy8gaWYgKGFtb3VudCA+IDApIHsKICAgIGZyYW1lX2RpZyAtNAogICAgYnogd2l0aGRyYXdGdW5kc19hZnRlcl9pZl9lbHNlQDMKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI2Mi0yNjcKICAgIC8vIGl0eG4uYXNzZXRUcmFuc2Zlcih7CiAgICAvLyAgICAgc2VuZGVyOiBjYXJkLAogICAgLy8gICAgIGFzc2V0UmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICAvLyAgICAgeGZlckFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhc3NldEFtb3VudDogYW1vdW50LAogICAgLy8gfSkuc3VibWl0KCk7CiAgICBpdHhuX2JlZ2luCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNjQKICAgIC8vIGFzc2V0UmVjZWl2ZXI6IFR4bi5zZW5kZXIsCiAgICB0eG4gU2VuZGVyCiAgICBmcmFtZV9kaWcgLTQKICAgIGl0eG5fZmllbGQgQXNzZXRBbW91bnQKICAgIGZyYW1lX2RpZyAtNQogICAgaXR4bl9maWVsZCBYZmVyQXNzZXQKICAgIGl0eG5fZmllbGQgQXNzZXRSZWNlaXZlcgogICAgZnJhbWVfZGlnIC02CiAgICBpdHhuX2ZpZWxkIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MjYyLTI2NwogICAgLy8gaXR4bi5hc3NldFRyYW5zZmVyKHsKICAgIC8vICAgICBzZW5kZXI6IGNhcmQsCiAgICAvLyAgICAgYXNzZXRSZWNlaXZlcjogVHhuLnNlbmRlciwKICAgIC8vICAgICB4ZmVyQXNzZXQ6IGFzc2V0LAogICAgLy8gICAgIGFzc2V0QW1vdW50OiBhbW91bnQsCiAgICAvLyB9KS5zdWJtaXQoKTsKICAgIHB1c2hpbnQgNCAvLyA0CiAgICBpdHhuX2ZpZWxkIFR5cGVFbnVtCiAgICBpbnRjXzAgLy8gMAogICAgaXR4bl9maWVsZCBGZWUKICAgIGl0eG5fc3VibWl0Cgp3aXRoZHJhd0Z1bmRzX2FmdGVyX2lmX2Vsc2VAMzoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI3MwogICAgLy8gcmVjaXBpZW50OiBUeG4uc2VuZGVyLAogICAgdHhuIFNlbmRlcgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mjc2CiAgICAvLyBjcmVhdGVkQXQ6IHdpdGhkcmF3YWxUeXBlID09PSBXaXRoZHJhd2FsVHlwZVBlcm1pc3Npb25MZXNzID8gdGltZXN0YW1wIDogMCwKICAgIGZyYW1lX2RpZyAtMQogICAgYnl0ZWMgMTIgLy8gInBlcm1pc3Npb25sZXNzIgogICAgPT0KICAgIGludGNfMCAvLyAwCiAgICBmcmFtZV9kaWcgLTMKICAgIHVuY292ZXIgMgogICAgc2VsZWN0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyNzcKICAgIC8vIGV4cGlyZXNBdDogd2l0aGRyYXdhbFR5cGUgPT09IFdpdGhkcmF3YWxUeXBlQXBwcm92ZWQgPyB0aW1lc3RhbXAgOiAwLAogICAgZnJhbWVfZGlnIC0xCiAgICBieXRlYyAxNCAvLyAiYXBwcm92ZWQiCiAgICA9PQogICAgaW50Y18wIC8vIDAKICAgIGZyYW1lX2RpZyAtMwogICAgdW5jb3ZlciAyCiAgICBzZWxlY3QKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI3MS0yODAKICAgIC8vIGVtaXQ8V2l0aGRyYXdhbD4oewogICAgLy8gICAgIGNhcmQ6IGNhcmQsCiAgICAvLyAgICAgcmVjaXBpZW50OiBUeG4uc2VuZGVyLAogICAgLy8gICAgIGFzc2V0OiBhc3NldCwKICAgIC8vICAgICBhbW91bnQ6IGFtb3VudCwKICAgIC8vICAgICBjcmVhdGVkQXQ6IHdpdGhkcmF3YWxUeXBlID09PSBXaXRoZHJhd2FsVHlwZVBlcm1pc3Npb25MZXNzID8gdGltZXN0YW1wIDogMCwKICAgIC8vICAgICBleHBpcmVzQXQ6IHdpdGhkcmF3YWxUeXBlID09PSBXaXRoZHJhd2FsVHlwZUFwcHJvdmVkID8gdGltZXN0YW1wIDogMCwKICAgIC8vICAgICBub25jZTogbm9uY2UsCiAgICAvLyAgICAgdHlwZTogd2l0aGRyYXdhbFR5cGUsCiAgICAvLyB9KTsKICAgIGZyYW1lX2RpZyAtNgogICAgdW5jb3ZlciAzCiAgICBjb25jYXQKICAgIGZyYW1lX2RpZyAtNQogICAgaXRvYgogICAgY29uY2F0CiAgICBmcmFtZV9kaWcgLTQKICAgIGl0b2IKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBpdG9iCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGl0b2IKICAgIGNvbmNhdAogICAgZnJhbWVfZGlnIC0yCiAgICBpdG9iCiAgICBjb25jYXQKICAgIGZyYW1lX2RpZyAtMQogICAgbGVuCiAgICBpdG9iCiAgICBleHRyYWN0IDYgMgogICAgZnJhbWVfZGlnIC0xCiAgICBjb25jYXQKICAgIHN3YXAKICAgIHB1c2hieXRlcyAweDAwNmEKICAgIGNvbmNhdAogICAgc3dhcAogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHhiYjRkZDAwNiAvLyBtZXRob2QgIldpdGhkcmF3YWwoYWRkcmVzcyxhZGRyZXNzLHVpbnQ2NCx1aW50NjQsdWludDY0LHVpbnQ2NCx1aW50NjQsc3RyaW5nKSIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyODIKICAgIC8vIHRoaXMuY2FyZHMoY2FyZCkudmFsdWUud2l0aGRyYXdhbE5vbmNlID0gbm9uY2UgKyAxOwogICAgZnJhbWVfZGlnIC0yCiAgICBpbnRjXzEgLy8gMQogICAgKwogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6MTgwCiAgICAvLyBjYXJkcyA9IEJveE1hcDxBY2NvdW50LCBDYXJkRGF0YT4oeyBrZXlQcmVmaXg6ICdjZicgfSk7CiAgICBieXRlY18wIC8vICJjZiIKICAgIGZyYW1lX2RpZyAtNgogICAgY29uY2F0CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyODIKICAgIC8vIHRoaXMuY2FyZHMoY2FyZCkudmFsdWUud2l0aGRyYXdhbE5vbmNlID0gbm9uY2UgKyAxOwogICAgc3dhcAogICAgaXRvYgogICAgcHVzaGludCA3MiAvLyA3MgogICAgc3dhcAogICAgYm94X3JlcGxhY2UKICAgIHJldHN1YgoKCi8vIHNyYy9CYWFueC5hbGdvLnRzOjpNYXN0ZXIudXBkYXRlU2V0dGxlbWVudEFkZHJlc3MoYXNzZXQ6IHVpbnQ2NCwgbmV3U2V0dGxlbWVudEFkZHJlc3M6IGJ5dGVzKSAtPiB2b2lkOgp1cGRhdGVTZXR0bGVtZW50QWRkcmVzczoKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4NQogICAgLy8gcHJpdmF0ZSB1cGRhdGVTZXR0bGVtZW50QWRkcmVzcyhhc3NldDogQXNzZXQsIG5ld1NldHRsZW1lbnRBZGRyZXNzOiBBY2NvdW50KTogdm9pZCB7CiAgICBwcm90byAyIDAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4NgogICAgLy8gY29uc3Qgb2xkU2V0dGxlbWVudEFkZHJlc3MgPSB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkuZXhpc3RzCiAgICBmcmFtZV9kaWcgLTIKICAgIGl0b2IKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjE5OAogICAgLy8gc2V0dGxlbWVudF9hZGRyZXNzID0gQm94TWFwPEFzc2V0LCBBY2NvdW50Pih7IGtleVByZWZpeDogJ3NhJyB9KTsKICAgIGJ5dGVjIDggLy8gInNhIgogICAgc3dhcAogICAgY29uY2F0CiAgICBkdXAKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4NgogICAgLy8gY29uc3Qgb2xkU2V0dGxlbWVudEFkZHJlc3MgPSB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkuZXhpc3RzCiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4Ni0yODgKICAgIC8vIGNvbnN0IG9sZFNldHRsZW1lbnRBZGRyZXNzID0gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLmV4aXN0cwogICAgLy8gICAgID8gdGhpcy5zZXR0bGVtZW50X2FkZHJlc3MoYXNzZXQpLnZhbHVlCiAgICAvLyAgICAgOiBHbG9iYWwuemVyb0FkZHJlc3M7CiAgICBieiB1cGRhdGVTZXR0bGVtZW50QWRkcmVzc190ZXJuYXJ5X2ZhbHNlQDIKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI4NwogICAgLy8gPyB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUKICAgIGZyYW1lX2RpZyAwCiAgICBib3hfZ2V0CiAgICBhc3NlcnQgLy8gQm94IG11c3QgaGF2ZSB2YWx1ZQoKdXBkYXRlU2V0dGxlbWVudEFkZHJlc3NfdGVybmFyeV9tZXJnZUAzOgogICAgLy8gc3JjL0JhYW54LmFsZ28udHM6Mjg5CiAgICAvLyB0aGlzLnNldHRsZW1lbnRfYWRkcmVzcyhhc3NldCkudmFsdWUgPSBuZXdTZXR0bGVtZW50QWRkcmVzczsKICAgIGZyYW1lX2RpZyAwCiAgICBmcmFtZV9kaWcgLTEKICAgIGJveF9wdXQKICAgIC8vIHNyYy9CYWFueC5hbGdvLnRzOjI5MS0yOTQKICAgIC8vIGVtaXQ8U2V0dGxlbWVudEFkZHJlc3NDaGFuZ2VkPih7CiAgICAvLyAgICAgb2xkU2V0dGxlbWVudEFkZHJlc3M6IG9sZFNldHRsZW1lbnRBZGRyZXNzLAogICAgLy8gICAgIG5ld1NldHRsZW1lbnRBZGRyZXNzOiBuZXdTZXR0bGVtZW50QWRkcmVzcywKICAgIC8vIH0pOwogICAgZnJhbWVfZGlnIC0xCiAgICBjb25jYXQKICAgIHB1c2hieXRlcyAweGZkNTM1MzU4IC8vIG1ldGhvZCAiU2V0dGxlbWVudEFkZHJlc3NDaGFuZ2VkKGFkZHJlc3MsYWRkcmVzcykiCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgcmV0c3ViCgp1cGRhdGVTZXR0bGVtZW50QWRkcmVzc190ZXJuYXJ5X2ZhbHNlQDI6CiAgICAvLyBzcmMvQmFhbnguYWxnby50czoyODgKICAgIC8vIDogR2xvYmFsLnplcm9BZGRyZXNzOwogICAgZ2xvYmFsIFplcm9BZGRyZXNzCiAgICBiIHVwZGF0ZVNldHRsZW1lbnRBZGRyZXNzX3Rlcm5hcnlfbWVyZ2VAMwoKCi8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjpQYXVzYWJsZS53aGVuTm90UGF1c2VkKCkgLT4gdm9pZDoKd2hlbk5vdFBhdXNlZDoKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjQzCiAgICAvLyBhc3NlcnQoIXRoaXMucGF1c2VkLnZhbHVlKTsKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNgogICAgLy8gcGF1c2VkID0gR2xvYmFsU3RhdGU8Ym9vbGVhbj4oKTsKICAgIGJ5dGVjIDcgLy8gInBhdXNlZCIKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjQzCiAgICAvLyBhc3NlcnQoIXRoaXMucGF1c2VkLnZhbHVlKTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICAhCiAgICBhc3NlcnQKICAgIHJldHN1YgoKCi8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjpQYXVzYWJsZS5vbmx5UGF1c2VyKCkgLT4gdm9pZDoKb25seVBhdXNlcjoKICAgIC8vIHNyYy9yb2xlcy9QYXVzYWJsZS5hbGdvLnRzOjUwCiAgICAvLyBhc3NlcnQoVHhuLnNlbmRlciA9PT0gdGhpcy5fcGF1c2VyLnZhbHVlKTsKICAgIHR4biBTZW5kZXIKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvcm9sZXMvUGF1c2FibGUuYWxnby50czozNAogICAgLy8gX3BhdXNlciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlYyA1IC8vICJfcGF1c2VyIgogICAgLy8gc3JjL3JvbGVzL1BhdXNhYmxlLmFsZ28udHM6NTAKICAgIC8vIGFzc2VydChUeG4uc2VuZGVyID09PSB0aGlzLl9wYXVzZXIudmFsdWUpOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgID09CiAgICBhc3NlcnQKICAgIHJldHN1YgoKCi8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6Ok93bmFibGUub25seU93bmVyKCkgLT4gdm9pZDoKb25seU93bmVyOgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo1MwogICAgLy8gYXNzZXJ0KFR4bi5zZW5kZXIgPT09IHRoaXMuX293bmVyLnZhbHVlLCAnU0VOREVSX05PVF9BTExPV0VEJyk7CiAgICB0eG4gU2VuZGVyCiAgICBpbnRjXzAgLy8gMAogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo0NgogICAgLy8gX293bmVyID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oKTsKICAgIGJ5dGVjXzMgLy8gIl9vd25lciIKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NTMKICAgIC8vIGFzc2VydChUeG4uc2VuZGVyID09PSB0aGlzLl9vd25lci52YWx1ZSwgJ1NFTkRFUl9OT1RfQUxMT1dFRCcpOwogICAgYXBwX2dsb2JhbF9nZXRfZXgKICAgIGFzc2VydCAvLyBjaGVjayBHbG9iYWxTdGF0ZSBleGlzdHMKICAgID09CiAgICBhc3NlcnQgLy8gU0VOREVSX05PVF9BTExPV0VECiAgICByZXRzdWIKCgovLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjpPd25hYmxlLmlzT3duZXIoKSAtPiB1aW50NjQ6CmlzT3duZXI6CiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjYxCiAgICAvLyByZXR1cm4gVHhuLnNlbmRlciA9PT0gdGhpcy5fb3duZXIudmFsdWU7CiAgICB0eG4gU2VuZGVyCiAgICBpbnRjXzAgLy8gMAogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo0NgogICAgLy8gX293bmVyID0gR2xvYmFsU3RhdGU8QWNjb3VudD4oKTsKICAgIGJ5dGVjXzMgLy8gIl9vd25lciIKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NjEKICAgIC8vIHJldHVybiBUeG4uc2VuZGVyID09PSB0aGlzLl9vd25lci52YWx1ZTsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBhc3NlcnQgLy8gY2hlY2sgR2xvYmFsU3RhdGUgZXhpc3RzCiAgICA9PQogICAgcmV0c3ViCgoKLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo6T3duYWJsZS5fdHJhbnNmZXJPd25lcnNoaXAobmV3T3duZXI6IGJ5dGVzKSAtPiB2b2lkOgpfdHJhbnNmZXJPd25lcnNoaXA6CiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjc1CiAgICAvLyBwcm90ZWN0ZWQgX3RyYW5zZmVyT3duZXJzaGlwKG5ld093bmVyOiBBY2NvdW50KTogdm9pZCB7CiAgICBwcm90byAxIDAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NzYKICAgIC8vIGNvbnN0IHByZXZpb3VzT3duZXIgPSB0aGlzLl9vd25lci5oYXNWYWx1ZSA/IHRoaXMuX293bmVyLnZhbHVlIDogR2xvYmFsLnplcm9BZGRyZXNzOwogICAgaW50Y18wIC8vIDAKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NDYKICAgIC8vIF9vd25lciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlY18zIC8vICJfb3duZXIiCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjc2CiAgICAvLyBjb25zdCBwcmV2aW91c093bmVyID0gdGhpcy5fb3duZXIuaGFzVmFsdWUgPyB0aGlzLl9vd25lci52YWx1ZSA6IEdsb2JhbC56ZXJvQWRkcmVzczsKICAgIGFwcF9nbG9iYWxfZ2V0X2V4CiAgICBidXJ5IDEKICAgIGJ6IF90cmFuc2Zlck93bmVyc2hpcF90ZXJuYXJ5X2ZhbHNlQDIKICAgIGludGNfMCAvLyAwCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjQ2CiAgICAvLyBfb3duZXIgPSBHbG9iYWxTdGF0ZTxBY2NvdW50PigpOwogICAgYnl0ZWNfMyAvLyAiX293bmVyIgogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo3NgogICAgLy8gY29uc3QgcHJldmlvdXNPd25lciA9IHRoaXMuX293bmVyLmhhc1ZhbHVlID8gdGhpcy5fb3duZXIudmFsdWUgOiBHbG9iYWwuemVyb0FkZHJlc3M7CiAgICBhcHBfZ2xvYmFsX2dldF9leAogICAgYXNzZXJ0IC8vIGNoZWNrIEdsb2JhbFN0YXRlIGV4aXN0cwoKX3RyYW5zZmVyT3duZXJzaGlwX3Rlcm5hcnlfbWVyZ2VAMzoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NDYKICAgIC8vIF9vd25lciA9IEdsb2JhbFN0YXRlPEFjY291bnQ+KCk7CiAgICBieXRlY18zIC8vICJfb3duZXIiCiAgICAvLyBzcmMvcm9sZXMvT3duYWJsZS5hbGdvLnRzOjc3CiAgICAvLyB0aGlzLl9vd25lci52YWx1ZSA9IG5ld093bmVyOwogICAgZnJhbWVfZGlnIC0xCiAgICBhcHBfZ2xvYmFsX3B1dAogICAgLy8gc3JjL3JvbGVzL093bmFibGUuYWxnby50czo3OS04MgogICAgLy8gZW1pdDxPd25lcnNoaXBUcmFuc2ZlcnJlZD4oewogICAgLy8gICAgIHByZXZpb3VzT3duZXI6IHByZXZpb3VzT3duZXIsCiAgICAvLyAgICAgbmV3T3duZXI6IG5ld093bmVyLAogICAgLy8gfSk7CiAgICBmcmFtZV9kaWcgLTEKICAgIGNvbmNhdAogICAgcHVzaGJ5dGVzIDB4OWEyMjNlZmIgLy8gbWV0aG9kICJPd25lcnNoaXBUcmFuc2ZlcnJlZChhZGRyZXNzLGFkZHJlc3MpIgogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIHJldHN1YgoKX3RyYW5zZmVyT3duZXJzaGlwX3Rlcm5hcnlfZmFsc2VAMjoKICAgIC8vIHNyYy9yb2xlcy9Pd25hYmxlLmFsZ28udHM6NzYKICAgIC8vIGNvbnN0IHByZXZpb3VzT3duZXIgPSB0aGlzLl9vd25lci5oYXNWYWx1ZSA/IHRoaXMuX293bmVyLnZhbHVlIDogR2xvYmFsLnplcm9BZGRyZXNzOwogICAgZ2xvYmFsIFplcm9BZGRyZXNzCiAgICBiIF90cmFuc2Zlck93bmVyc2hpcF90ZXJuYXJ5X21lcmdlQDMK","clear":"I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBAYWxnb3JhbmRmb3VuZGF0aW9uL2FsZ29yYW5kLXR5cGVzY3JpcHQvYmFzZS1jb250cmFjdC5kLnRzOjpCYXNlQ29udHJhY3QuY2xlYXJTdGF0ZVByb2dyYW0oKSAtPiB1aW50NjQ6Cm1haW46CiAgICBwdXNoaW50IDEgLy8gMQogICAgcmV0dXJuCg=="},"byteCode":{"approval":"CyAEAAEIICYPAmNmBBUffHUCd3IGX293bmVyBGNmYWMHX3BhdXNlcgJzbgZwYXVzZWQCc2ECcmEDd3d0BGV3cGsOcGVybWlzc2lvbmxlc3MDBoEBCGFwcHJvdmVkggIEoOgYcgSchqGFNhoAjgIBBAD4MRkURDEYQQDhgh8EoFD18QTi67+GBFsncUMER7ud/QQ/oSOLBHxyJ0cETa4oHwTTx6ZSBHueawIEANwCxATvxSmTBHUnGgcEy+4roQTIRPZLBHRdvxYEUbR/BgRBnu/7BPRY/BoET2f5HQSVN9UJBKIYHiQEraCaHARbIMwTBP7v3HcEeFob+QSw2VOzBAF4+UsEG1Kd6AQMrdFjBLG7sKgE4XuvtDYaAI4fAHAAggCTAX4BwQHeAhoCUwLsAvcDCAOAA4wDogO4A8sD4QP6BGQEjQTbBWsFwwYwBvoHQAdLB1sHaweLB5UAgASScHc9NhoAjgEAGQAxGYEFEjEYEERCADQxGYEEEjEYEERCACM2GgFJFSUSRIgIhycFMQBnJwQiZycGImcnByJnKTIKULAjQ4gIWyNDiAhWIicEZUQURLEyCiIrZUSyCSKyCLIHI7IQIrIBsyNDNhoBSRUkEkQXiAgsJwpMZyNDNhoBSRUlEkSICBsnC0xnI0M2GgFHAhUlEkQ2GgJJFSQSRBdJTwKIB/0yA1AiFkxLAVBMULGABFYdL+qyGoEFshmABAuBAUOyQoA/CyACAAGABFYdL+o2GgCOAQABADEZgQUSMRgUEERCAACxMgoyDrIgIrIIsgcjshAisgGzgAQVH3x1MgpQsCNDskCBBrIQIrIBs7Q+SVcEAElOAk4EVwAEKRJESRUlEkRcIExBAEgyELEyAQiyCEsBsgcjshAisgGzSwJBAAdLAUsDiAZpKEsCSU4CUEsCvyInBGVEIwgnBExnSwRLAVCABPUzQERMULApTFCwI0MiQv+2NhoBSRUlEkSIByhAAAdJiAYVQQAqI0SxMgpJsgkisgiyB0cCsgAjshAisgGzKExQvEgiJwRlRCMJJwRMZyNDIkL/0zYaAUkVJRJENhoCSRUlEkSIBtQoTwJQIk8CuyNDNhoBSRUkEkQXNhoCSRUlEkSIBraxMgpJIrISSwOyEbIUsgCBBLIQIrIBs0sBFoAEJja8fkxQsIgGUiNDNhoBSRUkEkQXiAaCsTIKRwIishJLA7IRshWyFLIAgQSyECKyAbMWJwhLAVC8SIAEBlwDdExQsCNDNhoBSRUlEkQ2GgJJFSQSRBc2GgNJFSQSRBc2GgRJFSQSRBc2GgVJIlmBAghLARUSRFcCAIgGDIgGGyhLBVBJvkSBQFtJSwQSRLEyCksDsgVLBbISSwayEbIUSwayAIEEshAisgGzTwUWTwZMUE8FFlBPBBZQSwMVFlcGAk8EUEyAAgA6UExQgASZShNnTFCwIwgWgUBMuyNDIicJZUQpTFCwI0M2GgFJFSUSRIgFpicJTGcjQzYaAUkVJRJENhoCSRUkEkQXNhoDSRUkEkQXNhoESRUkEkQXiAVoMQAiJwllRBJEKEsEUEm+RIFAW0lLAxJEsTIKSwSyEksFshFLBrIUsgCBBLIQIrIBs08EFk8FTFBPBBZQTwMWUIAE43quXExQsCMIFoFATLsjQyInBmVEFilMULAjQzYaAUkVJRJEKExQvkRXQAgpTFCwI0M2GgFJFSUSRChMUL5EV0gIKUxQsCNDNhoBSRUlEkQoTFC+RClMULAjQzYaAUkVJBJEFxYnCExQvkQpTFCwI0M2GgFJFSQSRBc2GgJJFSUSRIgEs4gEciNDNhoBSRUkEkQXNhoCSRUkEkQXNhoDSRUkEkQXiAR+iASNIicGZURJSwISRLEyCksEFicISwFQvkRLBbISTwayEUmyFE8CsgCBBLIQIrIBs0xQTwMWUE8CFlCABFWARuxMULAjCCcGTGcjQzYaAUkVJRJENhoCSRUkEkQXiAQwsTIQsghLAbIHI7IQIrIBs4gDLyNDNhoBSRUlEkQ2GgJJFSQSRBeIBBBAAAhLAYgC/EEAKyNEsSKyEkcCshFLAkmyFUmyFEmyAIEEshAisgGzTBZQgASA138xTFCwI0MiQv/SNhoBSRUlEkQ2GgJJFSQSRBc2GgNJFSQSRBdLAogCq0QoSwNQvkRLA0sDcABISwIPRDEAMgdPAldICE8FTwNQTwQWUE8DFlBPAhZQTFAqMQBQSwG/SVcAIEsBVyAgSwJXQAhLA1dICEsEV1AISwVXWAhPBU8FUE8EUE8DUE8CUExQgATYX2IKTFCwKUxQsCNDNhoBSRUlEkSIAi9EKjEAUL1FAUQqMQBQvkQqMQBQvEhJVwAgSwFXICBLAldACEsDV0gISwRXUAhPBVdYCE8FTwVQTwRQTwNQTwJQTFCABD/XgpVMULAjQzYaAUkVJRJENhoCSRUkEkQXSwGIAcxEKjEAUL1FAUQoSwJQvkQqMQBQvkRJgUhbSwMPREyBSFtLAYFYW0xLARJESwGBUFsiJwplREsBCDIHDkRPAoFAW08ETE8ETwNPBCcMiAHHKjEAULxII0M2GgFHAhUlEkQ2GgJJFSQSRBdJTwI2GgNJFSQSRBdJTgJOAzYaBEkVJBJEF0lOBDYaBUkVJBJEFzYaBklOBhWBQBJESwKIAS1EKEsDUL5EMgdLAwxEgUhbSU4GSwESRDEAMhFPBE8CUE8FFlBPBBZQTwMWUE8CFlBMUAGBzhMyDA1BABixgQayEIEFshknDbIeJw2yHyKyAbNC/98iJwtlREsBSwRPAoRESwZLBksGSwZLBScOiAEHKjEAUL1FAUEABioxAFC8SCNDNhoBSRUkEkQXSTYaAkkVJBJEF0w2GgNJTgMVJRJEiAGNQQATsUsCshGyErIUgQSyECKyAbMjQ7GyCLIHI7IQIrIBs0L/7yInBWVEKUxQsCNDiAFQJwcjZ4AEzyOjD7AjQ4gBQCcHImeABLFj7guwI0M2GgFJFSUSRIgBKEkyAxNEJwVLAWeABMxAkjxMULAjQyIrZUQpTFCwI0M2GgFJFSUSRIgBCIgBFiNDigEBKIv/UEm9RQFEvkhXACAxABKJigIAMgqL/3AARQFEsSKyEov/shGL/rIUi/6yAIEEshAisgGzi/8Wi/5MUIAEVxnO0UxQsImKBgCL/EEAGbExAIv8shKL+7IRshSL+rIAgQSyECKyAbMxAIv/JwwSIov9TwJNi/8nDhIii/1PAk2L+k8DUIv7FlCL/BZQTwIWUEwWUIv+FlCL/xUWVwYCi/9QTIACAGpQTFCABLtN0AZMULCL/iMIKIv6UEwWgUhMu4mKAgCL/hYnCExQSb1FAUEAFosAvkSLAIv/v4v/UIAE/VNTWExQsIkyA0L/6SInB2VEFESJMQAiJwVlRBJEiTEAIitlRBJEiTEAIitlRBKJigEAIitlRQFBABUiK2VEK4v/Z4v/UIAEmiI++0xQsIkyA0L/6g==","clear":"C4EBQw=="},"events":[{"name":"OwnershipTransferred","args":[{"type":"address","name":"previousOwner"},{"type":"address","name":"newOwner"}]},{"name":"CardAssetEnabled","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"}]},{"name":"CardCreated","args":[{"type":"address","name":"cardOwner"},{"type":"address","name":"card"}]},{"name":"AssetAllowlistAdded","args":[{"type":"uint64","name":"asset"}]},{"name":"SettlementAddressChanged","args":[{"type":"address","name":"oldSettlementAddress"},{"type":"address","name":"newSettlementAddress"}]},{"name":"AssetAllowlistRemoved","args":[{"type":"uint64","name":"asset"}]},{"name":"Debit","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"},{"type":"string","name":"reference"}]},{"name":"Refund","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]},{"name":"Settlement","args":[{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"nonce"}]},{"name":"CardAssetDisabled","args":[{"type":"address","name":"card"},{"type":"uint64","name":"asset"}]},{"name":"WithdrawalRequest","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]},{"name":"WithdrawalRequestCancelled","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"nonce"}]},{"name":"Withdrawal","args":[{"type":"address","name":"card"},{"type":"address","name":"recipient"},{"type":"uint64","name":"asset"},{"type":"uint64","name":"amount"},{"type":"uint64","name":"createdAt"},{"type":"uint64","name":"expiresAt"},{"type":"uint64","name":"nonce"},{"type":"string","name":"type"}]},{"name":"Pause","args":[]},{"name":"Unpause","args":[]},{"name":"PauserChanged","args":[{"type":"address","name":"newAddress"}]}],"templateVariables":{}} as unknown as Arc56Contract
 
 /**
  * A state record containing binary data
@@ -64,8 +64,7 @@ export type Expand<T> = T extends (...args: infer A) => infer R
 
 // Type definitions for ARC-56 structs
 
-export type CardFundData = {
-  partnerChannel: string,
+export type CardData = {
   owner: string,
   address: string,
   nonce: bigint,
@@ -74,14 +73,14 @@ export type CardFundData = {
 
 
 /**
- * Converts the ABI tuple representation of a CardFundData to the struct representation
+ * Converts the ABI tuple representation of a CardData to the struct representation
  */
-export function CardFundDataFromTuple(abiTuple: [string, string, string, bigint, bigint]) {
-  return getABIStructFromABITuple(abiTuple, APP_SPEC.structs.CardFundData, APP_SPEC.structs) as CardFundData
+export function CardDataFromTuple(abiTuple: [string, string, bigint, bigint]) {
+  return getABIStructFromABITuple(abiTuple, APP_SPEC.structs.CardData, APP_SPEC.structs) as CardData
 }
 
 export type PermissionlessWithdrawalRequest = {
-  cardFund: string,
+  card: string,
   recipient: string,
   asset: bigint,
   amount: bigint,
@@ -122,71 +121,40 @@ export type MasterArgs = {
        */
       pubkey: Uint8Array
     }
-    'getPartnerChannelMbr(string)uint64': {
+    'cardCreate(address,uint64)address': {
       /**
-       * - The name of the partner channel.
+       * The card holder who will own/control the card
        */
-      partnerChannelName: string
-    }
-    'partnerChannelCreate(pay,string)address': {
-      /**
-       * - The PayTxn object representing the payment transaction.
-       */
-      mbr: AppMethodCallTransactionArgument
-      /**
-       * - The name of the partner channel.
-       */
-      partnerChannelName: string
-    }
-    'partnerChannelClose(address)void': {
-      partnerChannel: string
-    }
-    'getCardFundMbr(uint64)uint64': {
+      cardOwner: string
       /**
        * Asset to opt-in to. 0 = No asset opt-in
        */
       asset: bigint | number
     }
-    'cardFundCreate(pay,address,uint64)address': {
-      /**
-       * Payment transaction of minimum balance requirement
-       */
-      mbr: AppMethodCallTransactionArgument
-      /**
-       * Funding Channel name
-       */
-      partnerChannel: string
-      /**
-       * Asset to opt-in to. 0 = No asset opt-in
-       */
-      asset: bigint | number
-    }
-    'cardFundClose(address)void': {
+    'cardClose(address)void': {
       /**
        * Address to close
        */
-      cardFund: string
+      card: string
     }
-    'cardFundRecover(address,address)void': {
+    'cardRecover(address,address)void': {
       /**
-       * - The card fund to recover.
+       * - The card to recover.
        */
-      cardFund: string
+      card: string
       /**
        * - The address of the new card holder.
        */
-      newCardFundHolder: string
+      newCardHolder: string
     }
-    'getAssetAllowlistMbr()uint64': Record<string, never>
-    'assetAllowlistAdd(pay,uint64,address)void': {
-      /**
-       * Payment transaction of minimum balance requirement.
-       */
-      mbr: AppMethodCallTransactionArgument
+    'assetAllowlistAdd(uint64,address)void': {
       /**
        * The AssetID of the asset being transferred.
        */
       asset: bigint | number
+      /**
+       * The address settlements for this asset are sent to.
+       */
       settlementAddress: string
     }
     'assetAllowlistRemove(uint64)void': {
@@ -195,11 +163,11 @@ export type MasterArgs = {
        */
       asset: bigint | number
     }
-    'cardFundDebit(address,uint64,uint64,uint64,string)void': {
+    'cardDebit(address,uint64,uint64,uint64,string)void': {
       /**
-       * The card fund from which the asset will be debited.
+       * The card from which the asset will be debited.
        */
-      cardFund: string
+      card: string
       /**
        * The asset to be debited.
        */
@@ -218,11 +186,11 @@ export type MasterArgs = {
        */
       newRefundAddress: string
     }
-    'cardFundRefund(address,uint64,uint64,uint64)void': {
+    'cardRefund(address,uint64,uint64,uint64)void': {
       /**
        * - The card account to refund the asset to.
        */
-      cardFund: string
+      card: string
       /**
        * - The asset to refund.
        */
@@ -234,23 +202,23 @@ export type MasterArgs = {
       nonce: bigint | number
     }
     'getNextSettlementNonce()uint64': Record<string, never>
-    'getNextCardFundNonce(address)uint64': {
+    'getNextCardNonce(address)uint64': {
       /**
-       * The card fund address.
+       * The card address.
        */
-      cardFund: string
+      card: string
     }
-    'getCardFundWithdrawalNonce(address)uint64': {
+    'getCardWithdrawalNonce(address)uint64': {
       /**
-       * The card fund address.
+       * The card address.
        */
-      cardFund: string
+      card: string
     }
-    'getCardFundData(address)(address,address,address,uint64,uint64)': {
+    'getCardData(address)(address,address,uint64,uint64)': {
       /**
-       * The address of the card fund.
+       * The address of the card.
        */
-      cardFund: string
+      card: string
     }
     'getSettlementAddress(uint64)address': {
       /**
@@ -282,33 +250,31 @@ export type MasterArgs = {
        */
       nonce: bigint | number
     }
-    'getCardFundAssetMbr()uint64': Record<string, never>
-    'cardFundEnableAsset(pay,address,uint64)void': {
-      mbr: AppMethodCallTransactionArgument
+    'cardEnableAsset(address,uint64)void': {
       /**
        * Address to add asset to
        */
-      cardFund: string
+      card: string
       /**
        * Asset to add
        */
       asset: bigint | number
     }
-    'cardFundDisableAsset(address,uint64)void': {
+    'cardDisableAsset(address,uint64)void': {
       /**
        * - The address of the card.
        */
-      cardFund: string
+      card: string
       /**
        * - The ID of the asset to be removed.
        */
       asset: bigint | number
     }
-    'cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)': {
+    'cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)': {
       /**
        * Address to withdraw from
        */
-      cardFund: string
+      card: string
       /**
        * Asset to withdraw
        */
@@ -318,24 +284,24 @@ export type MasterArgs = {
        */
       amount: bigint | number
     }
-    'cardFundWithdrawalCancel(address)void': {
+    'cardWithdrawalCancel(address)void': {
       /**
        * Address to withdraw from
        */
-      cardFund: string
+      card: string
     }
-    'cardFundExecutePermissionlessWithdrawal(address,uint64)void': {
+    'cardWithdraw(address,uint64)void': {
       /**
        * Address to withdraw from
        */
-      cardFund: string
+      card: string
       amount: bigint | number
     }
-    'cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void': {
+    'cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void': {
       /**
        * - The address of the card.
        */
-      cardFund: string
+      card: string
       /**
        * - The ID of the asset to be withdrawn.
        */
@@ -391,34 +357,28 @@ export type MasterArgs = {
     'destroy()void': []
     'setWithdrawalTimeout(uint64)void': [seconds: bigint | number]
     'setEarlyWithdrawalPubkey(byte[32])void': [pubkey: Uint8Array]
-    'getPartnerChannelMbr(string)uint64': [partnerChannelName: string]
-    'partnerChannelCreate(pay,string)address': [mbr: AppMethodCallTransactionArgument, partnerChannelName: string]
-    'partnerChannelClose(address)void': [partnerChannel: string]
-    'getCardFundMbr(uint64)uint64': [asset: bigint | number]
-    'cardFundCreate(pay,address,uint64)address': [mbr: AppMethodCallTransactionArgument, partnerChannel: string, asset: bigint | number]
-    'cardFundClose(address)void': [cardFund: string]
-    'cardFundRecover(address,address)void': [cardFund: string, newCardFundHolder: string]
-    'getAssetAllowlistMbr()uint64': []
-    'assetAllowlistAdd(pay,uint64,address)void': [mbr: AppMethodCallTransactionArgument, asset: bigint | number, settlementAddress: string]
+    'cardCreate(address,uint64)address': [cardOwner: string, asset: bigint | number]
+    'cardClose(address)void': [card: string]
+    'cardRecover(address,address)void': [card: string, newCardHolder: string]
+    'assetAllowlistAdd(uint64,address)void': [asset: bigint | number, settlementAddress: string]
     'assetAllowlistRemove(uint64)void': [asset: bigint | number]
-    'cardFundDebit(address,uint64,uint64,uint64,string)void': [cardFund: string, asset: bigint | number, amount: bigint | number, nonce: bigint | number, ref: string]
+    'cardDebit(address,uint64,uint64,uint64,string)void': [card: string, asset: bigint | number, amount: bigint | number, nonce: bigint | number, ref: string]
     'getRefundAddress()address': []
     'setRefundAddress(address)void': [newRefundAddress: string]
-    'cardFundRefund(address,uint64,uint64,uint64)void': [cardFund: string, asset: bigint | number, amount: bigint | number, nonce: bigint | number]
+    'cardRefund(address,uint64,uint64,uint64)void': [card: string, asset: bigint | number, amount: bigint | number, nonce: bigint | number]
     'getNextSettlementNonce()uint64': []
-    'getNextCardFundNonce(address)uint64': [cardFund: string]
-    'getCardFundWithdrawalNonce(address)uint64': [cardFund: string]
-    'getCardFundData(address)(address,address,address,uint64,uint64)': [cardFund: string]
+    'getNextCardNonce(address)uint64': [card: string]
+    'getCardWithdrawalNonce(address)uint64': [card: string]
+    'getCardData(address)(address,address,uint64,uint64)': [card: string]
     'getSettlementAddress(uint64)address': [asset: bigint | number]
     'setSettlementAddress(uint64,address)void': [settlementAsset: bigint | number, newSettlementAddress: string]
     'settle(uint64,uint64,uint64)void': [asset: bigint | number, amount: bigint | number, nonce: bigint | number]
-    'getCardFundAssetMbr()uint64': []
-    'cardFundEnableAsset(pay,address,uint64)void': [mbr: AppMethodCallTransactionArgument, cardFund: string, asset: bigint | number]
-    'cardFundDisableAsset(address,uint64)void': [cardFund: string, asset: bigint | number]
-    'cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)': [cardFund: string, asset: bigint | number, amount: bigint | number]
-    'cardFundWithdrawalCancel(address)void': [cardFund: string]
-    'cardFundExecutePermissionlessWithdrawal(address,uint64)void': [cardFund: string, amount: bigint | number]
-    'cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void': [cardFund: string, asset: bigint | number, amount: bigint | number, expiresAt: bigint | number, nonce: bigint | number, signature: Uint8Array]
+    'cardEnableAsset(address,uint64)void': [card: string, asset: bigint | number]
+    'cardDisableAsset(address,uint64)void': [card: string, asset: bigint | number]
+    'cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)': [card: string, asset: bigint | number, amount: bigint | number]
+    'cardWithdrawalCancel(address)void': [card: string]
+    'cardWithdraw(address,uint64)void': [card: string, amount: bigint | number]
+    'cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void': [card: string, asset: bigint | number, amount: bigint | number, expiresAt: bigint | number, nonce: bigint | number, signature: Uint8Array]
     'recoverAsset(uint64,uint64,address)void': [asset: bigint | number, amount: bigint | number, recipient: string]
     'pauser()address': []
     'pause()void': []
@@ -438,34 +398,28 @@ export type MasterReturns = {
   'destroy()void': void
   'setWithdrawalTimeout(uint64)void': void
   'setEarlyWithdrawalPubkey(byte[32])void': void
-  'getPartnerChannelMbr(string)uint64': bigint
-  'partnerChannelCreate(pay,string)address': string
-  'partnerChannelClose(address)void': void
-  'getCardFundMbr(uint64)uint64': bigint
-  'cardFundCreate(pay,address,uint64)address': string
-  'cardFundClose(address)void': void
-  'cardFundRecover(address,address)void': void
-  'getAssetAllowlistMbr()uint64': bigint
-  'assetAllowlistAdd(pay,uint64,address)void': void
+  'cardCreate(address,uint64)address': string
+  'cardClose(address)void': void
+  'cardRecover(address,address)void': void
+  'assetAllowlistAdd(uint64,address)void': void
   'assetAllowlistRemove(uint64)void': void
-  'cardFundDebit(address,uint64,uint64,uint64,string)void': void
+  'cardDebit(address,uint64,uint64,uint64,string)void': void
   'getRefundAddress()address': string
   'setRefundAddress(address)void': void
-  'cardFundRefund(address,uint64,uint64,uint64)void': void
+  'cardRefund(address,uint64,uint64,uint64)void': void
   'getNextSettlementNonce()uint64': bigint
-  'getNextCardFundNonce(address)uint64': bigint
-  'getCardFundWithdrawalNonce(address)uint64': bigint
-  'getCardFundData(address)(address,address,address,uint64,uint64)': CardFundData
+  'getNextCardNonce(address)uint64': bigint
+  'getCardWithdrawalNonce(address)uint64': bigint
+  'getCardData(address)(address,address,uint64,uint64)': CardData
   'getSettlementAddress(uint64)address': string
   'setSettlementAddress(uint64,address)void': void
   'settle(uint64,uint64,uint64)void': void
-  'getCardFundAssetMbr()uint64': bigint
-  'cardFundEnableAsset(pay,address,uint64)void': void
-  'cardFundDisableAsset(address,uint64)void': void
-  'cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)': PermissionlessWithdrawalRequest
-  'cardFundWithdrawalCancel(address)void': void
-  'cardFundExecutePermissionlessWithdrawal(address,uint64)void': void
-  'cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void': void
+  'cardEnableAsset(address,uint64)void': void
+  'cardDisableAsset(address,uint64)void': void
+  'cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)': PermissionlessWithdrawalRequest
+  'cardWithdrawalCancel(address)void': void
+  'cardWithdraw(address,uint64)void': void
+  'cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void': void
   'recoverAsset(uint64,uint64,address)void': void
   'pauser()address': string
   'pause()void': void
@@ -508,75 +462,38 @@ export type MasterTypes = {
       argsTuple: MasterArgs['tuple']['setEarlyWithdrawalPubkey(byte[32])void']
       returns: MasterReturns['setEarlyWithdrawalPubkey(byte[32])void']
     }>
-    & Record<'getPartnerChannelMbr(string)uint64' | 'getPartnerChannelMbr', {
-      argsObj: MasterArgs['obj']['getPartnerChannelMbr(string)uint64']
-      argsTuple: MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']
-      /**
-       * The minimum balance requirement for creating a partner channel account.
-       */
-      returns: MasterReturns['getPartnerChannelMbr(string)uint64']
-    }>
-    & Record<'partnerChannelCreate(pay,string)address' | 'partnerChannelCreate', {
-      argsObj: MasterArgs['obj']['partnerChannelCreate(pay,string)address']
-      argsTuple: MasterArgs['tuple']['partnerChannelCreate(pay,string)address']
-      /**
-       * The address of the newly created partner channel account.
-       */
-      returns: MasterReturns['partnerChannelCreate(pay,string)address']
-    }>
-    & Record<'partnerChannelClose(address)void' | 'partnerChannelClose', {
-      argsObj: MasterArgs['obj']['partnerChannelClose(address)void']
-      argsTuple: MasterArgs['tuple']['partnerChannelClose(address)void']
-      returns: MasterReturns['partnerChannelClose(address)void']
-    }>
-    & Record<'getCardFundMbr(uint64)uint64' | 'getCardFundMbr', {
-      argsObj: MasterArgs['obj']['getCardFundMbr(uint64)uint64']
-      argsTuple: MasterArgs['tuple']['getCardFundMbr(uint64)uint64']
-      /**
-       * Minimum balance requirement for creating a card fund account
-       */
-      returns: MasterReturns['getCardFundMbr(uint64)uint64']
-    }>
-    & Record<'cardFundCreate(pay,address,uint64)address' | 'cardFundCreate', {
-      argsObj: MasterArgs['obj']['cardFundCreate(pay,address,uint64)address']
-      argsTuple: MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']
+    & Record<'cardCreate(address,uint64)address' | 'cardCreate', {
+      argsObj: MasterArgs['obj']['cardCreate(address,uint64)address']
+      argsTuple: MasterArgs['tuple']['cardCreate(address,uint64)address']
       /**
        * Newly generated account used by their card
        */
-      returns: MasterReturns['cardFundCreate(pay,address,uint64)address']
+      returns: MasterReturns['cardCreate(address,uint64)address']
     }>
-    & Record<'cardFundClose(address)void' | 'cardFundClose', {
-      argsObj: MasterArgs['obj']['cardFundClose(address)void']
-      argsTuple: MasterArgs['tuple']['cardFundClose(address)void']
-      returns: MasterReturns['cardFundClose(address)void']
+    & Record<'cardClose(address)void' | 'cardClose', {
+      argsObj: MasterArgs['obj']['cardClose(address)void']
+      argsTuple: MasterArgs['tuple']['cardClose(address)void']
+      returns: MasterReturns['cardClose(address)void']
     }>
-    & Record<'cardFundRecover(address,address)void' | 'cardFundRecover', {
-      argsObj: MasterArgs['obj']['cardFundRecover(address,address)void']
-      argsTuple: MasterArgs['tuple']['cardFundRecover(address,address)void']
-      returns: MasterReturns['cardFundRecover(address,address)void']
+    & Record<'cardRecover(address,address)void' | 'cardRecover', {
+      argsObj: MasterArgs['obj']['cardRecover(address,address)void']
+      argsTuple: MasterArgs['tuple']['cardRecover(address,address)void']
+      returns: MasterReturns['cardRecover(address,address)void']
     }>
-    & Record<'getAssetAllowlistMbr()uint64' | 'getAssetAllowlistMbr', {
-      argsObj: MasterArgs['obj']['getAssetAllowlistMbr()uint64']
-      argsTuple: MasterArgs['tuple']['getAssetAllowlistMbr()uint64']
-      /**
-       * Minimum balance requirement for adding an asset to the allowlist
-       */
-      returns: MasterReturns['getAssetAllowlistMbr()uint64']
-    }>
-    & Record<'assetAllowlistAdd(pay,uint64,address)void' | 'assetAllowlistAdd', {
-      argsObj: MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void']
-      argsTuple: MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']
-      returns: MasterReturns['assetAllowlistAdd(pay,uint64,address)void']
+    & Record<'assetAllowlistAdd(uint64,address)void' | 'assetAllowlistAdd', {
+      argsObj: MasterArgs['obj']['assetAllowlistAdd(uint64,address)void']
+      argsTuple: MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']
+      returns: MasterReturns['assetAllowlistAdd(uint64,address)void']
     }>
     & Record<'assetAllowlistRemove(uint64)void' | 'assetAllowlistRemove', {
       argsObj: MasterArgs['obj']['assetAllowlistRemove(uint64)void']
       argsTuple: MasterArgs['tuple']['assetAllowlistRemove(uint64)void']
       returns: MasterReturns['assetAllowlistRemove(uint64)void']
     }>
-    & Record<'cardFundDebit(address,uint64,uint64,uint64,string)void' | 'cardFundDebit', {
-      argsObj: MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void']
-      argsTuple: MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']
-      returns: MasterReturns['cardFundDebit(address,uint64,uint64,uint64,string)void']
+    & Record<'cardDebit(address,uint64,uint64,uint64,string)void' | 'cardDebit', {
+      argsObj: MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void']
+      argsTuple: MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']
+      returns: MasterReturns['cardDebit(address,uint64,uint64,uint64,string)void']
     }>
     & Record<'getRefundAddress()address' | 'getRefundAddress', {
       argsObj: MasterArgs['obj']['getRefundAddress()address']
@@ -591,10 +508,10 @@ export type MasterTypes = {
       argsTuple: MasterArgs['tuple']['setRefundAddress(address)void']
       returns: MasterReturns['setRefundAddress(address)void']
     }>
-    & Record<'cardFundRefund(address,uint64,uint64,uint64)void' | 'cardFundRefund', {
-      argsObj: MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void']
-      argsTuple: MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']
-      returns: MasterReturns['cardFundRefund(address,uint64,uint64,uint64)void']
+    & Record<'cardRefund(address,uint64,uint64,uint64)void' | 'cardRefund', {
+      argsObj: MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void']
+      argsTuple: MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']
+      returns: MasterReturns['cardRefund(address,uint64,uint64,uint64)void']
     }>
     & Record<'getNextSettlementNonce()uint64' | 'getNextSettlementNonce', {
       argsObj: MasterArgs['obj']['getNextSettlementNonce()uint64']
@@ -604,29 +521,29 @@ export type MasterTypes = {
        */
       returns: MasterReturns['getNextSettlementNonce()uint64']
     }>
-    & Record<'getNextCardFundNonce(address)uint64' | 'getNextCardFundNonce', {
-      argsObj: MasterArgs['obj']['getNextCardFundNonce(address)uint64']
-      argsTuple: MasterArgs['tuple']['getNextCardFundNonce(address)uint64']
+    & Record<'getNextCardNonce(address)uint64' | 'getNextCardNonce', {
+      argsObj: MasterArgs['obj']['getNextCardNonce(address)uint64']
+      argsTuple: MasterArgs['tuple']['getNextCardNonce(address)uint64']
       /**
-       * The nonce for the card fund.
+       * The nonce for the card.
        */
-      returns: MasterReturns['getNextCardFundNonce(address)uint64']
+      returns: MasterReturns['getNextCardNonce(address)uint64']
     }>
-    & Record<'getCardFundWithdrawalNonce(address)uint64' | 'getCardFundWithdrawalNonce', {
-      argsObj: MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64']
-      argsTuple: MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']
+    & Record<'getCardWithdrawalNonce(address)uint64' | 'getCardWithdrawalNonce', {
+      argsObj: MasterArgs['obj']['getCardWithdrawalNonce(address)uint64']
+      argsTuple: MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']
       /**
-       * The nonce for the card fund.
+       * The withdrawal nonce for the card.
        */
-      returns: MasterReturns['getCardFundWithdrawalNonce(address)uint64']
+      returns: MasterReturns['getCardWithdrawalNonce(address)uint64']
     }>
-    & Record<'getCardFundData(address)(address,address,address,uint64,uint64)' | 'getCardFundData', {
-      argsObj: MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)']
-      argsTuple: MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']
+    & Record<'getCardData(address)(address,address,uint64,uint64)' | 'getCardData', {
+      argsObj: MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)']
+      argsTuple: MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']
       /**
-       * The card fund data.
+       * The card data.
        */
-      returns: MasterReturns['getCardFundData(address)(address,address,address,uint64,uint64)']
+      returns: MasterReturns['getCardData(address)(address,address,uint64,uint64)']
     }>
     & Record<'getSettlementAddress(uint64)address' | 'getSettlementAddress', {
       argsObj: MasterArgs['obj']['getSettlementAddress(uint64)address']
@@ -646,43 +563,35 @@ export type MasterTypes = {
       argsTuple: MasterArgs['tuple']['settle(uint64,uint64,uint64)void']
       returns: MasterReturns['settle(uint64,uint64,uint64)void']
     }>
-    & Record<'getCardFundAssetMbr()uint64' | 'getCardFundAssetMbr', {
-      argsObj: MasterArgs['obj']['getCardFundAssetMbr()uint64']
-      argsTuple: MasterArgs['tuple']['getCardFundAssetMbr()uint64']
-      /**
-       * The minimum balance requirement for adding an asset to the card fund.
-       */
-      returns: MasterReturns['getCardFundAssetMbr()uint64']
+    & Record<'cardEnableAsset(address,uint64)void' | 'cardEnableAsset', {
+      argsObj: MasterArgs['obj']['cardEnableAsset(address,uint64)void']
+      argsTuple: MasterArgs['tuple']['cardEnableAsset(address,uint64)void']
+      returns: MasterReturns['cardEnableAsset(address,uint64)void']
     }>
-    & Record<'cardFundEnableAsset(pay,address,uint64)void' | 'cardFundEnableAsset', {
-      argsObj: MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void']
-      argsTuple: MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']
-      returns: MasterReturns['cardFundEnableAsset(pay,address,uint64)void']
+    & Record<'cardDisableAsset(address,uint64)void' | 'cardDisableAsset', {
+      argsObj: MasterArgs['obj']['cardDisableAsset(address,uint64)void']
+      argsTuple: MasterArgs['tuple']['cardDisableAsset(address,uint64)void']
+      returns: MasterReturns['cardDisableAsset(address,uint64)void']
     }>
-    & Record<'cardFundDisableAsset(address,uint64)void' | 'cardFundDisableAsset', {
-      argsObj: MasterArgs['obj']['cardFundDisableAsset(address,uint64)void']
-      argsTuple: MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']
-      returns: MasterReturns['cardFundDisableAsset(address,uint64)void']
+    & Record<'cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)' | 'cardWithdrawalRequest', {
+      argsObj: MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']
+      argsTuple: MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']
+      returns: MasterReturns['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']
     }>
-    & Record<'cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)' | 'cardFundInitPermissionlessWithdrawal', {
-      argsObj: MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']
-      argsTuple: MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']
-      returns: MasterReturns['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']
+    & Record<'cardWithdrawalCancel(address)void' | 'cardWithdrawalCancel', {
+      argsObj: MasterArgs['obj']['cardWithdrawalCancel(address)void']
+      argsTuple: MasterArgs['tuple']['cardWithdrawalCancel(address)void']
+      returns: MasterReturns['cardWithdrawalCancel(address)void']
     }>
-    & Record<'cardFundWithdrawalCancel(address)void' | 'cardFundWithdrawalCancel', {
-      argsObj: MasterArgs['obj']['cardFundWithdrawalCancel(address)void']
-      argsTuple: MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']
-      returns: MasterReturns['cardFundWithdrawalCancel(address)void']
+    & Record<'cardWithdraw(address,uint64)void' | 'cardWithdraw', {
+      argsObj: MasterArgs['obj']['cardWithdraw(address,uint64)void']
+      argsTuple: MasterArgs['tuple']['cardWithdraw(address,uint64)void']
+      returns: MasterReturns['cardWithdraw(address,uint64)void']
     }>
-    & Record<'cardFundExecutePermissionlessWithdrawal(address,uint64)void' | 'cardFundExecutePermissionlessWithdrawal', {
-      argsObj: MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']
-      argsTuple: MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']
-      returns: MasterReturns['cardFundExecutePermissionlessWithdrawal(address,uint64)void']
-    }>
-    & Record<'cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void' | 'cardFundExecuteApprovedWithdrawal', {
-      argsObj: MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']
-      argsTuple: MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']
-      returns: MasterReturns['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']
+    & Record<'cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void' | 'cardWithdrawPermissioned', {
+      argsObj: MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']
+      argsTuple: MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']
+      returns: MasterReturns['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']
     }>
     & Record<'recoverAsset(uint64,uint64,address)void' | 'recoverAsset', {
       argsObj: MasterArgs['obj']['recoverAsset(uint64,uint64,address)void']
@@ -728,8 +637,7 @@ export type MasterTypes = {
   state: {
     global: {
       keys: {
-        cardFundsActiveCount: bigint
-        partnerChannelsActiveCount: bigint
+        cardsActiveCount: bigint
         withdrawalWaitTime: bigint
         earlyWithdrawalPubkey: BinaryState
         settlementNonce: bigint
@@ -746,8 +654,7 @@ export type MasterTypes = {
     box: {
       keys: {}
       maps: {
-        cardFunds: Map<string, CardFundData>
-        partnerChannels: Map<string, string>
+        cards: Map<string, CardData>
         withdrawals: Map<string, PermissionlessWithdrawalRequest>
         settlementAddress: Map<bigint | number, string>
       }
@@ -955,97 +862,39 @@ export abstract class MasterParamsFactory {
     }
   }
   /**
-   * Constructs a no op call for the getPartnerChannelMbr(string)uint64 ABI method
+   * Constructs a no op call for the cardCreate(address,uint64)address ABI method
    *
-   * Retrieves the minimum balance requirement for creating a partner channel account.
-   *
-   * @param params Parameters for the call
-   * @returns An `AppClientMethodCallParams` object for the call
-   */
-  static getPartnerChannelMbr(params: CallParams<MasterArgs['obj']['getPartnerChannelMbr(string)uint64'] | MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
-    return {
-      ...params,
-      method: 'getPartnerChannelMbr(string)uint64' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.partnerChannelName],
-    }
-  }
-  /**
-   * Constructs a no op call for the partnerChannelCreate(pay,string)address ABI method
-   *
-  * Creates a partner channel account and associates it with the provided partner channel name.
-  Only the owner of the contract can call this function.
+  * Create a card. This generates a brand new account and funds the minimum balance requirement
+  from the contract (owner-sponsored). Only the owner can call this function.
 
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static partnerChannelCreate(params: CallParams<MasterArgs['obj']['partnerChannelCreate(pay,string)address'] | MasterArgs['tuple']['partnerChannelCreate(pay,string)address']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardCreate(params: CallParams<MasterArgs['obj']['cardCreate(address,uint64)address'] | MasterArgs['tuple']['cardCreate(address,uint64)address']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'partnerChannelCreate(pay,string)address' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.mbr, params.args.partnerChannelName],
+      method: 'cardCreate(address,uint64)address' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.cardOwner, params.args.asset],
     }
   }
   /**
-   * Constructs a no op call for the partnerChannelClose(address)void ABI method
-   *
-   * @param params Parameters for the call
-   * @returns An `AppClientMethodCallParams` object for the call
-   */
-  static partnerChannelClose(params: CallParams<MasterArgs['obj']['partnerChannelClose(address)void'] | MasterArgs['tuple']['partnerChannelClose(address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
-    return {
-      ...params,
-      method: 'partnerChannelClose(address)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.partnerChannel],
-    }
-  }
-  /**
-   * Constructs a no op call for the getCardFundMbr(uint64)uint64 ABI method
-   *
-   * Retrieves the minimum balance requirement for creating a card fund account.
-   *
-   * @param params Parameters for the call
-   * @returns An `AppClientMethodCallParams` object for the call
-   */
-  static getCardFundMbr(params: CallParams<MasterArgs['obj']['getCardFundMbr(uint64)uint64'] | MasterArgs['tuple']['getCardFundMbr(uint64)uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
-    return {
-      ...params,
-      method: 'getCardFundMbr(uint64)uint64' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.asset],
-    }
-  }
-  /**
-   * Constructs a no op call for the cardFundCreate(pay,address,uint64)address ABI method
-   *
-   * Create account. This generates a brand new account and funds the minimum balance requirement
-   *
-   * @param params Parameters for the call
-   * @returns An `AppClientMethodCallParams` object for the call
-   */
-  static cardFundCreate(params: CallParams<MasterArgs['obj']['cardFundCreate(pay,address,uint64)address'] | MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
-    return {
-      ...params,
-      method: 'cardFundCreate(pay,address,uint64)address' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.mbr, params.args.partnerChannel, params.args.asset],
-    }
-  }
-  /**
-   * Constructs a no op call for the cardFundClose(address)void ABI method
+   * Constructs a no op call for the cardClose(address)void ABI method
    *
    * Close account. This permanently removes the rekey and deletes the account from the ledger
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundClose(params: CallParams<MasterArgs['obj']['cardFundClose(address)void'] | MasterArgs['tuple']['cardFundClose(address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardClose(params: CallParams<MasterArgs['obj']['cardClose(address)void'] | MasterArgs['tuple']['cardClose(address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundClose(address)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund],
+      method: 'cardClose(address)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card],
     }
   }
   /**
-   * Constructs a no op call for the cardFundRecover(address,address)void ABI method
+   * Constructs a no op call for the cardRecover(address,address)void ABI method
    *
   * Recovers funds from an old card and transfers them to a new card.
   Only the owner of the contract can perform this operation.
@@ -1054,47 +903,36 @@ export abstract class MasterParamsFactory {
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundRecover(params: CallParams<MasterArgs['obj']['cardFundRecover(address,address)void'] | MasterArgs['tuple']['cardFundRecover(address,address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardRecover(params: CallParams<MasterArgs['obj']['cardRecover(address,address)void'] | MasterArgs['tuple']['cardRecover(address,address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundRecover(address,address)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.newCardFundHolder],
+      method: 'cardRecover(address,address)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.newCardHolder],
     }
   }
   /**
-   * Constructs a no op call for the getAssetAllowlistMbr()uint64 ABI method
+   * Constructs a no op call for the assetAllowlistAdd(uint64,address)void ABI method
    *
-   * Retrieves the minimum balance requirement for adding an asset to the allowlist.
+  * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
+  opt-in are funded from the contract (owner-sponsored).
+
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static getAssetAllowlistMbr(params: CallParams<MasterArgs['obj']['getAssetAllowlistMbr()uint64'] | MasterArgs['tuple']['getAssetAllowlistMbr()uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static assetAllowlistAdd(params: CallParams<MasterArgs['obj']['assetAllowlistAdd(uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'getAssetAllowlistMbr()uint64' as const,
-      args: Array.isArray(params.args) ? params.args : [],
-    }
-  }
-  /**
-   * Constructs a no op call for the assetAllowlistAdd(pay,uint64,address)void ABI method
-   *
-   * Allows the master contract to flag intent of accepting an asset.
-   *
-   * @param params Parameters for the call
-   * @returns An `AppClientMethodCallParams` object for the call
-   */
-  static assetAllowlistAdd(params: CallParams<MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
-    return {
-      ...params,
-      method: 'assetAllowlistAdd(pay,uint64,address)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.mbr, params.args.asset, params.args.settlementAddress],
+      method: 'assetAllowlistAdd(uint64,address)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.asset, params.args.settlementAddress],
     }
   }
   /**
    * Constructs a no op call for the assetAllowlistRemove(uint64)void ABI method
    *
-   * Allows the master contract to reject accepting an asset.
+  * Allows the master contract to reject accepting an asset. The freed MBR remains in the
+  contract (owner-sponsored pool).
+
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
@@ -1107,7 +945,7 @@ export abstract class MasterParamsFactory {
     }
   }
   /**
-   * Constructs a no op call for the cardFundDebit(address,uint64,uint64,uint64,string)void ABI method
+   * Constructs a no op call for the cardDebit(address,uint64,uint64,uint64,string)void ABI method
    *
   * Debits the specified amount of the given asset from the card account.
   Only the owner of the contract can perform this operation.
@@ -1116,11 +954,11 @@ export abstract class MasterParamsFactory {
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundDebit(params: CallParams<MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardDebit(params: CallParams<MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundDebit(address,uint64,uint64,uint64,string)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.asset, params.args.amount, params.args.nonce, params.args.ref],
+      method: 'cardDebit(address,uint64,uint64,uint64,string)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.asset, params.args.amount, params.args.nonce, params.args.ref],
     }
   }
   /**
@@ -1156,7 +994,7 @@ export abstract class MasterParamsFactory {
     }
   }
   /**
-   * Constructs a no op call for the cardFundRefund(address,uint64,uint64,uint64)void ABI method
+   * Constructs a no op call for the cardRefund(address,uint64,uint64,uint64)void ABI method
    *
   * Refunds a specified amount of an asset to a card account.
   Only the owner of the contract can perform this operation.
@@ -1165,11 +1003,11 @@ export abstract class MasterParamsFactory {
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundRefund(params: CallParams<MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardRefund(params: CallParams<MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundRefund(address,uint64,uint64,uint64)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.asset, params.args.amount, params.args.nonce],
+      method: 'cardRefund(address,uint64,uint64,uint64)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.asset, params.args.amount, params.args.nonce],
     }
   }
   /**
@@ -1188,48 +1026,48 @@ export abstract class MasterParamsFactory {
     }
   }
   /**
-   * Constructs a no op call for the getNextCardFundNonce(address)uint64 ABI method
+   * Constructs a no op call for the getNextCardNonce(address)uint64 ABI method
    *
-   * Retrieves the next available nonce for the card fund.
+   * Retrieves the next available nonce for the card.
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static getNextCardFundNonce(params: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static getNextCardNonce(params: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'getNextCardFundNonce(address)uint64' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund],
+      method: 'getNextCardNonce(address)uint64' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card],
     }
   }
   /**
-   * Constructs a no op call for the getCardFundWithdrawalNonce(address)uint64 ABI method
+   * Constructs a no op call for the getCardWithdrawalNonce(address)uint64 ABI method
    *
-   * Retrieves the next available nonce for the card fund.
+   * Retrieves the next available withdrawal nonce for the card.
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static getCardFundWithdrawalNonce(params: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static getCardWithdrawalNonce(params: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'getCardFundWithdrawalNonce(address)uint64' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund],
+      method: 'getCardWithdrawalNonce(address)uint64' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card],
     }
   }
   /**
-   * Constructs a no op call for the getCardFundData(address)(address,address,address,uint64,uint64) ABI method
+   * Constructs a no op call for the getCardData(address)(address,address,uint64,uint64) ABI method
    *
-   * Retrieves the card fund data for a given card fund address.
+   * Retrieves the card data for a given card address.
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static getCardFundData(params: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static getCardData(params: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'getCardFundData(address)(address,address,address,uint64,uint64)' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund],
+      method: 'getCardData(address)(address,address,uint64,uint64)' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card],
     }
   }
   /**
@@ -1282,108 +1120,97 @@ export abstract class MasterParamsFactory {
     }
   }
   /**
-   * Constructs a no op call for the getCardFundAssetMbr()uint64 ABI method
+   * Constructs a no op call for the cardEnableAsset(address,uint64)void ABI method
    *
-   * Retrieves the minimum balance requirement for adding an asset to the card fund.
-   *
-   * @param params Parameters for the call
-   * @returns An `AppClientMethodCallParams` object for the call
-   */
-  static getCardFundAssetMbr(params: CallParams<MasterArgs['obj']['getCardFundAssetMbr()uint64'] | MasterArgs['tuple']['getCardFundAssetMbr()uint64']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
-    return {
-      ...params,
-      method: 'getCardFundAssetMbr()uint64' as const,
-      args: Array.isArray(params.args) ? params.args : [],
-    }
-  }
-  /**
-   * Constructs a no op call for the cardFundEnableAsset(pay,address,uint64)void ABI method
-   *
-   * Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account
+  * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
+  funded from the contract (owner-sponsored). Only the owner can call this function.
+
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundEnableAsset(params: CallParams<MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void'] | MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardEnableAsset(params: CallParams<MasterArgs['obj']['cardEnableAsset(address,uint64)void'] | MasterArgs['tuple']['cardEnableAsset(address,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundEnableAsset(pay,address,uint64)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.mbr, params.args.cardFund, params.args.asset],
+      method: 'cardEnableAsset(address,uint64)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.asset],
     }
   }
   /**
-   * Constructs a no op call for the cardFundDisableAsset(address,uint64)void ABI method
+   * Constructs a no op call for the cardDisableAsset(address,uint64)void ABI method
    *
-   * Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account
+  * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
+  requirement of the account. The freed MBR remains within the card account.
+
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundDisableAsset(params: CallParams<MasterArgs['obj']['cardFundDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardDisableAsset(params: CallParams<MasterArgs['obj']['cardDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardDisableAsset(address,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundDisableAsset(address,uint64)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.asset],
+      method: 'cardDisableAsset(address,uint64)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.asset],
     }
   }
   /**
-   * Constructs a no op call for the cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64) ABI method
+   * Constructs a no op call for the cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64) ABI method
    *
-   * Allows the Card Holder (or contract owner) to send an amount of assets from the account
+   * Allows the card holder to request a withdrawal of an amount of assets from the account
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundInitPermissionlessWithdrawal(params: CallParams<MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardWithdrawalRequest(params: CallParams<MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.asset, params.args.amount],
+      method: 'cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.asset, params.args.amount],
     }
   }
   /**
-   * Constructs a no op call for the cardFundWithdrawalCancel(address)void ABI method
+   * Constructs a no op call for the cardWithdrawalCancel(address)void ABI method
    *
-   * Allows the Card Holder (or contract owner) to cancel a withdrawal request
+   * Allows the card holder to cancel a withdrawal request
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundWithdrawalCancel(params: CallParams<MasterArgs['obj']['cardFundWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardWithdrawalCancel(params: CallParams<MasterArgs['obj']['cardWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardWithdrawalCancel(address)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundWithdrawalCancel(address)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund],
+      method: 'cardWithdrawalCancel(address)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card],
     }
   }
   /**
-   * Constructs a no op call for the cardFundExecutePermissionlessWithdrawal(address,uint64)void ABI method
+   * Constructs a no op call for the cardWithdraw(address,uint64)void ABI method
    *
-   * Allows the Card Holder to send an amount of assets from the account
+   * Allows the card holder to send an amount of assets from the account
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundExecutePermissionlessWithdrawal(params: CallParams<MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardWithdraw(params: CallParams<MasterArgs['obj']['cardWithdraw(address,uint64)void'] | MasterArgs['tuple']['cardWithdraw(address,uint64)void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundExecutePermissionlessWithdrawal(address,uint64)void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.amount],
+      method: 'cardWithdraw(address,uint64)void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.amount],
     }
   }
   /**
-   * Constructs a no op call for the cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void ABI method
+   * Constructs a no op call for the cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void ABI method
    *
    * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
    *
    * @param params Parameters for the call
    * @returns An `AppClientMethodCallParams` object for the call
    */
-  static cardFundExecuteApprovedWithdrawal(params: CallParams<MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
+  static cardWithdrawPermissioned(params: CallParams<MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']> & CallOnComplete): AppClientMethodCallParams & CallOnComplete {
     return {
       ...params,
-      method: 'cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void' as const,
-      args: Array.isArray(params.args) ? params.args : [params.args.cardFund, params.args.asset, params.args.amount, params.args.expiresAt, params.args.nonce, params.args.signature],
+      method: 'cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void' as const,
+      args: Array.isArray(params.args) ? params.args : [params.args.card, params.args.asset, params.args.amount, params.args.expiresAt, params.args.nonce, params.args.signature],
     }
   }
   /**
@@ -1609,7 +1436,7 @@ export class MasterFactory {
       /**
        * Deletes an existing instance of the Master smart contract using the destroy()void ABI method.
        *
-       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active card funds
+       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active cards
        *
        * @param params The params for the smart contract call
        * @returns The deployDelete params
@@ -1781,7 +1608,7 @@ export class MasterClient {
       /**
        * Deletes an existing instance of the Master smart contract using the `destroy()void` ABI method.
        *
-       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active card funds
+       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active cards
        *
        * @param params The params for the smart contract call
        * @returns The delete params
@@ -1827,79 +1654,33 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getPartnerChannelMbr(string)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `cardCreate(address,uint64)address` ABI method.
      *
-     * Retrieves the minimum balance requirement for creating a partner channel account.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call params: The minimum balance requirement for creating a partner channel account.
-     */
-    getPartnerChannelMbr: (params: CallParams<MasterArgs['obj']['getPartnerChannelMbr(string)uint64'] | MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.getPartnerChannelMbr(params))
-    },
+    * Create a card. This generates a brand new account and funds the minimum balance requirement
+    from the contract (owner-sponsored). Only the owner can call this function.
 
-    /**
-     * Makes a call to the Master smart contract using the `partnerChannelCreate(pay,string)address` ABI method.
-     *
-    * Creates a partner channel account and associates it with the provided partner channel name.
-    Only the owner of the contract can call this function.
-
-     *
-     * @param params The params for the smart contract call
-     * @returns The call params: The address of the newly created partner channel account.
-     */
-    partnerChannelCreate: (params: CallParams<MasterArgs['obj']['partnerChannelCreate(pay,string)address'] | MasterArgs['tuple']['partnerChannelCreate(pay,string)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.partnerChannelCreate(params))
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `partnerChannelClose(address)void` ABI method.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call params
-     */
-    partnerChannelClose: (params: CallParams<MasterArgs['obj']['partnerChannelClose(address)void'] | MasterArgs['tuple']['partnerChannelClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.partnerChannelClose(params))
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `getCardFundMbr(uint64)uint64` ABI method.
-     *
-     * Retrieves the minimum balance requirement for creating a card fund account.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call params: Minimum balance requirement for creating a card fund account
-     */
-    getCardFundMbr: (params: CallParams<MasterArgs['obj']['getCardFundMbr(uint64)uint64'] | MasterArgs['tuple']['getCardFundMbr(uint64)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.getCardFundMbr(params))
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `cardFundCreate(pay,address,uint64)address` ABI method.
-     *
-     * Create account. This generates a brand new account and funds the minimum balance requirement
      *
      * @param params The params for the smart contract call
      * @returns The call params: Newly generated account used by their card
      */
-    cardFundCreate: (params: CallParams<MasterArgs['obj']['cardFundCreate(pay,address,uint64)address'] | MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundCreate(params))
+    cardCreate: (params: CallParams<MasterArgs['obj']['cardCreate(address,uint64)address'] | MasterArgs['tuple']['cardCreate(address,uint64)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardCreate(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundClose(address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardClose(address)void` ABI method.
      *
      * Close account. This permanently removes the rekey and deletes the account from the ledger
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundClose: (params: CallParams<MasterArgs['obj']['cardFundClose(address)void'] | MasterArgs['tuple']['cardFundClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundClose(params))
+    cardClose: (params: CallParams<MasterArgs['obj']['cardClose(address)void'] | MasterArgs['tuple']['cardClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardClose(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundRecover(address,address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardRecover(address,address)void` ABI method.
      *
     * Recovers funds from an old card and transfers them to a new card.
     Only the owner of the contract can perform this operation.
@@ -1908,38 +1689,30 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundRecover: (params: CallParams<MasterArgs['obj']['cardFundRecover(address,address)void'] | MasterArgs['tuple']['cardFundRecover(address,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundRecover(params))
+    cardRecover: (params: CallParams<MasterArgs['obj']['cardRecover(address,address)void'] | MasterArgs['tuple']['cardRecover(address,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardRecover(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getAssetAllowlistMbr()uint64` ABI method.
+     * Makes a call to the Master smart contract using the `assetAllowlistAdd(uint64,address)void` ABI method.
      *
-     * Retrieves the minimum balance requirement for adding an asset to the allowlist.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call params: Minimum balance requirement for adding an asset to the allowlist
-     */
-    getAssetAllowlistMbr: (params: CallParams<MasterArgs['obj']['getAssetAllowlistMbr()uint64'] | MasterArgs['tuple']['getAssetAllowlistMbr()uint64']> & {onComplete?: OnApplicationComplete.NoOpOC} = {args: []}) => {
-      return this.appClient.params.call(MasterParamsFactory.getAssetAllowlistMbr(params))
-    },
+    * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
+    opt-in are funded from the contract (owner-sponsored).
 
-    /**
-     * Makes a call to the Master smart contract using the `assetAllowlistAdd(pay,uint64,address)void` ABI method.
-     *
-     * Allows the master contract to flag intent of accepting an asset.
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    assetAllowlistAdd: (params: CallParams<MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    assetAllowlistAdd: (params: CallParams<MasterArgs['obj']['assetAllowlistAdd(uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.params.call(MasterParamsFactory.assetAllowlistAdd(params))
     },
 
     /**
      * Makes a call to the Master smart contract using the `assetAllowlistRemove(uint64)void` ABI method.
      *
-     * Allows the master contract to reject accepting an asset.
+    * Allows the master contract to reject accepting an asset. The freed MBR remains in the
+    contract (owner-sponsored pool).
+
      *
      * @param params The params for the smart contract call
      * @returns The call params
@@ -1949,7 +1722,7 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundDebit(address,uint64,uint64,uint64,string)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardDebit(address,uint64,uint64,uint64,string)void` ABI method.
      *
     * Debits the specified amount of the given asset from the card account.
     Only the owner of the contract can perform this operation.
@@ -1958,8 +1731,8 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundDebit: (params: CallParams<MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundDebit(params))
+    cardDebit: (params: CallParams<MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardDebit(params))
     },
 
     /**
@@ -1991,7 +1764,7 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundRefund(address,uint64,uint64,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardRefund(address,uint64,uint64,uint64)void` ABI method.
      *
     * Refunds a specified amount of an asset to a card account.
     Only the owner of the contract can perform this operation.
@@ -2000,8 +1773,8 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundRefund: (params: CallParams<MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundRefund(params))
+    cardRefund: (params: CallParams<MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardRefund(params))
     },
 
     /**
@@ -2019,45 +1792,45 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getNextCardFundNonce(address)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `getNextCardNonce(address)uint64` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available nonce for the card.
      *
      * @param params The params for the smart contract call
-     * @returns The call params: The nonce for the card fund.
+     * @returns The call params: The nonce for the card.
      */
-    getNextCardFundNonce: (params: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.getNextCardFundNonce(params))
+    getNextCardNonce: (params: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.getNextCardNonce(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundWithdrawalNonce(address)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `getCardWithdrawalNonce(address)uint64` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available withdrawal nonce for the card.
      *
      * @param params The params for the smart contract call
-     * @returns The call params: The nonce for the card fund.
+     * @returns The call params: The withdrawal nonce for the card.
      */
-    getCardFundWithdrawalNonce: (params: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.getCardFundWithdrawalNonce(params))
+    getCardWithdrawalNonce: (params: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.getCardWithdrawalNonce(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundData(address)(address,address,address,uint64,uint64)` ABI method.
+     * Makes a call to the Master smart contract using the `getCardData(address)(address,address,uint64,uint64)` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the card fund data for a given card fund address.
+     * Retrieves the card data for a given card address.
      *
      * @param params The params for the smart contract call
-     * @returns The call params: The card fund data.
+     * @returns The call params: The card data.
      */
-    getCardFundData: (params: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.getCardFundData(params))
+    getCardData: (params: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.getCardData(params))
     },
 
     /**
@@ -2103,87 +1876,79 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundAssetMbr()uint64` ABI method.
+     * Makes a call to the Master smart contract using the `cardEnableAsset(address,uint64)void` ABI method.
      *
-     * Retrieves the minimum balance requirement for adding an asset to the card fund.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call params: The minimum balance requirement for adding an asset to the card fund.
-     */
-    getCardFundAssetMbr: (params: CallParams<MasterArgs['obj']['getCardFundAssetMbr()uint64'] | MasterArgs['tuple']['getCardFundAssetMbr()uint64']> & {onComplete?: OnApplicationComplete.NoOpOC} = {args: []}) => {
-      return this.appClient.params.call(MasterParamsFactory.getCardFundAssetMbr(params))
-    },
+    * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
+    funded from the contract (owner-sponsored). Only the owner can call this function.
 
-    /**
-     * Makes a call to the Master smart contract using the `cardFundEnableAsset(pay,address,uint64)void` ABI method.
-     *
-     * Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundEnableAsset: (params: CallParams<MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void'] | MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundEnableAsset(params))
+    cardEnableAsset: (params: CallParams<MasterArgs['obj']['cardEnableAsset(address,uint64)void'] | MasterArgs['tuple']['cardEnableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardEnableAsset(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundDisableAsset(address,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardDisableAsset(address,uint64)void` ABI method.
      *
-     * Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account
+    * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
+    requirement of the account. The freed MBR remains within the card account.
+
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundDisableAsset: (params: CallParams<MasterArgs['obj']['cardFundDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundDisableAsset(params))
+    cardDisableAsset: (params: CallParams<MasterArgs['obj']['cardDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardDisableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardDisableAsset(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)` ABI method.
      *
-     * Allows the Card Holder (or contract owner) to send an amount of assets from the account
+     * Allows the card holder to request a withdrawal of an amount of assets from the account
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundInitPermissionlessWithdrawal: (params: CallParams<MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundInitPermissionlessWithdrawal(params))
+    cardWithdrawalRequest: (params: CallParams<MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardWithdrawalRequest(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundWithdrawalCancel(address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawalCancel(address)void` ABI method.
      *
-     * Allows the Card Holder (or contract owner) to cancel a withdrawal request
+     * Allows the card holder to cancel a withdrawal request
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundWithdrawalCancel: (params: CallParams<MasterArgs['obj']['cardFundWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundWithdrawalCancel(params))
+    cardWithdrawalCancel: (params: CallParams<MasterArgs['obj']['cardWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardWithdrawalCancel(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardWithdrawalCancel(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundExecutePermissionlessWithdrawal(address,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdraw(address,uint64)void` ABI method.
      *
-     * Allows the Card Holder to send an amount of assets from the account
+     * Allows the card holder to send an amount of assets from the account
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundExecutePermissionlessWithdrawal: (params: CallParams<MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundExecutePermissionlessWithdrawal(params))
+    cardWithdraw: (params: CallParams<MasterArgs['obj']['cardWithdraw(address,uint64)void'] | MasterArgs['tuple']['cardWithdraw(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardWithdraw(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void` ABI method.
      *
      * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
      *
      * @param params The params for the smart contract call
      * @returns The call params
      */
-    cardFundExecuteApprovedWithdrawal: (params: CallParams<MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.params.call(MasterParamsFactory.cardFundExecuteApprovedWithdrawal(params))
+    cardWithdrawPermissioned: (params: CallParams<MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.params.call(MasterParamsFactory.cardWithdrawPermissioned(params))
     },
 
     /**
@@ -2295,7 +2060,7 @@ export class MasterClient {
       /**
        * Deletes an existing instance of the Master smart contract using the `destroy()void` ABI method.
        *
-       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active card funds
+       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active cards
        *
        * @param params The params for the smart contract call
        * @returns The delete transaction
@@ -2341,79 +2106,33 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getPartnerChannelMbr(string)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `cardCreate(address,uint64)address` ABI method.
      *
-     * Retrieves the minimum balance requirement for creating a partner channel account.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call transaction: The minimum balance requirement for creating a partner channel account.
-     */
-    getPartnerChannelMbr: (params: CallParams<MasterArgs['obj']['getPartnerChannelMbr(string)uint64'] | MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getPartnerChannelMbr(params))
-    },
+    * Create a card. This generates a brand new account and funds the minimum balance requirement
+    from the contract (owner-sponsored). Only the owner can call this function.
 
-    /**
-     * Makes a call to the Master smart contract using the `partnerChannelCreate(pay,string)address` ABI method.
-     *
-    * Creates a partner channel account and associates it with the provided partner channel name.
-    Only the owner of the contract can call this function.
-
-     *
-     * @param params The params for the smart contract call
-     * @returns The call transaction: The address of the newly created partner channel account.
-     */
-    partnerChannelCreate: (params: CallParams<MasterArgs['obj']['partnerChannelCreate(pay,string)address'] | MasterArgs['tuple']['partnerChannelCreate(pay,string)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.partnerChannelCreate(params))
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `partnerChannelClose(address)void` ABI method.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call transaction
-     */
-    partnerChannelClose: (params: CallParams<MasterArgs['obj']['partnerChannelClose(address)void'] | MasterArgs['tuple']['partnerChannelClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.partnerChannelClose(params))
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `getCardFundMbr(uint64)uint64` ABI method.
-     *
-     * Retrieves the minimum balance requirement for creating a card fund account.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call transaction: Minimum balance requirement for creating a card fund account
-     */
-    getCardFundMbr: (params: CallParams<MasterArgs['obj']['getCardFundMbr(uint64)uint64'] | MasterArgs['tuple']['getCardFundMbr(uint64)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getCardFundMbr(params))
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `cardFundCreate(pay,address,uint64)address` ABI method.
-     *
-     * Create account. This generates a brand new account and funds the minimum balance requirement
      *
      * @param params The params for the smart contract call
      * @returns The call transaction: Newly generated account used by their card
      */
-    cardFundCreate: (params: CallParams<MasterArgs['obj']['cardFundCreate(pay,address,uint64)address'] | MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundCreate(params))
+    cardCreate: (params: CallParams<MasterArgs['obj']['cardCreate(address,uint64)address'] | MasterArgs['tuple']['cardCreate(address,uint64)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardCreate(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundClose(address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardClose(address)void` ABI method.
      *
      * Close account. This permanently removes the rekey and deletes the account from the ledger
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundClose: (params: CallParams<MasterArgs['obj']['cardFundClose(address)void'] | MasterArgs['tuple']['cardFundClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundClose(params))
+    cardClose: (params: CallParams<MasterArgs['obj']['cardClose(address)void'] | MasterArgs['tuple']['cardClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardClose(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundRecover(address,address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardRecover(address,address)void` ABI method.
      *
     * Recovers funds from an old card and transfers them to a new card.
     Only the owner of the contract can perform this operation.
@@ -2422,38 +2141,30 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundRecover: (params: CallParams<MasterArgs['obj']['cardFundRecover(address,address)void'] | MasterArgs['tuple']['cardFundRecover(address,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundRecover(params))
+    cardRecover: (params: CallParams<MasterArgs['obj']['cardRecover(address,address)void'] | MasterArgs['tuple']['cardRecover(address,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardRecover(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getAssetAllowlistMbr()uint64` ABI method.
+     * Makes a call to the Master smart contract using the `assetAllowlistAdd(uint64,address)void` ABI method.
      *
-     * Retrieves the minimum balance requirement for adding an asset to the allowlist.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call transaction: Minimum balance requirement for adding an asset to the allowlist
-     */
-    getAssetAllowlistMbr: (params: CallParams<MasterArgs['obj']['getAssetAllowlistMbr()uint64'] | MasterArgs['tuple']['getAssetAllowlistMbr()uint64']> & {onComplete?: OnApplicationComplete.NoOpOC} = {args: []}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getAssetAllowlistMbr(params))
-    },
+    * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
+    opt-in are funded from the contract (owner-sponsored).
 
-    /**
-     * Makes a call to the Master smart contract using the `assetAllowlistAdd(pay,uint64,address)void` ABI method.
-     *
-     * Allows the master contract to flag intent of accepting an asset.
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    assetAllowlistAdd: (params: CallParams<MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    assetAllowlistAdd: (params: CallParams<MasterArgs['obj']['assetAllowlistAdd(uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       return this.appClient.createTransaction.call(MasterParamsFactory.assetAllowlistAdd(params))
     },
 
     /**
      * Makes a call to the Master smart contract using the `assetAllowlistRemove(uint64)void` ABI method.
      *
-     * Allows the master contract to reject accepting an asset.
+    * Allows the master contract to reject accepting an asset. The freed MBR remains in the
+    contract (owner-sponsored pool).
+
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
@@ -2463,7 +2174,7 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundDebit(address,uint64,uint64,uint64,string)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardDebit(address,uint64,uint64,uint64,string)void` ABI method.
      *
     * Debits the specified amount of the given asset from the card account.
     Only the owner of the contract can perform this operation.
@@ -2472,8 +2183,8 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundDebit: (params: CallParams<MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundDebit(params))
+    cardDebit: (params: CallParams<MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardDebit(params))
     },
 
     /**
@@ -2505,7 +2216,7 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundRefund(address,uint64,uint64,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardRefund(address,uint64,uint64,uint64)void` ABI method.
      *
     * Refunds a specified amount of an asset to a card account.
     Only the owner of the contract can perform this operation.
@@ -2514,8 +2225,8 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundRefund: (params: CallParams<MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundRefund(params))
+    cardRefund: (params: CallParams<MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardRefund(params))
     },
 
     /**
@@ -2533,45 +2244,45 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getNextCardFundNonce(address)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `getNextCardNonce(address)uint64` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available nonce for the card.
      *
      * @param params The params for the smart contract call
-     * @returns The call transaction: The nonce for the card fund.
+     * @returns The call transaction: The nonce for the card.
      */
-    getNextCardFundNonce: (params: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getNextCardFundNonce(params))
+    getNextCardNonce: (params: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.getNextCardNonce(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundWithdrawalNonce(address)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `getCardWithdrawalNonce(address)uint64` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available withdrawal nonce for the card.
      *
      * @param params The params for the smart contract call
-     * @returns The call transaction: The nonce for the card fund.
+     * @returns The call transaction: The withdrawal nonce for the card.
      */
-    getCardFundWithdrawalNonce: (params: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getCardFundWithdrawalNonce(params))
+    getCardWithdrawalNonce: (params: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.getCardWithdrawalNonce(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundData(address)(address,address,address,uint64,uint64)` ABI method.
+     * Makes a call to the Master smart contract using the `getCardData(address)(address,address,uint64,uint64)` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the card fund data for a given card fund address.
+     * Retrieves the card data for a given card address.
      *
      * @param params The params for the smart contract call
-     * @returns The call transaction: The card fund data.
+     * @returns The call transaction: The card data.
      */
-    getCardFundData: (params: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getCardFundData(params))
+    getCardData: (params: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.getCardData(params))
     },
 
     /**
@@ -2617,87 +2328,79 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundAssetMbr()uint64` ABI method.
+     * Makes a call to the Master smart contract using the `cardEnableAsset(address,uint64)void` ABI method.
      *
-     * Retrieves the minimum balance requirement for adding an asset to the card fund.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call transaction: The minimum balance requirement for adding an asset to the card fund.
-     */
-    getCardFundAssetMbr: (params: CallParams<MasterArgs['obj']['getCardFundAssetMbr()uint64'] | MasterArgs['tuple']['getCardFundAssetMbr()uint64']> & {onComplete?: OnApplicationComplete.NoOpOC} = {args: []}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.getCardFundAssetMbr(params))
-    },
+    * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
+    funded from the contract (owner-sponsored). Only the owner can call this function.
 
-    /**
-     * Makes a call to the Master smart contract using the `cardFundEnableAsset(pay,address,uint64)void` ABI method.
-     *
-     * Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundEnableAsset: (params: CallParams<MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void'] | MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundEnableAsset(params))
+    cardEnableAsset: (params: CallParams<MasterArgs['obj']['cardEnableAsset(address,uint64)void'] | MasterArgs['tuple']['cardEnableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardEnableAsset(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundDisableAsset(address,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardDisableAsset(address,uint64)void` ABI method.
      *
-     * Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account
+    * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
+    requirement of the account. The freed MBR remains within the card account.
+
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundDisableAsset: (params: CallParams<MasterArgs['obj']['cardFundDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundDisableAsset(params))
+    cardDisableAsset: (params: CallParams<MasterArgs['obj']['cardDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardDisableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardDisableAsset(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)` ABI method.
      *
-     * Allows the Card Holder (or contract owner) to send an amount of assets from the account
+     * Allows the card holder to request a withdrawal of an amount of assets from the account
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundInitPermissionlessWithdrawal: (params: CallParams<MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundInitPermissionlessWithdrawal(params))
+    cardWithdrawalRequest: (params: CallParams<MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardWithdrawalRequest(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundWithdrawalCancel(address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawalCancel(address)void` ABI method.
      *
-     * Allows the Card Holder (or contract owner) to cancel a withdrawal request
+     * Allows the card holder to cancel a withdrawal request
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundWithdrawalCancel: (params: CallParams<MasterArgs['obj']['cardFundWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundWithdrawalCancel(params))
+    cardWithdrawalCancel: (params: CallParams<MasterArgs['obj']['cardWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardWithdrawalCancel(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardWithdrawalCancel(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundExecutePermissionlessWithdrawal(address,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdraw(address,uint64)void` ABI method.
      *
-     * Allows the Card Holder to send an amount of assets from the account
+     * Allows the card holder to send an amount of assets from the account
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundExecutePermissionlessWithdrawal: (params: CallParams<MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundExecutePermissionlessWithdrawal(params))
+    cardWithdraw: (params: CallParams<MasterArgs['obj']['cardWithdraw(address,uint64)void'] | MasterArgs['tuple']['cardWithdraw(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardWithdraw(params))
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void` ABI method.
      *
      * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
      *
      * @param params The params for the smart contract call
      * @returns The call transaction
      */
-    cardFundExecuteApprovedWithdrawal: (params: CallParams<MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      return this.appClient.createTransaction.call(MasterParamsFactory.cardFundExecuteApprovedWithdrawal(params))
+    cardWithdrawPermissioned: (params: CallParams<MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']> & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      return this.appClient.createTransaction.call(MasterParamsFactory.cardWithdrawPermissioned(params))
     },
 
     /**
@@ -2810,7 +2513,7 @@ export class MasterClient {
       /**
        * Deletes an existing instance of the Master smart contract using the `destroy()void` ABI method.
        *
-       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active card funds
+       * Destroy the smart contract, sending all Algo to the owner account. This can only be done if there are no active cards
        *
        * @param params The params for the smart contract call
        * @returns The delete result
@@ -2859,85 +2562,35 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getPartnerChannelMbr(string)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `cardCreate(address,uint64)address` ABI method.
      *
-     * Retrieves the minimum balance requirement for creating a partner channel account.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call result: The minimum balance requirement for creating a partner channel account.
-     */
-    getPartnerChannelMbr: async (params: CallParams<MasterArgs['obj']['getPartnerChannelMbr(string)uint64'] | MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getPartnerChannelMbr(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getPartnerChannelMbr(string)uint64'])}
-    },
+    * Create a card. This generates a brand new account and funds the minimum balance requirement
+    from the contract (owner-sponsored). Only the owner can call this function.
 
-    /**
-     * Makes a call to the Master smart contract using the `partnerChannelCreate(pay,string)address` ABI method.
-     *
-    * Creates a partner channel account and associates it with the provided partner channel name.
-    Only the owner of the contract can call this function.
-
-     *
-     * @param params The params for the smart contract call
-     * @returns The call result: The address of the newly created partner channel account.
-     */
-    partnerChannelCreate: async (params: CallParams<MasterArgs['obj']['partnerChannelCreate(pay,string)address'] | MasterArgs['tuple']['partnerChannelCreate(pay,string)address']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.partnerChannelCreate(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['partnerChannelCreate(pay,string)address'])}
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `partnerChannelClose(address)void` ABI method.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call result
-     */
-    partnerChannelClose: async (params: CallParams<MasterArgs['obj']['partnerChannelClose(address)void'] | MasterArgs['tuple']['partnerChannelClose(address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.partnerChannelClose(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['partnerChannelClose(address)void'])}
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `getCardFundMbr(uint64)uint64` ABI method.
-     *
-     * Retrieves the minimum balance requirement for creating a card fund account.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call result: Minimum balance requirement for creating a card fund account
-     */
-    getCardFundMbr: async (params: CallParams<MasterArgs['obj']['getCardFundMbr(uint64)uint64'] | MasterArgs['tuple']['getCardFundMbr(uint64)uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getCardFundMbr(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getCardFundMbr(uint64)uint64'])}
-    },
-
-    /**
-     * Makes a call to the Master smart contract using the `cardFundCreate(pay,address,uint64)address` ABI method.
-     *
-     * Create account. This generates a brand new account and funds the minimum balance requirement
      *
      * @param params The params for the smart contract call
      * @returns The call result: Newly generated account used by their card
      */
-    cardFundCreate: async (params: CallParams<MasterArgs['obj']['cardFundCreate(pay,address,uint64)address'] | MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundCreate(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundCreate(pay,address,uint64)address'])}
+    cardCreate: async (params: CallParams<MasterArgs['obj']['cardCreate(address,uint64)address'] | MasterArgs['tuple']['cardCreate(address,uint64)address']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardCreate(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardCreate(address,uint64)address'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundClose(address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardClose(address)void` ABI method.
      *
      * Close account. This permanently removes the rekey and deletes the account from the ledger
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundClose: async (params: CallParams<MasterArgs['obj']['cardFundClose(address)void'] | MasterArgs['tuple']['cardFundClose(address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundClose(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundClose(address)void'])}
+    cardClose: async (params: CallParams<MasterArgs['obj']['cardClose(address)void'] | MasterArgs['tuple']['cardClose(address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardClose(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardClose(address)void'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundRecover(address,address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardRecover(address,address)void` ABI method.
      *
     * Recovers funds from an old card and transfers them to a new card.
     Only the owner of the contract can perform this operation.
@@ -2946,41 +2599,32 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundRecover: async (params: CallParams<MasterArgs['obj']['cardFundRecover(address,address)void'] | MasterArgs['tuple']['cardFundRecover(address,address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundRecover(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundRecover(address,address)void'])}
+    cardRecover: async (params: CallParams<MasterArgs['obj']['cardRecover(address,address)void'] | MasterArgs['tuple']['cardRecover(address,address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardRecover(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardRecover(address,address)void'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getAssetAllowlistMbr()uint64` ABI method.
+     * Makes a call to the Master smart contract using the `assetAllowlistAdd(uint64,address)void` ABI method.
      *
-     * Retrieves the minimum balance requirement for adding an asset to the allowlist.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call result: Minimum balance requirement for adding an asset to the allowlist
-     */
-    getAssetAllowlistMbr: async (params: CallParams<MasterArgs['obj']['getAssetAllowlistMbr()uint64'] | MasterArgs['tuple']['getAssetAllowlistMbr()uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC} = {args: []}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getAssetAllowlistMbr(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getAssetAllowlistMbr()uint64'])}
-    },
+    * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
+    opt-in are funded from the contract (owner-sponsored).
 
-    /**
-     * Makes a call to the Master smart contract using the `assetAllowlistAdd(pay,uint64,address)void` ABI method.
-     *
-     * Allows the master contract to flag intent of accepting an asset.
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    assetAllowlistAdd: async (params: CallParams<MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+    assetAllowlistAdd: async (params: CallParams<MasterArgs['obj']['assetAllowlistAdd(uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
       const result = await this.appClient.send.call(MasterParamsFactory.assetAllowlistAdd(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['assetAllowlistAdd(pay,uint64,address)void'])}
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['assetAllowlistAdd(uint64,address)void'])}
     },
 
     /**
      * Makes a call to the Master smart contract using the `assetAllowlistRemove(uint64)void` ABI method.
      *
-     * Allows the master contract to reject accepting an asset.
+    * Allows the master contract to reject accepting an asset. The freed MBR remains in the
+    contract (owner-sponsored pool).
+
      *
      * @param params The params for the smart contract call
      * @returns The call result
@@ -2991,7 +2635,7 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundDebit(address,uint64,uint64,uint64,string)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardDebit(address,uint64,uint64,uint64,string)void` ABI method.
      *
     * Debits the specified amount of the given asset from the card account.
     Only the owner of the contract can perform this operation.
@@ -3000,9 +2644,9 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundDebit: async (params: CallParams<MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundDebit(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundDebit(address,uint64,uint64,uint64,string)void'])}
+    cardDebit: async (params: CallParams<MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardDebit(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardDebit(address,uint64,uint64,uint64,string)void'])}
     },
 
     /**
@@ -3036,7 +2680,7 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundRefund(address,uint64,uint64,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardRefund(address,uint64,uint64,uint64)void` ABI method.
      *
     * Refunds a specified amount of an asset to a card account.
     Only the owner of the contract can perform this operation.
@@ -3045,9 +2689,9 @@ export class MasterClient {
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundRefund: async (params: CallParams<MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundRefund(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundRefund(address,uint64,uint64,uint64)void'])}
+    cardRefund: async (params: CallParams<MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardRefund(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardRefund(address,uint64,uint64,uint64)void'])}
     },
 
     /**
@@ -3066,48 +2710,48 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getNextCardFundNonce(address)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `getNextCardNonce(address)uint64` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available nonce for the card.
      *
      * @param params The params for the smart contract call
-     * @returns The call result: The nonce for the card fund.
+     * @returns The call result: The nonce for the card.
      */
-    getNextCardFundNonce: async (params: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getNextCardFundNonce(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getNextCardFundNonce(address)uint64'])}
+    getNextCardNonce: async (params: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.getNextCardNonce(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['getNextCardNonce(address)uint64'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundWithdrawalNonce(address)uint64` ABI method.
+     * Makes a call to the Master smart contract using the `getCardWithdrawalNonce(address)uint64` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the next available nonce for the card fund.
+     * Retrieves the next available withdrawal nonce for the card.
      *
      * @param params The params for the smart contract call
-     * @returns The call result: The nonce for the card fund.
+     * @returns The call result: The withdrawal nonce for the card.
      */
-    getCardFundWithdrawalNonce: async (params: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getCardFundWithdrawalNonce(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getCardFundWithdrawalNonce(address)uint64'])}
+    getCardWithdrawalNonce: async (params: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.getCardWithdrawalNonce(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['getCardWithdrawalNonce(address)uint64'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundData(address)(address,address,address,uint64,uint64)` ABI method.
+     * Makes a call to the Master smart contract using the `getCardData(address)(address,address,uint64,uint64)` ABI method.
      * 
      * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
      *
-     * Retrieves the card fund data for a given card fund address.
+     * Retrieves the card data for a given card address.
      *
      * @param params The params for the smart contract call
-     * @returns The call result: The card fund data.
+     * @returns The call result: The card data.
      */
-    getCardFundData: async (params: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getCardFundData(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getCardFundData(address)(address,address,address,uint64,uint64)'])}
+    getCardData: async (params: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.getCardData(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['getCardData(address)(address,address,uint64,uint64)'])}
     },
 
     /**
@@ -3156,94 +2800,85 @@ export class MasterClient {
     },
 
     /**
-     * Makes a call to the Master smart contract using the `getCardFundAssetMbr()uint64` ABI method.
+     * Makes a call to the Master smart contract using the `cardEnableAsset(address,uint64)void` ABI method.
      *
-     * Retrieves the minimum balance requirement for adding an asset to the card fund.
-     *
-     * @param params The params for the smart contract call
-     * @returns The call result: The minimum balance requirement for adding an asset to the card fund.
-     */
-    getCardFundAssetMbr: async (params: CallParams<MasterArgs['obj']['getCardFundAssetMbr()uint64'] | MasterArgs['tuple']['getCardFundAssetMbr()uint64']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC} = {args: []}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.getCardFundAssetMbr(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['getCardFundAssetMbr()uint64'])}
-    },
+    * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
+    funded from the contract (owner-sponsored). Only the owner can call this function.
 
-    /**
-     * Makes a call to the Master smart contract using the `cardFundEnableAsset(pay,address,uint64)void` ABI method.
-     *
-     * Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundEnableAsset: async (params: CallParams<MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void'] | MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundEnableAsset(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundEnableAsset(pay,address,uint64)void'])}
+    cardEnableAsset: async (params: CallParams<MasterArgs['obj']['cardEnableAsset(address,uint64)void'] | MasterArgs['tuple']['cardEnableAsset(address,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardEnableAsset(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardEnableAsset(address,uint64)void'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundDisableAsset(address,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardDisableAsset(address,uint64)void` ABI method.
      *
-     * Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account
+    * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
+    requirement of the account. The freed MBR remains within the card account.
+
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundDisableAsset: async (params: CallParams<MasterArgs['obj']['cardFundDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundDisableAsset(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundDisableAsset(address,uint64)void'])}
+    cardDisableAsset: async (params: CallParams<MasterArgs['obj']['cardDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardDisableAsset(address,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardDisableAsset(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardDisableAsset(address,uint64)void'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)` ABI method.
      *
-     * Allows the Card Holder (or contract owner) to send an amount of assets from the account
+     * Allows the card holder to request a withdrawal of an amount of assets from the account
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundInitPermissionlessWithdrawal: async (params: CallParams<MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundInitPermissionlessWithdrawal(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'])}
+    cardWithdrawalRequest: async (params: CallParams<MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardWithdrawalRequest(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundWithdrawalCancel(address)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawalCancel(address)void` ABI method.
      *
-     * Allows the Card Holder (or contract owner) to cancel a withdrawal request
+     * Allows the card holder to cancel a withdrawal request
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundWithdrawalCancel: async (params: CallParams<MasterArgs['obj']['cardFundWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundWithdrawalCancel(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundWithdrawalCancel(address)void'])}
+    cardWithdrawalCancel: async (params: CallParams<MasterArgs['obj']['cardWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardWithdrawalCancel(address)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardWithdrawalCancel(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardWithdrawalCancel(address)void'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundExecutePermissionlessWithdrawal(address,uint64)void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdraw(address,uint64)void` ABI method.
      *
-     * Allows the Card Holder to send an amount of assets from the account
+     * Allows the card holder to send an amount of assets from the account
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundExecutePermissionlessWithdrawal: async (params: CallParams<MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundExecutePermissionlessWithdrawal(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundExecutePermissionlessWithdrawal(address,uint64)void'])}
+    cardWithdraw: async (params: CallParams<MasterArgs['obj']['cardWithdraw(address,uint64)void'] | MasterArgs['tuple']['cardWithdraw(address,uint64)void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardWithdraw(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardWithdraw(address,uint64)void'])}
     },
 
     /**
-     * Makes a call to the Master smart contract using the `cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void` ABI method.
+     * Makes a call to the Master smart contract using the `cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void` ABI method.
      *
      * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
      *
      * @param params The params for the smart contract call
      * @returns The call result
      */
-    cardFundExecuteApprovedWithdrawal: async (params: CallParams<MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
-      const result = await this.appClient.send.call(MasterParamsFactory.cardFundExecuteApprovedWithdrawal(params))
-      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'])}
+    cardWithdrawPermissioned: async (params: CallParams<MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']> & SendParams & {onComplete?: OnApplicationComplete.NoOpOC}) => {
+      const result = await this.appClient.send.call(MasterParamsFactory.cardWithdrawPermissioned(params))
+      return {...result, return: result.return as unknown as (undefined | MasterReturns['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'])}
     },
 
     /**
@@ -3374,48 +3009,48 @@ export class MasterClient {
   }
 
   /**
-   * Makes a readonly (simulated) call to the Master smart contract using the `getNextCardFundNonce(address)uint64` ABI method.
+   * Makes a readonly (simulated) call to the Master smart contract using the `getNextCardNonce(address)uint64` ABI method.
    * 
    * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
    *
-   * Retrieves the next available nonce for the card fund.
+   * Retrieves the next available nonce for the card.
    *
    * @param params The params for the smart contract call
-   * @returns The call result: The nonce for the card fund.
+   * @returns The call result: The nonce for the card.
    */
-  async getNextCardFundNonce(params: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']>) {
-    const result = await this.appClient.send.call(MasterParamsFactory.getNextCardFundNonce(params))
-    return result.return as unknown as MasterReturns['getNextCardFundNonce(address)uint64']
+  async getNextCardNonce(params: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']>) {
+    const result = await this.appClient.send.call(MasterParamsFactory.getNextCardNonce(params))
+    return result.return as unknown as MasterReturns['getNextCardNonce(address)uint64']
   }
 
   /**
-   * Makes a readonly (simulated) call to the Master smart contract using the `getCardFundWithdrawalNonce(address)uint64` ABI method.
+   * Makes a readonly (simulated) call to the Master smart contract using the `getCardWithdrawalNonce(address)uint64` ABI method.
    * 
    * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
    *
-   * Retrieves the next available nonce for the card fund.
+   * Retrieves the next available withdrawal nonce for the card.
    *
    * @param params The params for the smart contract call
-   * @returns The call result: The nonce for the card fund.
+   * @returns The call result: The withdrawal nonce for the card.
    */
-  async getCardFundWithdrawalNonce(params: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']>) {
-    const result = await this.appClient.send.call(MasterParamsFactory.getCardFundWithdrawalNonce(params))
-    return result.return as unknown as MasterReturns['getCardFundWithdrawalNonce(address)uint64']
+  async getCardWithdrawalNonce(params: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']>) {
+    const result = await this.appClient.send.call(MasterParamsFactory.getCardWithdrawalNonce(params))
+    return result.return as unknown as MasterReturns['getCardWithdrawalNonce(address)uint64']
   }
 
   /**
-   * Makes a readonly (simulated) call to the Master smart contract using the `getCardFundData(address)(address,address,address,uint64,uint64)` ABI method.
+   * Makes a readonly (simulated) call to the Master smart contract using the `getCardData(address)(address,address,uint64,uint64)` ABI method.
    * 
    * This method is a readonly method; calling it with onComplete of NoOp will result in a simulated transaction rather than a real transaction.
    *
-   * Retrieves the card fund data for a given card fund address.
+   * Retrieves the card data for a given card address.
    *
    * @param params The params for the smart contract call
-   * @returns The call result: The card fund data.
+   * @returns The call result: The card data.
    */
-  async getCardFundData(params: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']>) {
-    const result = await this.appClient.send.call(MasterParamsFactory.getCardFundData(params))
-    return result.return as unknown as MasterReturns['getCardFundData(address)(address,address,address,uint64,uint64)']
+  async getCardData(params: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']>) {
+    const result = await this.appClient.send.call(MasterParamsFactory.getCardData(params))
+    return result.return as unknown as MasterReturns['getCardData(address)(address,address,uint64,uint64)']
   }
 
   /**
@@ -3460,8 +3095,7 @@ export class MasterClient {
       getAll: async (): Promise<Partial<Expand<GlobalKeysState>>> => {
         const result = await this.appClient.state.global.getAll()
         return {
-          cardFundsActiveCount: result.card_funds_active_count,
-          partnerChannelsActiveCount: result.partner_channels_active_count,
+          cardsActiveCount: result.cards_active_count,
           withdrawalWaitTime: result.withdrawal_wait_time,
           earlyWithdrawalPubkey: new BinaryStateValue(result.early_withdrawal_pubkey),
           settlementNonce: result.settlement_nonce,
@@ -3472,13 +3106,9 @@ export class MasterClient {
         }
       },
       /**
-       * Get the current value of the card_funds_active_count key in global state
+       * Get the current value of the cards_active_count key in global state
        */
-      cardFundsActiveCount: async (): Promise<bigint | undefined> => { return (await this.appClient.state.global.getValue("card_funds_active_count")) as bigint | undefined },
-      /**
-       * Get the current value of the partner_channels_active_count key in global state
-       */
-      partnerChannelsActiveCount: async (): Promise<bigint | undefined> => { return (await this.appClient.state.global.getValue("partner_channels_active_count")) as bigint | undefined },
+      cardsActiveCount: async (): Promise<bigint | undefined> => { return (await this.appClient.state.global.getValue("cards_active_count")) as bigint | undefined },
       /**
        * Get the current value of the withdrawal_wait_time key in global state
        */
@@ -3521,30 +3151,17 @@ export class MasterClient {
         }
       },
       /**
-       * Get values from the card_funds map in box state
+       * Get values from the cards map in box state
        */
-      cardFunds: {
+      cards: {
         /**
-         * Get all current values of the card_funds map in box state
+         * Get all current values of the cards map in box state
          */
-        getMap: async (): Promise<Map<string, CardFundData>> => { return (await this.appClient.state.box.getMap("card_funds")) as Map<string, CardFundData> },
+        getMap: async (): Promise<Map<string, CardData>> => { return (await this.appClient.state.box.getMap("cards")) as Map<string, CardData> },
         /**
-         * Get a current value of the card_funds map by key from box state
+         * Get a current value of the cards map by key from box state
          */
-        value: async (key: string): Promise<CardFundData | undefined> => { return await this.appClient.state.box.getMapValue("card_funds", key) as CardFundData | undefined },
-      },
-      /**
-       * Get values from the partner_channels map in box state
-       */
-      partnerChannels: {
-        /**
-         * Get all current values of the partner_channels map in box state
-         */
-        getMap: async (): Promise<Map<string, string>> => { return (await this.appClient.state.box.getMap("partner_channels")) as Map<string, string> },
-        /**
-         * Get a current value of the partner_channels map by key from box state
-         */
-        value: async (key: string): Promise<string | undefined> => { return await this.appClient.state.box.getMapValue("partner_channels", key) as string | undefined },
+        value: async (key: string): Promise<CardData | undefined> => { return await this.appClient.state.box.getMapValue("cards", key) as CardData | undefined },
       },
       /**
        * Get values from the withdrawals map in box state
@@ -3598,73 +3215,33 @@ export class MasterClient {
         return this
       },
       /**
-       * Add a getPartnerChannelMbr(string)uint64 method call against the Master contract
+       * Add a cardCreate(address,uint64)address method call against the Master contract
        */
-      getPartnerChannelMbr(params: CallParams<MasterArgs['obj']['getPartnerChannelMbr(string)uint64'] | MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getPartnerChannelMbr(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getPartnerChannelMbr(string)uint64', v))
+      cardCreate(params: CallParams<MasterArgs['obj']['cardCreate(address,uint64)address'] | MasterArgs['tuple']['cardCreate(address,uint64)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardCreate(params)))
+        resultMappers.push((v) => client.decodeReturnValue('cardCreate(address,uint64)address', v))
         return this
       },
       /**
-       * Add a partnerChannelCreate(pay,string)address method call against the Master contract
+       * Add a cardClose(address)void method call against the Master contract
        */
-      partnerChannelCreate(params: CallParams<MasterArgs['obj']['partnerChannelCreate(pay,string)address'] | MasterArgs['tuple']['partnerChannelCreate(pay,string)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.partnerChannelCreate(params)))
-        resultMappers.push((v) => client.decodeReturnValue('partnerChannelCreate(pay,string)address', v))
-        return this
-      },
-      /**
-       * Add a partnerChannelClose(address)void method call against the Master contract
-       */
-      partnerChannelClose(params: CallParams<MasterArgs['obj']['partnerChannelClose(address)void'] | MasterArgs['tuple']['partnerChannelClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.partnerChannelClose(params)))
+      cardClose(params: CallParams<MasterArgs['obj']['cardClose(address)void'] | MasterArgs['tuple']['cardClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardClose(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a getCardFundMbr(uint64)uint64 method call against the Master contract
+       * Add a cardRecover(address,address)void method call against the Master contract
        */
-      getCardFundMbr(params: CallParams<MasterArgs['obj']['getCardFundMbr(uint64)uint64'] | MasterArgs['tuple']['getCardFundMbr(uint64)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getCardFundMbr(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getCardFundMbr(uint64)uint64', v))
-        return this
-      },
-      /**
-       * Add a cardFundCreate(pay,address,uint64)address method call against the Master contract
-       */
-      cardFundCreate(params: CallParams<MasterArgs['obj']['cardFundCreate(pay,address,uint64)address'] | MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundCreate(params)))
-        resultMappers.push((v) => client.decodeReturnValue('cardFundCreate(pay,address,uint64)address', v))
-        return this
-      },
-      /**
-       * Add a cardFundClose(address)void method call against the Master contract
-       */
-      cardFundClose(params: CallParams<MasterArgs['obj']['cardFundClose(address)void'] | MasterArgs['tuple']['cardFundClose(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundClose(params)))
+      cardRecover(params: CallParams<MasterArgs['obj']['cardRecover(address,address)void'] | MasterArgs['tuple']['cardRecover(address,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardRecover(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a cardFundRecover(address,address)void method call against the Master contract
+       * Add a assetAllowlistAdd(uint64,address)void method call against the Master contract
        */
-      cardFundRecover(params: CallParams<MasterArgs['obj']['cardFundRecover(address,address)void'] | MasterArgs['tuple']['cardFundRecover(address,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundRecover(params)))
-        resultMappers.push(undefined)
-        return this
-      },
-      /**
-       * Add a getAssetAllowlistMbr()uint64 method call against the Master contract
-       */
-      getAssetAllowlistMbr(params: CallParams<MasterArgs['obj']['getAssetAllowlistMbr()uint64'] | MasterArgs['tuple']['getAssetAllowlistMbr()uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getAssetAllowlistMbr(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getAssetAllowlistMbr()uint64', v))
-        return this
-      },
-      /**
-       * Add a assetAllowlistAdd(pay,uint64,address)void method call against the Master contract
-       */
-      assetAllowlistAdd(params: CallParams<MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+      assetAllowlistAdd(params: CallParams<MasterArgs['obj']['assetAllowlistAdd(uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
         promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.assetAllowlistAdd(params)))
         resultMappers.push(undefined)
         return this
@@ -3678,10 +3255,10 @@ export class MasterClient {
         return this
       },
       /**
-       * Add a cardFundDebit(address,uint64,uint64,uint64,string)void method call against the Master contract
+       * Add a cardDebit(address,uint64,uint64,uint64,string)void method call against the Master contract
        */
-      cardFundDebit(params: CallParams<MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundDebit(params)))
+      cardDebit(params: CallParams<MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardDebit(params)))
         resultMappers.push(undefined)
         return this
       },
@@ -3702,10 +3279,10 @@ export class MasterClient {
         return this
       },
       /**
-       * Add a cardFundRefund(address,uint64,uint64,uint64)void method call against the Master contract
+       * Add a cardRefund(address,uint64,uint64,uint64)void method call against the Master contract
        */
-      cardFundRefund(params: CallParams<MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundRefund(params)))
+      cardRefund(params: CallParams<MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardRefund(params)))
         resultMappers.push(undefined)
         return this
       },
@@ -3718,27 +3295,27 @@ export class MasterClient {
         return this
       },
       /**
-       * Add a getNextCardFundNonce(address)uint64 method call against the Master contract
+       * Add a getNextCardNonce(address)uint64 method call against the Master contract
        */
-      getNextCardFundNonce(params: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getNextCardFundNonce(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getNextCardFundNonce(address)uint64', v))
+      getNextCardNonce(params: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getNextCardNonce(params)))
+        resultMappers.push((v) => client.decodeReturnValue('getNextCardNonce(address)uint64', v))
         return this
       },
       /**
-       * Add a getCardFundWithdrawalNonce(address)uint64 method call against the Master contract
+       * Add a getCardWithdrawalNonce(address)uint64 method call against the Master contract
        */
-      getCardFundWithdrawalNonce(params: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getCardFundWithdrawalNonce(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getCardFundWithdrawalNonce(address)uint64', v))
+      getCardWithdrawalNonce(params: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getCardWithdrawalNonce(params)))
+        resultMappers.push((v) => client.decodeReturnValue('getCardWithdrawalNonce(address)uint64', v))
         return this
       },
       /**
-       * Add a getCardFundData(address)(address,address,address,uint64,uint64) method call against the Master contract
+       * Add a getCardData(address)(address,address,uint64,uint64) method call against the Master contract
        */
-      getCardFundData(params: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getCardFundData(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getCardFundData(address)(address,address,address,uint64,uint64)', v))
+      getCardData(params: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getCardData(params)))
+        resultMappers.push((v) => client.decodeReturnValue('getCardData(address)(address,address,uint64,uint64)', v))
         return this
       },
       /**
@@ -3766,58 +3343,50 @@ export class MasterClient {
         return this
       },
       /**
-       * Add a getCardFundAssetMbr()uint64 method call against the Master contract
+       * Add a cardEnableAsset(address,uint64)void method call against the Master contract
        */
-      getCardFundAssetMbr(params: CallParams<MasterArgs['obj']['getCardFundAssetMbr()uint64'] | MasterArgs['tuple']['getCardFundAssetMbr()uint64']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.getCardFundAssetMbr(params)))
-        resultMappers.push((v) => client.decodeReturnValue('getCardFundAssetMbr()uint64', v))
-        return this
-      },
-      /**
-       * Add a cardFundEnableAsset(pay,address,uint64)void method call against the Master contract
-       */
-      cardFundEnableAsset(params: CallParams<MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void'] | MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundEnableAsset(params)))
+      cardEnableAsset(params: CallParams<MasterArgs['obj']['cardEnableAsset(address,uint64)void'] | MasterArgs['tuple']['cardEnableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardEnableAsset(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a cardFundDisableAsset(address,uint64)void method call against the Master contract
+       * Add a cardDisableAsset(address,uint64)void method call against the Master contract
        */
-      cardFundDisableAsset(params: CallParams<MasterArgs['obj']['cardFundDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundDisableAsset(params)))
+      cardDisableAsset(params: CallParams<MasterArgs['obj']['cardDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardDisableAsset(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardDisableAsset(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64) method call against the Master contract
+       * Add a cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64) method call against the Master contract
        */
-      cardFundInitPermissionlessWithdrawal(params: CallParams<MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundInitPermissionlessWithdrawal(params)))
-        resultMappers.push((v) => client.decodeReturnValue('cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)', v))
+      cardWithdrawalRequest(params: CallParams<MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardWithdrawalRequest(params)))
+        resultMappers.push((v) => client.decodeReturnValue('cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)', v))
         return this
       },
       /**
-       * Add a cardFundWithdrawalCancel(address)void method call against the Master contract
+       * Add a cardWithdrawalCancel(address)void method call against the Master contract
        */
-      cardFundWithdrawalCancel(params: CallParams<MasterArgs['obj']['cardFundWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundWithdrawalCancel(params)))
+      cardWithdrawalCancel(params: CallParams<MasterArgs['obj']['cardWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardWithdrawalCancel(address)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardWithdrawalCancel(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a cardFundExecutePermissionlessWithdrawal(address,uint64)void method call against the Master contract
+       * Add a cardWithdraw(address,uint64)void method call against the Master contract
        */
-      cardFundExecutePermissionlessWithdrawal(params: CallParams<MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundExecutePermissionlessWithdrawal(params)))
+      cardWithdraw(params: CallParams<MasterArgs['obj']['cardWithdraw(address,uint64)void'] | MasterArgs['tuple']['cardWithdraw(address,uint64)void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardWithdraw(params)))
         resultMappers.push(undefined)
         return this
       },
       /**
-       * Add a cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void method call against the Master contract
+       * Add a cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void method call against the Master contract
        */
-      cardFundExecuteApprovedWithdrawal(params: CallParams<MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
-        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardFundExecuteApprovedWithdrawal(params)))
+      cardWithdrawPermissioned(params: CallParams<MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']> & {onComplete?: OnApplicationComplete.NoOpOC}) {
+        promiseChain = promiseChain.then(async () => composer.addAppCallMethodCall(await client.params.cardWithdrawPermissioned(params)))
         resultMappers.push(undefined)
         return this
       },
@@ -3953,62 +3522,20 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
   setEarlyWithdrawalPubkey(params?: CallParams<MasterArgs['obj']['setEarlyWithdrawalPubkey(byte[32])void'] | MasterArgs['tuple']['setEarlyWithdrawalPubkey(byte[32])void']>): MasterComposer<[...TReturns, MasterReturns['setEarlyWithdrawalPubkey(byte[32])void'] | undefined]>
 
   /**
-   * Calls the getPartnerChannelMbr(string)uint64 ABI method.
+   * Calls the cardCreate(address,uint64)address ABI method.
    *
-   * Retrieves the minimum balance requirement for creating a partner channel account.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  getPartnerChannelMbr(params?: CallParams<MasterArgs['obj']['getPartnerChannelMbr(string)uint64'] | MasterArgs['tuple']['getPartnerChannelMbr(string)uint64']>): MasterComposer<[...TReturns, MasterReturns['getPartnerChannelMbr(string)uint64'] | undefined]>
-
-  /**
-   * Calls the partnerChannelCreate(pay,string)address ABI method.
-   *
-  * Creates a partner channel account and associates it with the provided partner channel name.
-  Only the owner of the contract can call this function.
+  * Create a card. This generates a brand new account and funds the minimum balance requirement
+  from the contract (owner-sponsored). Only the owner can call this function.
 
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  partnerChannelCreate(params?: CallParams<MasterArgs['obj']['partnerChannelCreate(pay,string)address'] | MasterArgs['tuple']['partnerChannelCreate(pay,string)address']>): MasterComposer<[...TReturns, MasterReturns['partnerChannelCreate(pay,string)address'] | undefined]>
+  cardCreate(params?: CallParams<MasterArgs['obj']['cardCreate(address,uint64)address'] | MasterArgs['tuple']['cardCreate(address,uint64)address']>): MasterComposer<[...TReturns, MasterReturns['cardCreate(address,uint64)address'] | undefined]>
 
   /**
-   * Calls the partnerChannelClose(address)void ABI method.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  partnerChannelClose(params?: CallParams<MasterArgs['obj']['partnerChannelClose(address)void'] | MasterArgs['tuple']['partnerChannelClose(address)void']>): MasterComposer<[...TReturns, MasterReturns['partnerChannelClose(address)void'] | undefined]>
-
-  /**
-   * Calls the getCardFundMbr(uint64)uint64 ABI method.
-   *
-   * Retrieves the minimum balance requirement for creating a card fund account.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  getCardFundMbr(params?: CallParams<MasterArgs['obj']['getCardFundMbr(uint64)uint64'] | MasterArgs['tuple']['getCardFundMbr(uint64)uint64']>): MasterComposer<[...TReturns, MasterReturns['getCardFundMbr(uint64)uint64'] | undefined]>
-
-  /**
-   * Calls the cardFundCreate(pay,address,uint64)address ABI method.
-   *
-   * Create account. This generates a brand new account and funds the minimum balance requirement
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  cardFundCreate(params?: CallParams<MasterArgs['obj']['cardFundCreate(pay,address,uint64)address'] | MasterArgs['tuple']['cardFundCreate(pay,address,uint64)address']>): MasterComposer<[...TReturns, MasterReturns['cardFundCreate(pay,address,uint64)address'] | undefined]>
-
-  /**
-   * Calls the cardFundClose(address)void ABI method.
+   * Calls the cardClose(address)void ABI method.
    *
    * Close account. This permanently removes the rekey and deletes the account from the ledger
    *
@@ -4016,10 +3543,10 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundClose(params?: CallParams<MasterArgs['obj']['cardFundClose(address)void'] | MasterArgs['tuple']['cardFundClose(address)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundClose(address)void'] | undefined]>
+  cardClose(params?: CallParams<MasterArgs['obj']['cardClose(address)void'] | MasterArgs['tuple']['cardClose(address)void']>): MasterComposer<[...TReturns, MasterReturns['cardClose(address)void'] | undefined]>
 
   /**
-   * Calls the cardFundRecover(address,address)void ABI method.
+   * Calls the cardRecover(address,address)void ABI method.
    *
   * Recovers funds from an old card and transfers them to a new card.
   Only the owner of the contract can perform this operation.
@@ -4029,34 +3556,27 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundRecover(params?: CallParams<MasterArgs['obj']['cardFundRecover(address,address)void'] | MasterArgs['tuple']['cardFundRecover(address,address)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundRecover(address,address)void'] | undefined]>
+  cardRecover(params?: CallParams<MasterArgs['obj']['cardRecover(address,address)void'] | MasterArgs['tuple']['cardRecover(address,address)void']>): MasterComposer<[...TReturns, MasterReturns['cardRecover(address,address)void'] | undefined]>
 
   /**
-   * Calls the getAssetAllowlistMbr()uint64 ABI method.
+   * Calls the assetAllowlistAdd(uint64,address)void ABI method.
    *
-   * Retrieves the minimum balance requirement for adding an asset to the allowlist.
+  * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
+  opt-in are funded from the contract (owner-sponsored).
+
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  getAssetAllowlistMbr(params?: CallParams<MasterArgs['obj']['getAssetAllowlistMbr()uint64'] | MasterArgs['tuple']['getAssetAllowlistMbr()uint64']>): MasterComposer<[...TReturns, MasterReturns['getAssetAllowlistMbr()uint64'] | undefined]>
-
-  /**
-   * Calls the assetAllowlistAdd(pay,uint64,address)void ABI method.
-   *
-   * Allows the master contract to flag intent of accepting an asset.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  assetAllowlistAdd(params?: CallParams<MasterArgs['obj']['assetAllowlistAdd(pay,uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(pay,uint64,address)void']>): MasterComposer<[...TReturns, MasterReturns['assetAllowlistAdd(pay,uint64,address)void'] | undefined]>
+  assetAllowlistAdd(params?: CallParams<MasterArgs['obj']['assetAllowlistAdd(uint64,address)void'] | MasterArgs['tuple']['assetAllowlistAdd(uint64,address)void']>): MasterComposer<[...TReturns, MasterReturns['assetAllowlistAdd(uint64,address)void'] | undefined]>
 
   /**
    * Calls the assetAllowlistRemove(uint64)void ABI method.
    *
-   * Allows the master contract to reject accepting an asset.
+  * Allows the master contract to reject accepting an asset. The freed MBR remains in the
+  contract (owner-sponsored pool).
+
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
@@ -4065,7 +3585,7 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
   assetAllowlistRemove(params?: CallParams<MasterArgs['obj']['assetAllowlistRemove(uint64)void'] | MasterArgs['tuple']['assetAllowlistRemove(uint64)void']>): MasterComposer<[...TReturns, MasterReturns['assetAllowlistRemove(uint64)void'] | undefined]>
 
   /**
-   * Calls the cardFundDebit(address,uint64,uint64,uint64,string)void ABI method.
+   * Calls the cardDebit(address,uint64,uint64,uint64,string)void ABI method.
    *
   * Debits the specified amount of the given asset from the card account.
   Only the owner of the contract can perform this operation.
@@ -4075,7 +3595,7 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundDebit(params?: CallParams<MasterArgs['obj']['cardFundDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardFundDebit(address,uint64,uint64,uint64,string)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundDebit(address,uint64,uint64,uint64,string)void'] | undefined]>
+  cardDebit(params?: CallParams<MasterArgs['obj']['cardDebit(address,uint64,uint64,uint64,string)void'] | MasterArgs['tuple']['cardDebit(address,uint64,uint64,uint64,string)void']>): MasterComposer<[...TReturns, MasterReturns['cardDebit(address,uint64,uint64,uint64,string)void'] | undefined]>
 
   /**
    * Calls the getRefundAddress()address ABI method.
@@ -4102,7 +3622,7 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
   setRefundAddress(params?: CallParams<MasterArgs['obj']['setRefundAddress(address)void'] | MasterArgs['tuple']['setRefundAddress(address)void']>): MasterComposer<[...TReturns, MasterReturns['setRefundAddress(address)void'] | undefined]>
 
   /**
-   * Calls the cardFundRefund(address,uint64,uint64,uint64)void ABI method.
+   * Calls the cardRefund(address,uint64,uint64,uint64)void ABI method.
    *
   * Refunds a specified amount of an asset to a card account.
   Only the owner of the contract can perform this operation.
@@ -4112,7 +3632,7 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundRefund(params?: CallParams<MasterArgs['obj']['cardFundRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardFundRefund(address,uint64,uint64,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundRefund(address,uint64,uint64,uint64)void'] | undefined]>
+  cardRefund(params?: CallParams<MasterArgs['obj']['cardRefund(address,uint64,uint64,uint64)void'] | MasterArgs['tuple']['cardRefund(address,uint64,uint64,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardRefund(address,uint64,uint64,uint64)void'] | undefined]>
 
   /**
    * Calls the getNextSettlementNonce()uint64 ABI method.
@@ -4126,37 +3646,37 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
   getNextSettlementNonce(params?: CallParams<MasterArgs['obj']['getNextSettlementNonce()uint64'] | MasterArgs['tuple']['getNextSettlementNonce()uint64']>): MasterComposer<[...TReturns, MasterReturns['getNextSettlementNonce()uint64'] | undefined]>
 
   /**
-   * Calls the getNextCardFundNonce(address)uint64 ABI method.
+   * Calls the getNextCardNonce(address)uint64 ABI method.
    *
-   * Retrieves the next available nonce for the card fund.
+   * Retrieves the next available nonce for the card.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  getNextCardFundNonce(params?: CallParams<MasterArgs['obj']['getNextCardFundNonce(address)uint64'] | MasterArgs['tuple']['getNextCardFundNonce(address)uint64']>): MasterComposer<[...TReturns, MasterReturns['getNextCardFundNonce(address)uint64'] | undefined]>
+  getNextCardNonce(params?: CallParams<MasterArgs['obj']['getNextCardNonce(address)uint64'] | MasterArgs['tuple']['getNextCardNonce(address)uint64']>): MasterComposer<[...TReturns, MasterReturns['getNextCardNonce(address)uint64'] | undefined]>
 
   /**
-   * Calls the getCardFundWithdrawalNonce(address)uint64 ABI method.
+   * Calls the getCardWithdrawalNonce(address)uint64 ABI method.
    *
-   * Retrieves the next available nonce for the card fund.
+   * Retrieves the next available withdrawal nonce for the card.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  getCardFundWithdrawalNonce(params?: CallParams<MasterArgs['obj']['getCardFundWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardFundWithdrawalNonce(address)uint64']>): MasterComposer<[...TReturns, MasterReturns['getCardFundWithdrawalNonce(address)uint64'] | undefined]>
+  getCardWithdrawalNonce(params?: CallParams<MasterArgs['obj']['getCardWithdrawalNonce(address)uint64'] | MasterArgs['tuple']['getCardWithdrawalNonce(address)uint64']>): MasterComposer<[...TReturns, MasterReturns['getCardWithdrawalNonce(address)uint64'] | undefined]>
 
   /**
-   * Calls the getCardFundData(address)(address,address,address,uint64,uint64) ABI method.
+   * Calls the getCardData(address)(address,address,uint64,uint64) ABI method.
    *
-   * Retrieves the card fund data for a given card fund address.
+   * Retrieves the card data for a given card address.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  getCardFundData(params?: CallParams<MasterArgs['obj']['getCardFundData(address)(address,address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardFundData(address)(address,address,address,uint64,uint64)']>): MasterComposer<[...TReturns, MasterReturns['getCardFundData(address)(address,address,address,uint64,uint64)'] | undefined]>
+  getCardData(params?: CallParams<MasterArgs['obj']['getCardData(address)(address,address,uint64,uint64)'] | MasterArgs['tuple']['getCardData(address)(address,address,uint64,uint64)']>): MasterComposer<[...TReturns, MasterReturns['getCardData(address)(address,address,uint64,uint64)'] | undefined]>
 
   /**
    * Calls the getSettlementAddress(uint64)address ABI method.
@@ -4196,73 +3716,66 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
   settle(params?: CallParams<MasterArgs['obj']['settle(uint64,uint64,uint64)void'] | MasterArgs['tuple']['settle(uint64,uint64,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['settle(uint64,uint64,uint64)void'] | undefined]>
 
   /**
-   * Calls the getCardFundAssetMbr()uint64 ABI method.
+   * Calls the cardEnableAsset(address,uint64)void ABI method.
    *
-   * Retrieves the minimum balance requirement for adding an asset to the card fund.
+  * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
+  funded from the contract (owner-sponsored). Only the owner can call this function.
+
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  getCardFundAssetMbr(params?: CallParams<MasterArgs['obj']['getCardFundAssetMbr()uint64'] | MasterArgs['tuple']['getCardFundAssetMbr()uint64']>): MasterComposer<[...TReturns, MasterReturns['getCardFundAssetMbr()uint64'] | undefined]>
+  cardEnableAsset(params?: CallParams<MasterArgs['obj']['cardEnableAsset(address,uint64)void'] | MasterArgs['tuple']['cardEnableAsset(address,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardEnableAsset(address,uint64)void'] | undefined]>
 
   /**
-   * Calls the cardFundEnableAsset(pay,address,uint64)void ABI method.
+   * Calls the cardDisableAsset(address,uint64)void ABI method.
    *
-   * Allows the depositor (or owner) to OptIn to an asset, increasing the minimum balance requirement of the account
+  * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
+  requirement of the account. The freed MBR remains within the card account.
+
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundEnableAsset(params?: CallParams<MasterArgs['obj']['cardFundEnableAsset(pay,address,uint64)void'] | MasterArgs['tuple']['cardFundEnableAsset(pay,address,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundEnableAsset(pay,address,uint64)void'] | undefined]>
+  cardDisableAsset(params?: CallParams<MasterArgs['obj']['cardDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardDisableAsset(address,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardDisableAsset(address,uint64)void'] | undefined]>
 
   /**
-   * Calls the cardFundDisableAsset(address,uint64)void ABI method.
+   * Calls the cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64) ABI method.
    *
-   * Allows the depositor (or owner) to CloseOut of an asset, reducing the minimum balance requirement of the account
+   * Allows the card holder to request a withdrawal of an amount of assets from the account
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundDisableAsset(params?: CallParams<MasterArgs['obj']['cardFundDisableAsset(address,uint64)void'] | MasterArgs['tuple']['cardFundDisableAsset(address,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundDisableAsset(address,uint64)void'] | undefined]>
+  cardWithdrawalRequest(params?: CallParams<MasterArgs['obj']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']>): MasterComposer<[...TReturns, MasterReturns['cardWithdrawalRequest(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | undefined]>
 
   /**
-   * Calls the cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64) ABI method.
+   * Calls the cardWithdrawalCancel(address)void ABI method.
    *
-   * Allows the Card Holder (or contract owner) to send an amount of assets from the account
+   * Allows the card holder to cancel a withdrawal request
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundInitPermissionlessWithdrawal(params?: CallParams<MasterArgs['obj']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | MasterArgs['tuple']['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)']>): MasterComposer<[...TReturns, MasterReturns['cardFundInitPermissionlessWithdrawal(address,uint64,uint64)(address,address,uint64,uint64,uint64,uint64)'] | undefined]>
+  cardWithdrawalCancel(params?: CallParams<MasterArgs['obj']['cardWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardWithdrawalCancel(address)void']>): MasterComposer<[...TReturns, MasterReturns['cardWithdrawalCancel(address)void'] | undefined]>
 
   /**
-   * Calls the cardFundWithdrawalCancel(address)void ABI method.
+   * Calls the cardWithdraw(address,uint64)void ABI method.
    *
-   * Allows the Card Holder (or contract owner) to cancel a withdrawal request
+   * Allows the card holder to send an amount of assets from the account
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundWithdrawalCancel(params?: CallParams<MasterArgs['obj']['cardFundWithdrawalCancel(address)void'] | MasterArgs['tuple']['cardFundWithdrawalCancel(address)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundWithdrawalCancel(address)void'] | undefined]>
+  cardWithdraw(params?: CallParams<MasterArgs['obj']['cardWithdraw(address,uint64)void'] | MasterArgs['tuple']['cardWithdraw(address,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardWithdraw(address,uint64)void'] | undefined]>
 
   /**
-   * Calls the cardFundExecutePermissionlessWithdrawal(address,uint64)void ABI method.
-   *
-   * Allows the Card Holder to send an amount of assets from the account
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  cardFundExecutePermissionlessWithdrawal(params?: CallParams<MasterArgs['obj']['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | MasterArgs['tuple']['cardFundExecutePermissionlessWithdrawal(address,uint64)void']>): MasterComposer<[...TReturns, MasterReturns['cardFundExecutePermissionlessWithdrawal(address,uint64)void'] | undefined]>
-
-  /**
-   * Calls the cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void ABI method.
+   * Calls the cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void ABI method.
    *
    * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
    *
@@ -4270,7 +3783,7 @@ export type MasterComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  cardFundExecuteApprovedWithdrawal(params?: CallParams<MasterArgs['obj']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void']>): MasterComposer<[...TReturns, MasterReturns['cardFundExecuteApprovedWithdrawal(address,uint64,uint64,uint64,uint64,byte[64])void'] | undefined]>
+  cardWithdrawPermissioned(params?: CallParams<MasterArgs['obj']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | MasterArgs['tuple']['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void']>): MasterComposer<[...TReturns, MasterReturns['cardWithdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void'] | undefined]>
 
   /**
    * Calls the recoverAsset(uint64,uint64,address)void ABI method.

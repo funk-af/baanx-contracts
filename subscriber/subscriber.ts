@@ -10,10 +10,10 @@ const algod = algokit.getAlgoClient(algokit.getDefaultLocalNetConfig('algod'));
 let lastRound = 0;
 
 /**
- * Check if an address is a card funds address.
+ * Check if an address is a card address.
  * In prod this will check against a cached list of addresses and DynamoDB
  */
-function isCardFundsAddress(address: string) {
+function isCardAddress(address: string) {
     return !!address;
 }
 
@@ -73,7 +73,7 @@ function handleAssetReceive(
     tx.balanceChanges?.forEach((change) => {
         const { address, assetId, amount, roles } = change;
         if (!isSupportedAsset(assetId)) return;
-        if (!isCardFundsAddress(address)) return;
+        if (!isCardAddress(address)) return;
 
         // Only care about assets that are received by the card funds address
         if (roles.includes(BalanceChangeRole.Sender)) return;
