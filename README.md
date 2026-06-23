@@ -1,8 +1,14 @@
 # Concept
 
-This concept uses a single contract that "generates" a new address for each card that's created. Every card is a rekeyed account controlled by the contract.
+This project is built around a **Master** contract that "generates" a new address for each card that's created. Every card is a rekeyed account controlled by the contract.
 
-All minimum balance requirements (MBR) — box storage, account minimum balances and asset opt-in MBR — are **pre-funded by the contract owner**. Callers never attach MBR payments. When a card, asset opt-in or allowlist entry is removed, the freed MBR returns to the contract and the owner can reclaim it with `recoverAsset`.
+All minimum balance requirements (MBR) — box storage, account minimum balances and asset opt-in MBR — are **pre-funded by the contract owner**. Callers never attach MBR payments. When a card is closed, the freed MBR returns to the contract and the owner can reclaim it with `recoverAsset`. When a card opts out of an asset (`cardDisableAsset`), the freed opt-in MBR stays within the card account.
+
+Two auxiliary contracts support an automated draw ("AutoDraw") flow on top of the Master:
+
+- **Master** ([src/Master.algo.ts](src/Master.algo.ts)) — the card-management application. Documented under [Master contract](#master-contract).
+- **Killswitch** ([src/Killswitch.algo.ts](src/Killswitch.algo.ts)) — an application that records which accounts have opted in to AutoDraw delegation, so they can disable it at any time. Documented under [Killswitch contract](#killswitch-contract).
+- **AutoDraw** ([src/AutoDraw.algo.ts](src/AutoDraw.algo.ts)) — a delegated `LogicSig` that authorizes an automatic debit from a card, gated by the Killswitch. Documented under [AutoDraw logic signature](#autodraw-logic-signature).
 
 ## Usage
 
@@ -26,17 +32,19 @@ pnpm build
 
 ## Roles
 
-- **Owner** — administers the contract: creates/closes cards, manages the asset allowlist, debits cards, refunds, settles, and reclaims MBR. Inherited from `Ownable` and transferable via `transferOwnership`.
-- **Pauser** — can `pause`/`unpause` the contract, halting debits and refunds. Inherited from `Pausable`.
-- **Card holder** — the account assigned as a card's `owner`. Can opt the card in/out of assets and initiate/cancel/execute withdrawals.
+- **Owner** — administers the contract: creates/closes/recovers cards, debits cards to the omnibus address, configures the contract (omnibus address, withdrawal timeout, withdrawal public key), and reclaims MBR. Inherited from `Ownable` and transferable via `transferOwnership`.
+- **Pauser** — can `pause`/`unpause` the contract, halting debits. Inherited from `Pausable` and updatable via `updatePauser`.
+- **Card holder** — the account assigned as a card's `owner`. Can close the card, opt the card out of assets, and initiate/cancel/execute withdrawals.
 
-## Methods
+## Master contract
+
+The card-management application. Its methods are grouped below.
 
 ### Administration
 
-#### deploy(address)address
+#### deploy(address,address)address
 
-Deploy the contract, setting the provided address as the owner.
+Deploy the contract, setting the first address as the owner and the second as the omnibus address. The transaction sender becomes the initial pauser. Returns the contract application address.
 
 #### update()void
 
@@ -56,41 +64,27 @@ Pause/unpause the contract and manage the pauser role.
 
 #### recoverAsset(uint64,uint64,address)void
 
-Allows the owner to recover Algo (asset `0`) or any ASA held by the contract — used to reclaim MBR that has returned to the contract.
+Allows the owner to recover Algo (asset `0`) or any ASA held by the contract — used to reclaim MBR that has returned to the contract. Args: `asset, amount, recipient`.
 
 ### Configuration
 
 #### setWithdrawalTimeout(uint64)void
 
-Set the number of seconds a permissionless withdrawal request must wait before it can be executed.
+Owner-only. Set the number of seconds a permissionless withdrawal request must wait before it can be executed.
 
-#### setEarlyWithdrawalPubkey(byte[32])void
+#### setWithdrawalPubkey(byte[32])void
 
-Set the ed25519 public key used to authorize permissioned (early) withdrawals.
+Owner-only. Set the ed25519 public key used to authorize permissioned withdrawals.
 
-#### setRefundAddress(address)void / getRefundAddress()address
+#### setOmnibusAddress(address)void / getOmnibusAddress()address
 
-Set/read the address allowed to issue refunds.
-
-#### setSettlementAddress(uint64,address)void / getSettlementAddress(uint64)address
-
-Set/read the settlement address that funds for a given asset are settled to.
-
-### Asset allowlist
-
-#### assetAllowlistAdd(uint64,address)void
-
-Owner-only. Opts the contract into an asset (MBR funded by the contract) and records its settlement address.
-
-#### assetAllowlistRemove(uint64)void
-
-Owner-only. Closes the contract out of an asset and deletes its settlement address. The freed MBR remains in the contract.
+Owner-only setter / read the omnibus address that debited funds are sent to.
 
 ### Cards
 
 #### cardCreate(address,uint64)address
 
-Owner-only. Generates a brand new rekeyed account for the given card holder and funds its minimum balance (plus asset opt-in MBR if an asset is provided) from the contract. Returns the new card address.
+Owner-only. Generates a brand new rekeyed account for the given card holder and funds its minimum balance from the contract. If an asset is provided (non-zero), also funds the asset opt-in MBR and opts the card into that asset. Returns the new card address.
 
 #### cardClose(address)void
 
@@ -99,10 +93,6 @@ Owner or card holder. Closes the card account back to the contract and deletes i
 #### cardRecover(address,address)void
 
 Owner-only. Reassigns a card to a new card holder.
-
-#### cardEnableAsset(address,uint64)void
-
-Owner-only. Opts a card into an asset, funding the opt-in MBR from the contract.
 
 #### cardDisableAsset(address,uint64)void
 
@@ -116,29 +106,17 @@ Returns a card's `(owner, address, nonce, withdrawalNonce)`.
 
 Read a card's debit nonce. (The withdrawal nonce is available via `getCardData`.)
 
-### Debits, refunds & settlement
+### Debits
 
 #### cardDebit(address,uint64,uint64,uint64,string)void
 
-Owner-only, when not paused. Debits an amount of an asset from a card to the contract. Args: `card, asset, amount, nonce, reference`.
-
-#### cardRefund(address,uint64,uint64,uint64)void
-
-Refund-address only, when not paused. Refunds an amount of an asset from the contract back to a card. Args: `card, asset, amount, nonce`.
-
-#### settle(uint64,uint64,uint64)void
-
-Settle a debited balance for an asset to its settlement address. Args: `asset, amount, nonce`.
-
-#### getNextSettlementNonce()uint64
-
-Read the next settlement nonce.
+Owner-only, when not paused. Debits an amount of an asset from a card directly to the omnibus address. Args: `card, asset, amount, nonce, reference`. The reference is attached as the transfer note and the card's debit nonce is incremented.
 
 ### Withdrawals
 
 #### withdrawalRequest(address,uint64,uint64)(...)
 
-Card holder. Creates a permissionless withdrawal request for `card, asset, amount`. Returns the stored request.
+Card holder. Creates a permissionless withdrawal request for `card, asset, amount` (only one request per card holder at a time). Returns the stored request.
 
 #### withdrawalCancel(address)void
 
@@ -146,21 +124,56 @@ Card holder. Cancels a pending withdrawal request.
 
 #### withdraw(address,uint64)void
 
-Card holder. Executes a pending permissionless withdrawal once the wait time has elapsed.
+Card holder. Executes a pending permissionless withdrawal once the wait time has elapsed. Args: `card, amount`.
 
 #### withdrawPermissioned(address,uint64,uint64,uint64,uint64,byte[64])void
 
-Card holder. Executes an early withdrawal before the wait time elapses, authorized by an ed25519 signature from the early-withdrawal public key. Args: `card, asset, amount, expiresAt, nonce, signature`.
+Card holder. Executes a withdrawal before the wait time elapses, authorized by an ed25519 signature from the withdrawal public key. Args: `card, asset, amount, expiresAt, nonce, signature`.
+
+## Killswitch contract
+
+A standalone application ([src/Killswitch.algo.ts](src/Killswitch.algo.ts)) that maintains an opt-in registry of accounts allowed to use the AutoDraw delegation. It lets a card holder enable AutoDraw and, crucially, disable ("kill") it at any time. It inherits `Ownable`, `Pausable` and `Recoverable`, so it also supports `transferOwnership`, `pause`/`unpause`/`updatePauser`, and `recoverAsset`.
+
+Each enabled account is stored in an `accounts` box (MBR owner-funded); enabling is gated by Master card ownership to prevent abuse of that box MBR. The Master application it verifies against is set at deploy time.
+
+### Methods
+
+#### deploy(address,uint64)address
+
+Deploy the contract, setting the first address as the owner and the `uint64` as the Master application ID used to verify card ownership. The transaction sender becomes the initial pauser. Returns the contract application address.
+
+#### enable(address)void
+
+Opt the caller in to AutoDraw delegation. The caller must pass a `card` address they own; ownership is verified via a cross-contract `getCardData` call to the Master contract. Fails if already enabled or if the caller does not own the card. Creates the caller's `accounts` box.
+
+#### kill()void
+
+Opt the caller out of AutoDraw delegation, deleting their `accounts` box. Fails if not currently enabled.
+
+#### authorize(address)void
+
+When not paused, asserts that the given account has AutoDraw enabled (`REFUSED` otherwise). Called as part of the AutoDraw transaction group to confirm delegation is still active; pausing the contract or the account calling `kill()` halts further draws.
+
+## AutoDraw logic signature
+
+A delegated `LogicSig` ([src/AutoDraw.algo.ts](src/AutoDraw.algo.ts)) that authorizes an automatic debit ("draw") of a single asset from a card. It is parameterized with template variables `ASSET`, `GENESIS_HASH`, `KILLSWITCH_APP` and `MASTER_APP`, and only approves a transaction that satisfies all of the following:
+
+- It is a fee-0 asset transfer of `ASSET`, with no rekey and no asset close-out, on the expected network (`GENESIS_HASH`).
+- The next transaction (group index +1) is a `Killswitch.authorize` call to `KILLSWITCH_APP` whose account argument matches the transfer sender.
+- The transaction after that (group index +2) is a `Master.cardDebit` call to `MASTER_APP` whose `card`, `asset` and `amount` arguments match the transfer's receiver, asset and (as an upper bound) amount.
+
+This enforces that an automated draw can only happen alongside an active Killswitch authorization and a matching Master debit, and that the drawn amount never exceeds the debited amount.
 
 ## Contract diagram
 
 ```mermaid
 classDiagram
     BaanxContract : +box cards
-    BaanxContract : +box settlement_address
     BaanxContract : +box withdrawals
     BaanxContract : +int cards_active_count
     BaanxContract : +int withdrawal_wait_time
+    BaanxContract : +bytes withdrawal_pubkey
+    BaanxContract : +address omnibus_address
     BaanxContract : deploy()
 
     BaanxContract <|-- Owner
@@ -171,19 +184,16 @@ classDiagram
         destroy()
         transferOwnership()
         pause() / unpause()
+        updatePauser()
         recoverAsset()
         setWithdrawalTimeout()
-        setEarlyWithdrawalPubkey()
-        setRefundAddress()
-        setSettlementAddress()
-        assetAllowlistAdd()
-        assetAllowlistRemove()
+        setWithdrawalPubkey()
+        setOmnibusAddress()
         cardCreate()
         cardClose()
         cardRecover()
-        cardEnableAsset()
+        cardDisableAsset()
         cardDebit()
-        settle()
     }
 
     class CardHolder {
@@ -201,17 +211,13 @@ classDiagram
 ```mermaid
 sequenceDiagram
     actor Merchant
-    actor MasterCard
-    actor Circle
+    actor Visa/MC
+    actor Omnibus
     actor User
     actor Baanx
-    Baanx->>Contract: deploy()
+    Baanx->>Contract: deploy(owner, omnibus)
     Baanx->>Contract: setWithdrawalTimeout()
     Baanx->>Contract: fund MBR pool
-    Baanx->>Contract: assetAllowlistAdd()
-    activate Contract
-    Contract-->>Contract: OptIn Asset (owner-funded MBR)
-    deactivate Contract
     Baanx->>Contract: cardCreate(cardHolder, asset)
     activate Contract
     create participant Card
@@ -223,24 +229,20 @@ sequenceDiagram
     User->>Card: Axfer (Deposit)
     User->>Merchant: *taps card*
     activate Merchant
-    Merchant-->>MasterCard: can pay?
-    MasterCard-->>Baanx: auth?
+    Merchant-->>Visa/MC: can pay?
+    Visa/MC-->>Baanx: auth?
     activate Baanx
     Baanx-->>Baanx: Check local DB
-    Baanx-->>MasterCard: Yes
-    MasterCard-->>Merchant: Yes
+    Baanx-->>Visa/MC: Yes
+    Visa/MC-->>Merchant: Yes
     Baanx->>Contract: cardDebit()
     activate Contract
-    Card-->>Contract: axfer (Debit)
+    Card-->>Omnibus: axfer (Debit to omnibus)
     deactivate Baanx
     deactivate Merchant
     deactivate Contract
-    Baanx->>Contract: settle()
-    activate Contract
-    Contract-->>Circle: axfer (Settle)
-    deactivate Contract
-    Circle-->>MasterCard:
-    MasterCard-->>Merchant:
+    Omnibus-->>Visa/MC:
+    Visa/MC-->>Merchant:
     User->>Contract: withdrawalRequest()
     User->>Contract: withdraw()
     activate Contract
@@ -255,7 +257,6 @@ sequenceDiagram
     destroy Card
     Card-->>Contract: pay (balance + MBR returns to contract)
     deactivate Contract
-    Baanx->>Contract: assetAllowlistRemove()
     Baanx->>Contract: recoverAsset()
     activate Contract
     Contract-->>Baanx: reclaim MBR
