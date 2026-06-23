@@ -232,17 +232,14 @@ sequenceDiagram
     Merchant-->>Visa/MC: can pay?
     Visa/MC-->>Baanx: auth?
     activate Baanx
-    Baanx-->>Baanx: Check local DB
-    Baanx-->>Visa/MC: Yes
-    Visa/MC-->>Merchant: Yes
     Baanx->>Contract: cardDebit()
     activate Contract
     Card-->>Omnibus: axfer (Debit to omnibus)
     deactivate Baanx
     deactivate Merchant
     deactivate Contract
-    Omnibus-->>Visa/MC:
-    Visa/MC-->>Merchant:
+    Baanx-->>Visa/MC: Yes
+    Visa/MC-->>Merchant: Yes
     User->>Contract: withdrawalRequest()
     User->>Contract: withdraw()
     activate Contract
