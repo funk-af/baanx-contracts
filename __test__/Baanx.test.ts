@@ -115,6 +115,12 @@ describe('Baanx', () => {
         await ksClient.appClient.fundAppAccount({ amount: AlgoAmount.MicroAlgos(200_000) });
     });
 
+    /**
+     * Sets the withdrawal timeout to 0 seconds so the test suite can complete withdrawals
+     * instantly. In production this value is the mandatory delay between requesting and
+     * completing a withdrawal (e.g. 5 days = 432_000 seconds), giving Baanx time to react
+     * to fraud before funds leave a card.
+     */
     test('Set withdrawal rounds to 0', async () => {
         // A real value would be:
         // 60 * 60 * 24 * 5 = 432_000 seconds = 5 days
@@ -124,6 +130,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Registers the ed25519 public key whose signatures authorize permissioned (early)
+     * withdrawals. The matching private key lives off-chain with Baanx; the contract verifies
+     * signatures against this key in `withdrawPermissioned` to let users skip the timeout.
+     */
     test('Set withdrawal public key', async () => {
         const result = await appClient.send.setWithdrawalPubkey({
             args: { pubkey: withdrawalAcc.addr.publicKey },
@@ -133,6 +144,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Confirms the omnibus settlement address is persisted from the deploy arguments.
+     * The omnibus account is where debited card funds ultimately settle, so it must be
+     * readable on-chain immediately after creation.
+     */
     test('Omnibus address set at deploy', async () => {
         const result = await appClient.send.getOmnibusAddress({
             args: {},
@@ -142,6 +158,12 @@ describe('Baanx', () => {
         expect(result.return).toBe(omnibus.addr.toString());
     });
 
+    /**
+     * Exercises the owner-only setter that rotates the omnibus address, reads it back to
+     * confirm the change, then restores the original. Restoring matters because the rest of
+     * the suite relies on the debit flow settling into the omnibus account that is opted in
+     * to FakeUSDC.
+     */
     test('Update and restore omnibus address', async () => {
         const updated = await appClient.send.setOmnibusAddress({
             args: { newOmnibusAddress: circle.addr.toString() },
@@ -161,6 +183,11 @@ describe('Baanx', () => {
         expect(restored.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Verifies the owner can sweep stray Algo (asset 0) that lands on the Master app account.
+     * Funds a payment into the app, then recovers it to the Baanx owner, guarding against
+     * value being permanently stranded in the contract.
+     */
     test('Recover Algo from Master', async () => {
         const { algorand } = fixture.context;
 
@@ -182,6 +209,11 @@ describe('Baanx', () => {
         expect(recover.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Creates a card account for a holder without opting into any asset (asset 0). This is
+     * the lightweight card-creation path; the returned address is the freshly minted card
+     * account that can later be opted into assets or closed.
+     */
     test('Create new card without assets', async () => {
         const result = await appClient.send.cardCreate({
             args: {
@@ -196,6 +228,10 @@ describe('Baanx', () => {
         newCardAddress = result.return!;
     });
 
+    /**
+     * Closes the asset-less card created above and reclaims its minimum balance back to the
+     * funder, confirming the create/close lifecycle works for cards holding no assets.
+     */
     test('Close card without assets', async () => {
         const result = await appClient.send.cardClose({
             args: { card: newCardAddress },
@@ -205,6 +241,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Creates a card and opts it into FakeUSDC in a single call. The returned address is
+     * reused throughout the main spend/withdraw flow below, so this card is the primary
+     * subject of the asset-bearing tests.
+     */
     test('Create new card with FakeUSDC', async () => {
         const result = await appClient.send.cardCreate({
             args: {
@@ -219,6 +260,11 @@ describe('Baanx', () => {
         newCardAddress = result.return!;
     });
 
+    /**
+     * Funds the card by transferring FakeUSDC straight to the card account. Cards are plain
+     * asset holders, so a deposit is just a standard asset transfer from the holder's wallet
+     * to the card address.
+     */
     test('Deposit FakeUSDC to card', async () => {
         const { algorand } = fixture.context;
 
@@ -232,6 +278,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBeDefined();
     });
 
+    /**
+     * Simulates the core spend flow: the user has spent on their card, and Baanx debits the
+     * card for the matching FakeUSDC amount. The current nonce is fetched first and passed in
+     * for replay protection; the ref carries the off-chain transaction identifier.
+     */
     test('User spends, Baanx debits', async () => {
         const nextNonce = await appClient.send.getNextCardNonce({
             args: { card: newCardAddress },
@@ -251,6 +302,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBeDefined();
     });
 
+    /**
+     * Reads back the card's stored data and asserts the owner, address, and nonce. The nonce
+     * is expected to be 1 because the single debit above incremented it, proving replay
+     * protection state advanced.
+     */
     test('Get CardData', async () => {
         const result = await appClient.send.getCardData({
             args: { card: newCardAddress },
@@ -262,6 +318,10 @@ describe('Baanx', () => {
         expect(result.return?.nonce).toEqual(BigInt(1));
     });
 
+    /**
+     * Upgrades the Master contract program in place via the owner-only update path. Confirms
+     * the contract can be patched without redeploying or losing existing card/global state.
+     */
     test('Update Contract', async () => {
         const result = await appClient.send.update.update({
             args: [],
@@ -271,6 +331,10 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Owner-driven account recovery: reassigns an existing card to a new card holder. Used
+     * when a user loses access to their wallet but should retain control of the card's funds.
+     */
     test('Recover Card', async () => {
         const result = await appClient.send.cardRecover({
             args: {
@@ -283,6 +347,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * The (newly recovered) card holder initiates a withdrawal request. This records the
+     * pending request on-chain; with the timeout at 0 it can be completed immediately in the
+     * next test.
+     */
     test('User creates withdrawal request', async () => {
         const result = await appClient.send.withdrawalRequest({
             args: {
@@ -298,6 +367,11 @@ describe('Baanx', () => {
         withdrawalRequest = result.return!;
     });
 
+    /**
+     * Completes the pending withdrawal. Because the timeout is 0, the request is immediately
+     * eligible and funds move from the card to the holder, closing the happy-path withdrawal
+     * lifecycle.
+     */
     test('Complete withdrawal request', async () => {
         const result = await appClient.send.withdraw({
             args: {
@@ -311,6 +385,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Raises the withdrawal timeout to a non-zero value (10 seconds) so the following tests
+     * can exercise the permissioned early-withdrawal path, which only matters when a real
+     * timeout would otherwise block an immediate withdrawal.
+     */
     test('Set withdrawal rounds to 10', async () => {
         // A real value would be:
         // 60 * 60 * 24 * 5 = 432_000 seconds = 5 days
@@ -321,6 +400,11 @@ describe('Baanx', () => {
     });
 
     // TODO: withdrawEarly test
+    /**
+     * Creates a fresh withdrawal request now that the timeout is non-zero. This request can
+     * NOT be completed via the normal `withdraw` path until the timeout elapses, setting up
+     * the permissioned early-withdrawal scenario below.
+     */
     test('User creates another withdrawal request', async () => {
         const result = await appClient.send.withdrawalRequest({
             args: {
@@ -337,6 +421,14 @@ describe('Baanx', () => {
     });
 
     // Early Withdrawal Test
+    /**
+     * Demonstrates the permissioned early withdrawal. The test reconstructs the exact byte
+     * layout the contract hashes — card(32) + recipient(32) + asset(8) + amount(8) +
+     * expiresAt(8) + nonce(8) + genesisHash(32) — SHA256-hashes it, and signs the digest with
+     * the withdrawal authority key registered earlier. A valid signature lets the holder skip
+     * the 10-second timeout. The genesis hash binds the signature to this specific network,
+     * and expiresAt bounds how long the off-chain approval stays valid.
+     */
     test('Request early withdrawal', async () => {
         const { algorand } = fixture.context;
         const suggestedParams = await algorand.client.algod.getTransactionParams().do();
@@ -378,6 +470,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * The card holder opts the card out of FakeUSDC. An ASA opt-out is required before the
+     * card account can be closed, since Algorand forbids closing an account still opted into
+     * an asset.
+     */
     test('Disable FakeUSDC for card', async () => {
         const result = await appClient.send.cardDisableAsset({
             args: {
@@ -391,6 +488,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Closes the now asset-free card and reclaims its minimum balance, completing the full
+     * lifecycle (create → fund → debit → recover → withdraw → disable asset → close) for the
+     * primary FakeUSDC card.
+     */
     test('Close card', async () => {
         const result = await appClient.send.cardClose({
             args: { card: newCardAddress },
@@ -402,6 +504,11 @@ describe('Baanx', () => {
 
     // ========== Killswitch unit tests ==========
 
+    /**
+     * Test setup for the Killswitch suite: a card owned by `user` must exist before that user
+     * can enable delegation, because `enable` checks card ownership. The created address is
+     * reused as the AutoDraw card in the integration tests further down.
+     */
     test('Killswitch: create card for user (required to enable delegation)', async () => {
         const result = await appClient.send.cardCreate({
             args: {
@@ -416,6 +523,11 @@ describe('Baanx', () => {
         autoDrawCardAddress = result.return!;
     });
 
+    /**
+     * The card owner enables delegation for their own card, writing a local/box switch that
+     * later authorizes automated draws. This is the opt-in step a user takes to allow
+     * AutoDraw to pull funds on their behalf.
+     */
     test('Killswitch: enable user', async () => {
         const result = await ksClient.send.enable({
             args: { card: autoDrawCardAddress },
@@ -425,6 +537,11 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Negative case: a non-owner cannot enable delegation on someone else's card. Enforces
+     * that only the card owner can opt their card into the killswitch, reverting with
+     * NOT_CARD_OWNER otherwise.
+     */
     test('Killswitch: enable fails for account that does not own the card', async () => {
         await expect(
             ksClient.send.enable({
@@ -435,6 +552,10 @@ describe('Baanx', () => {
         ).rejects.toThrow('NOT_CARD_OWNER');
     });
 
+    /**
+     * Happy path for the killswitch gate: an enabled user passes `authorize`, the check the
+     * AutoDraw group relies on to confirm the user still consents to automated debits.
+     */
     test('Killswitch: authorize enabled user succeeds', async () => {
         const result = await ksClient.send.authorize({
             args: { account: user.addr.toString() },
@@ -442,12 +563,22 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * The killswitch in action: once a user calls `kill`, their consent is revoked and
+     * `authorize` reverts with REFUSED. This is the emergency off-switch that lets a user
+     * instantly stop any further automated draws.
+     */
     test('Killswitch: user kills their delegation — authorize fails with REFUSED', async () => {
         await ksClient.send.kill({ args: [], sender: user.addr });
 
         await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow('REFUSED');
     });
 
+    /**
+     * Confirms the kill is reversible: a user can re-enable their card after killing and
+     * `authorize` succeeds again, so the off-switch is a pause rather than a permanent
+     * lockout.
+     */
     test('Killswitch: user re-enables themselves — authorize succeeds', async () => {
         await ksClient.send.enable({
             args: { card: autoDrawCardAddress },
@@ -461,6 +592,10 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Idempotency guard: enabling a card that is already enabled reverts with
+     * ALREADY_ENABLED, preventing duplicate box state or double-charged MBR.
+     */
     test('Killswitch: enabling again fails with ALREADY_ENABLED', async () => {
         await expect(
             ksClient.send.enable({
@@ -471,16 +606,29 @@ describe('Baanx', () => {
         ).rejects.toThrow('ALREADY_ENABLED');
     });
 
+    /**
+     * Default-deny behavior: an account that never opted in is refused by `authorize`. Only
+     * users who explicitly enabled delegation can be authorized.
+     */
     test('Killswitch: authorize non-enabled account fails with REFUSED', async () => {
         await expect(ksClient.send.authorize({ args: { account: user2.addr.toString() } })).rejects.toThrow('REFUSED');
     });
 
+    /**
+     * Global circuit breaker: while the contract is paused, even a properly enabled user is
+     * refused. This lets Baanx halt all automated draws system-wide in an incident, on top of
+     * the per-user killswitch.
+     */
     test('Killswitch: pause contract — authorize fails', async () => {
         await ksClient.send.pause({ args: [] });
 
         await expect(ksClient.send.authorize({ args: { account: user.addr.toString() } })).rejects.toThrow();
     });
 
+    /**
+     * Confirms the global pause is reversible: after `unpause`, enabled users are authorized
+     * again and normal operation resumes.
+     */
     test('Killswitch: unpause contract — authorize succeeds', async () => {
         await ksClient.send.unpause({ args: [] });
 
@@ -492,6 +640,13 @@ describe('Baanx', () => {
 
     // ========== AutoDraw integration tests ==========
 
+    /**
+     * Builds the AutoDraw delegated logic signature. The TEAL template is hydrated with the
+     * concrete asset id, killswitch app id, master app id, and genesis hash, compiled, then
+     * signed by the user so it acts as a delegated approval. The lsig can only ever move the
+     * configured asset into the configured card under the configured apps, which is what
+     * makes delegating it to Baanx safe.
+     */
     test('AutoDraw: compile lsig and user signs for delegation', async () => {
         const { algorand } = fixture.context;
         const algod = algorand.client.algod;
@@ -515,6 +670,13 @@ describe('Baanx', () => {
         expect(autoDrawLsig.lsig.sig).toBeDefined();
     });
 
+    /**
+     * The core AutoDraw integration: a single atomic group [axfer, authorize, cardDebit]
+     * debits a card that starts at zero balance. Transaction [0] uses the delegated lsig to
+     * pull funds from the user's wallet into the card (fee=0), [1] checks the killswitch
+     * consent, and [2] debits the now-funded card. Bundling them atomically means the card is
+     * funded just-in-time and the whole draw fails together if any guard rejects.
+     */
     test('AutoDraw: group debit succeeds from zero-balance card', async () => {
         const { algorand } = fixture.context;
         const algod = algorand.client.algod;
@@ -560,6 +722,10 @@ describe('Baanx', () => {
         expect(result.confirmations.every((c) => c.poolError === '')).toBe(true);
     });
 
+    /**
+     * Confirms the delegated debit advanced replay-protection state: the card nonce is now 1
+     * after the single successful AutoDraw group.
+     */
     test('AutoDraw: card nonce incremented after debit', async () => {
         const result = await appClient.send.getCardData({
             args: { card: autoDrawCardAddress },
@@ -567,6 +733,12 @@ describe('Baanx', () => {
         expect(result.return?.nonce).toEqual(1n);
     });
 
+    /**
+     * Security check: if the user has killed their delegation, the whole AutoDraw group is
+     * rejected with REFUSED at the `authorize` step, so no funds move even though the lsig and
+     * debit are otherwise valid. Re-enables the user afterward to restore state for following
+     * tests.
+     */
     test('AutoDraw: group fails when user has disabled themselves', async () => {
         const { algorand } = fixture.context;
         const algod = algorand.client.algod;
@@ -616,6 +788,11 @@ describe('Baanx', () => {
         });
     });
 
+    /**
+     * System-wide guard: while the Killswitch contract is globally paused, the AutoDraw group
+     * is rejected at `authorize` regardless of individual user consent. Unpauses afterward to
+     * leave the contract in a clean state.
+     */
     test('AutoDraw: group fails when Killswitch is paused', async () => {
         const { algorand } = fixture.context;
         const algod = algorand.client.algod;
@@ -661,6 +838,10 @@ describe('Baanx', () => {
         await ksClient.send.unpause({ args: [] });
     });
 
+    /**
+     * Opts the AutoDraw card out of FakeUSDC, the required precondition before the card
+     * account can be closed.
+     */
     test('AutoDraw: disable FakeUSDC for card', async () => {
         const result = await appClient.send.cardDisableAsset({
             args: {
@@ -674,6 +855,10 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Closes the AutoDraw card and reclaims its minimum balance, tearing down the integration
+     * fixture.
+     */
     test('AutoDraw: close card', async () => {
         const result = await appClient.send.cardClose({
             args: { card: autoDrawCardAddress },
@@ -683,6 +868,10 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
+    /**
+     * Final lifecycle step: the owner destroys the Master contract and reclaims any remaining
+     * balance, verifying the app can be cleanly deleted once all cards are closed.
+     */
     test('Destroy Contract', async () => {
         const result = await appClient.send.delete.destroy({
             args: [],
