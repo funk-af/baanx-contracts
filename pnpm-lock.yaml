@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@algorandfoundation/algokit-subscriber':
+        specifier: ^3.2.0
+        version: 3.2.0(@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0))(algosdk@3.6.0)
       '@algorandfoundation/algokit-utils':
         specifier: ^9.2.0
         version: 9.2.0(algosdk@3.6.0)
@@ -85,6 +88,13 @@ packages:
     peerDependencies:
       '@algorandfoundation/algokit-utils': ^9.0.0
       algosdk: ^3.2.0
+
+  '@algorandfoundation/algokit-subscriber@3.2.0':
+    resolution: {integrity: sha512-MUpe1n0OTsjO2TW7CAQFXBAJO47x72aJqwHy/toFkYiOjf7TidEvcrgmWXmJs4cpBCeZpnHf7BJfS6RzZwF8ZQ==}
+    engines: {node: '>=18.0'}
+    peerDependencies:
+      '@algorandfoundation/algokit-utils': ^9.0.0
+      algosdk: ^3.0.0
 
   '@algorandfoundation/algokit-utils@9.2.0':
     resolution: {integrity: sha512-jILpK3PlSJ55crS8+Dl7iIiADEj/VowokTGSVEEneDG41XM3jMmogGVpCNipBil/YAGC2eh2yc4l9iHnfQdT/g==}
@@ -1682,6 +1692,9 @@ packages:
   js-sha512@0.8.0:
     resolution: {integrity: sha512-PWsmefG6Jkodqt+ePTvBZCSMFgN7Clckjd0O7su3I0+BW2QWUTJNzjktHsztGLhncP2h8mcF9V9Y2Ha59pAViQ==}
 
+  js-sha512@0.9.0:
+    resolution: {integrity: sha512-mirki9WS/SUahm+1TbAPkqvbCiCfOAAsyXeHxK1UkullnJVVqoJG2pL9ObvT05CN+tM7fxhfYm0NbXn+1hWoZg==}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -2451,6 +2464,12 @@ snapshots:
       change-case: 5.4.4
       commander: 14.0.3
       jsonschema: 1.5.0
+
+  '@algorandfoundation/algokit-subscriber@3.2.0(@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0))(algosdk@3.6.0)':
+    dependencies:
+      '@algorandfoundation/algokit-utils': 9.2.0(algosdk@3.6.0)
+      algosdk: 3.6.0
+      js-sha512: 0.9.0
 
   '@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0)':
     dependencies:
@@ -4654,6 +4673,8 @@ snapshots:
   js-sha3@0.8.0: {}
 
   js-sha512@0.8.0: {}
+
+  js-sha512@0.9.0: {}
 
   js-tokens@4.0.0: {}
 

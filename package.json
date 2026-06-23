@@ -27,6 +27,7 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
+        "@algorandfoundation/algokit-subscriber": "^3.2.0",
         "@algorandfoundation/algokit-utils": "^9.2.0",
         "@algorandfoundation/algorand-typescript": "^1.0.0",
         "@algorandfoundation/puya-ts": "^1.1.0",

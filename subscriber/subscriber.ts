@@ -4,10 +4,10 @@ import { AlgorandSubscriber } from '@algorandfoundation/algokit-subscriber';
 import algosdk from 'algosdk';
 import * as algokit from '@algorandfoundation/algokit-utils';
 import { BalanceChangeRole, SubscribedTransaction } from '@algorandfoundation/algokit-subscriber/types/subscription';
-import appSpec from '../dist/Master.arc32.json';
+import appSpec from '../dist/Master.arc56.json';
 
 const algod = algokit.getAlgoClient(algokit.getDefaultLocalNetConfig('algod'));
-let lastRound = 0;
+let lastRound = 0n;
 
 /**
  * Check if an address is a card address.
@@ -20,7 +20,7 @@ function isCardAddress(address: string) {
 /**
  * Check if this is an asset supported by Baanx
  */
-function isSupportedAsset(assetId: number) {
+function isSupportedAsset(assetId: bigint) {
     return !!assetId;
 }
 
@@ -45,20 +45,20 @@ const subscriber = new AlgorandSubscriber(
                 name: 'masterEvent',
                 filter: {
                     type: algosdk.TransactionType.appl,
-                    arc28Events: appSpec.contract.events.map((e) => {
+                    arc28Events: appSpec.events.map((e) => {
                         return { groupName: 'master', eventName: e.name };
                     }),
                 },
             },
         ],
-        arc28Events: [{ groupName: 'master', events: appSpec.contract.events }],
+        arc28Events: [{ groupName: 'master', events: appSpec.events }],
         // use an archival node to sync from where we last left off (AlgoNode/Nodely is archival)
         syncBehaviour: 'sync-oldest',
         // this is how we save which round was last processed
         // probably want to commit to dynamodb in prod
         watermarkPersistence: {
             get: async () => lastRound,
-            set: async (newWatermark: number) => {
+            set: async (newWatermark: bigint) => {
                 lastRound = newWatermark;
             },
         },
@@ -67,7 +67,7 @@ const subscriber = new AlgorandSubscriber(
 );
 
 function handleAssetReceive(
-    assetsReceived: { [address: string]: { [asset: number]: bigint } },
+    assetsReceived: { [address: string]: { [asset: string]: bigint } },
     tx: SubscribedTransaction
 ) {
     tx.balanceChanges?.forEach((change) => {
@@ -79,7 +79,8 @@ function handleAssetReceive(
         if (roles.includes(BalanceChangeRole.Sender)) return;
 
         assetsReceived[address] = assetsReceived[address] || {};
-        assetsReceived[address][assetId] = (assetsReceived[address][assetId] || BigInt(0)) + amount;
+        const key = assetId.toString();
+        assetsReceived[address][key] = (assetsReceived[address][key] || BigInt(0)) + amount;
     });
 }
 
@@ -101,7 +102,7 @@ function handleMasterEvent(tx: SubscribedTransaction) {
 
 // Every time we poll, handle the events for that block
 subscriber.onPoll((poll) => {
-    const assetsReceived: { [address: string]: { [asset: number]: bigint } } = {};
+    const assetsReceived: { [address: string]: { [asset: string]: bigint } } = {};
 
     poll.subscribedTransactions.forEach((tx) => {
         if (tx.filtersMatched?.includes('assetReceive')) handleAssetReceive(assetsReceived, tx);
