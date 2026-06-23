@@ -76,39 +76,12 @@ type CardAssetDisabled = {
     asset: Asset;
 };
 
-type AssetAllowlistAdded = {
-    asset: Asset;
-};
-
-type AssetAllowlistRemoved = {
-    asset: Asset;
-};
-
 type Debit = {
     card: Account;
     asset: Asset;
     amount: uint64;
     nonce: uint64;
     reference: string;
-};
-
-type Refund = {
-    card: Account;
-    asset: Asset;
-    amount: uint64;
-    nonce: uint64;
-};
-
-type SettlementAddressChanged = {
-    oldSettlementAddress: Account;
-    newSettlementAddress: Account;
-};
-
-type Settlement = {
-    recipient: Account;
-    asset: Asset;
-    amount: uint64;
-    nonce: uint64;
 };
 
 type WithdrawalRequest = {
@@ -177,21 +150,15 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
     // Seconds to wait
     withdrawal_wait_time = GlobalState<uint64>({ key: 'wwt' });
 
-    // Early withdrawal public key
-    permissioned_withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
+    // Permissioned withdrawal public key
+    withdrawal_pubkey = GlobalState<bytes<32>>({ key: 'pwpk' });
 
     // Withdrawal requests
     // Only one allowed at any given point. MBR is sponsored by the contract owner (app account).
     withdrawals = BoxMap<Account, WithdrawalRequest>({ keyPrefix: 'wr' });
 
-    // Settlement nonce
-    settlement_nonce = GlobalState<uint64>({ key: 'sn' });
-
-    // Settlement address
-    settlement_address = BoxMap<Asset, Account>({ keyPrefix: 'sa' });
-
-    // Refund address
-    refund_address = GlobalState<Account>({ key: 'ra' });
+    // Omnibus address
+    omnibus_address = GlobalState<Account>({ key: 'oa' });
 
     // ========== Internal Utils ==========
     /**
@@ -210,10 +177,6 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
      * @param asset Asset to opt-in to
      */
     private cardAssetOptIn(card: Account, asset: Asset): void {
-        // Only proceed if the master allowlist accepts it
-        const [_assetBal, optedIn] = op.AssetHolding.assetBalance(Global.currentApplicationAddress, asset);
-        assert(optedIn, 'ASSET_NOT_OPTED_IN');
-
         itxn.assetTransfer({
             sender: card,
             assetReceiver: card,
@@ -275,31 +238,19 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
         this.cards(card).value.withdrawalNonce = nonce + 1;
     }
 
-    private updateSettlementAddress(asset: Asset, newSettlementAddress: Account): void {
-        const oldSettlementAddress = this.settlement_address(asset).exists
-            ? this.settlement_address(asset).value
-            : Global.zeroAddress;
-        this.settlement_address(asset).value = newSettlementAddress;
-
-        emit<SettlementAddressChanged>({
-            oldSettlementAddress: oldSettlementAddress,
-            newSettlementAddress: newSettlementAddress,
-        });
-    }
-
     // ========== External Methods ==========
     /**
      * Deploy the contract, setting the owner as provided and initializing global state.
      */
     @abimethod({ allowActions: ['NoOp'], onCreate: 'require' })
-    deploy(owner: Account): Account {
+    deploy(owner: Account, omnibus: Account): Account {
         this._transferOwnership(owner);
+        this.setOmnibusAddress(omnibus);
         this._pauser.value = Txn.sender;
 
         // puya-ts does not auto-zero-init GlobalState, so set the counters explicitly
         // at creation time.
         this.cards_active_count.value = 0;
-        this.settlement_nonce.value = 0;
         this.paused.value = false;
 
         return Global.currentApplicationAddress;
@@ -342,13 +293,13 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
     }
 
     /**
-     * Sets the early withdrawal public key.
+     * Sets the withdrawal public key.
      * @param pubkey - The public key to set.
      */
-    setEarlyWithdrawalPubkey(pubkey: bytes<32>): void {
+    setWithdrawalPubkey(pubkey: bytes<32>): void {
         this.onlyOwner();
 
-        this.permissioned_withdrawal_pubkey.value = pubkey;
+        this.withdrawal_pubkey.value = pubkey;
     }
 
     /**
@@ -443,52 +394,6 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
     }
 
     /**
-     * Allows the master contract to flag intent of accepting an asset. The box MBR and asset
-     * opt-in are funded from the contract (owner-sponsored).
-     *
-     * @param asset The AssetID of the asset being transferred.
-     * @param settlementAddress The address settlements for this asset are sent to.
-     */
-    assetAllowlistAdd(asset: Asset, settlementAddress: Account): void {
-        this.onlyOwner();
-
-        itxn.assetTransfer({
-            sender: Global.currentApplicationAddress,
-            assetReceiver: Global.currentApplicationAddress,
-            xferAsset: asset,
-            assetAmount: 0,
-        }).submit();
-
-        emit<AssetAllowlistAdded>({ asset: asset });
-
-        this.updateSettlementAddress(asset, settlementAddress);
-    }
-
-    /**
-     * Allows the master contract to reject accepting an asset. The freed MBR remains in the
-     * contract (owner-sponsored pool).
-     *
-     * @param asset - The AssetID of the asset being transferred.
-     */
-    assetAllowlistRemove(asset: Asset): void {
-        this.onlyOwner();
-
-        // Asset balance must be zero to close out of it. Consider settling the asset balance before revoking it.
-        itxn.assetTransfer({
-            sender: Global.currentApplicationAddress,
-            assetReceiver: Global.currentApplicationAddress,
-            assetCloseTo: Global.currentApplicationAddress,
-            xferAsset: asset,
-            assetAmount: 0,
-        }).submit();
-
-        // Delete the settlement address, freeing up MBR
-        this.settlement_address(asset).delete();
-
-        emit<AssetAllowlistRemoved>({ asset: asset });
-    }
-
-    /**
      * Debits the specified amount of the given asset from the card account.
      * Only the owner of the contract can perform this operation.
      *
@@ -506,7 +411,7 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
 
         itxn.assetTransfer({
             sender: card,
-            assetReceiver: Global.currentApplicationAddress,
+            assetReceiver: this.omnibus_address.value,
             xferAsset: asset,
             assetAmount: amount,
             note: ref,
@@ -522,73 +427,6 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
 
         // Increment the nonce
         this.cards(card).value.nonce = nextNonce + 1;
-    }
-
-    /**
-     * Retrieves the refund address.
-     *
-     * @returns The refund address.
-     */
-    @abimethod({ readonly: true })
-    getRefundAddress(): Account {
-        return this.refund_address.value;
-    }
-
-    /**
-     * Sets the refund address.
-     * Only the owner of the contract can call this method.
-     *
-     * @param newRefundAddress The new refund address to be set.
-     */
-    setRefundAddress(newRefundAddress: Account): void {
-        this.onlyOwner();
-
-        this.refund_address.value = newRefundAddress;
-    }
-
-    /**
-     * Refunds a specified amount of an asset to a card account.
-     * Only the owner of the contract can perform this operation.
-     *
-     * @param card - The card account to refund the asset to.
-     * @param asset - The asset to refund.
-     * @param amount - The amount of the asset to refund.
-     */
-    cardRefund(card: Account, asset: Asset, amount: uint64, nonce: uint64): void {
-        this.whenNotPaused();
-
-        assert(Txn.sender === this.refund_address.value, 'SENDER_NOT_ALLOWED');
-
-        // Ensure the nonce is correct
-        const nextNonce: uint64 = this.cards(card).value.nonce;
-        assert(nextNonce === nonce, 'NONCE_INVALID');
-
-        itxn.assetTransfer({
-            sender: Global.currentApplicationAddress,
-            assetReceiver: card,
-            xferAsset: asset,
-            assetAmount: amount,
-        }).submit();
-
-        emit<Refund>({
-            card: card,
-            asset: asset,
-            amount: amount,
-            nonce: nonce,
-        });
-
-        // Increment the nonce
-        this.cards(card).value.nonce = nextNonce + 1;
-    }
-
-    /**
-     * Retrieves the next available nonce for settlements.
-     *
-     * @returns The settlement nonce.
-     */
-    @abimethod({ readonly: true })
-    getNextSettlementNonce(): uint64 {
-        return this.settlement_nonce.value;
     }
 
     /**
@@ -614,81 +452,29 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
     }
 
     /**
-     * Retrieves the settlement address for the specified asset.
+     * Retrieves the omnibus address for the specified asset.
      *
      * @param asset The ID of the asset.
-     * @returns The settlement address for the asset.
+     * @returns The omnibus address for the asset.
      */
     @abimethod({ readonly: true })
-    getSettlementAddress(asset: Asset): Account {
-        return this.settlement_address(asset).value;
+    getOmnibusAddress(): Account {
+        return this.omnibus_address.value;
     }
 
     /**
-     * Sets the settlement address for a given settlement asset.
+     * Sets the omnibus address.
      * Only the owner of the contract can call this method.
      *
-     * @param settlementAsset The ID of the settlement asset.
-     * @param newSettlementAddress The new settlement address to be set.
+     * @param newOmnibusAddress The new omnibus address to be set.
      */
-    setSettlementAddress(settlementAsset: Asset, newSettlementAddress: Account): void {
+    setOmnibusAddress(newOmnibusAddress: Account): void {
         this.onlyOwner();
 
-        this.updateSettlementAddress(settlementAsset, newSettlementAddress);
-    }
-
-    /**
-     * Settles a payment by transferring an asset to the specified recipient.
-     * Only the owner of the contract can call this function.
-     *
-     * @param asset The asset to be transferred.
-     * @param amount The amount of the asset to be transferred.
-     * @param nonce The nonce to prevent duplicate settlements.
-     */
-    settle(asset: Asset, amount: uint64, nonce: uint64): void {
-        this.whenNotPaused();
-        this.onlyOwner();
-
-        // Ensure the nonce is correct
-        assert(this.settlement_nonce.value === nonce, 'NONCE_INVALID');
-
-        itxn.assetTransfer({
-            sender: Global.currentApplicationAddress,
-            assetReceiver: this.settlement_address(asset).value,
-            xferAsset: asset,
-            assetAmount: amount,
-        }).submit();
-
-        emit<Settlement>({
-            recipient: this.settlement_address(asset).value,
-            asset: asset,
-            amount: amount,
-            nonce: nonce,
-        });
-
-        // Increment the settlement nonce
-        this.settlement_nonce.value = this.settlement_nonce.value + 1;
+        this.omnibus_address.value = newOmnibusAddress;
     }
 
     // ===== Card Holder Methods =====
-    /**
-     * Opts a card into an asset, increasing its minimum balance requirement. The opt-in MBR is
-     * funded from the contract (owner-sponsored). Only the owner can call this function.
-     *
-     * @param card Address to add asset to
-     * @param asset Asset to add
-     */
-    cardEnableAsset(card: Account, asset: Asset): void {
-        this.onlyOwner();
-
-        itxn.payment({
-            receiver: card,
-            amount: Global.assetOptInMinBalance,
-        }).submit();
-
-        this.cardAssetOptIn(card, asset);
-    }
-
     /**
      * Allows the card holder (or owner) to CloseOut of an asset, reducing the minimum balance
      * requirement of the account. The freed MBR remains within the card account.
@@ -772,12 +558,12 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
     }
 
     /**
-     * Withdraws funds before the withdrawal timestamp has lapsed, by using the early withdrawal signature provided by baanx.
+     * Withdraws funds before the withdrawal timestamp has lapsed, by using the permissioned withdrawal signature provided by Baanx.
      * @param card - The address of the card.
      * @param asset - The ID of the asset to be withdrawn.
      * @param amount - The amount of the withdrawal.
      * @param expiresAt - The expiry of the withdrawal signature.
-     * @param signature - The signature for early withdrawal.
+     * @param signature - The signature for permissioned withdrawal.
      */
     withdrawPermissioned(
         card: Account,
@@ -808,15 +594,12 @@ export class Master extends classes(Ownable, Pausable, Recoverable) {
         // Need at least 2000 Opcode budget
         ensureBudget(2500);
 
-        assert(
-            op.ed25519verifyBare(withdrawal_hash, signature, this.permissioned_withdrawal_pubkey.value),
-            'SIGNATURE_INVALID'
-        );
+        assert(op.ed25519verifyBare(withdrawal_hash, signature, this.withdrawal_pubkey.value), 'SIGNATURE_INVALID');
 
         // Issue the withdrawal
         this.withdrawFunds(card, asset, amount, expiresAt, cardData.withdrawalNonce, WithdrawalTypeApproved);
 
-        // An approved (early) withdrawal supersedes any pending permissionless request for
+        // A permissioned withdrawal supersedes any pending permissionless request for
         // the sender. Clean it up to release its box MBR and avoid orphaning the box, since
         // issuing the withdrawal increments the nonce and makes the request un-executable.
         if (this.withdrawals(Txn.sender).exists) {

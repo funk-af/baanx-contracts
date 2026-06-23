@@ -23,6 +23,7 @@ describe('Baanx', () => {
     let user: algosdk.Account & algosdk.Address;
     let user2: algosdk.Account & algosdk.Address;
     let withdrawalAcc: algosdk.Account & algosdk.Address;
+    let omnibus: algosdk.Account & algosdk.Address;
 
     let fakeUSDC: bigint;
     let newCardAddress: string;
@@ -38,8 +39,9 @@ describe('Baanx', () => {
         Config.configure({ populateAppCallResources: true });
         const { algorand, generateAccount } = fixture.context;
 
-        [baanx, user, user2, circle, withdrawalAcc] = await Promise.all([
+        [baanx, user, user2, circle, withdrawalAcc, omnibus] = await Promise.all([
             generateAccount({ initialFunds: AlgoAmount.Algos(100) }),
+            generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
             generateAccount({ initialFunds: AlgoAmount.Algos(10) }),
@@ -65,6 +67,7 @@ describe('Baanx', () => {
             algorand.send.assetOptIn({ sender: baanx.addr, assetId: fakeUSDC }),
             algorand.send.assetOptIn({ sender: user.addr, assetId: fakeUSDC }),
             algorand.send.assetOptIn({ sender: user2.addr, assetId: fakeUSDC }),
+            algorand.send.assetOptIn({ sender: omnibus.addr, assetId: fakeUSDC }),
         ]);
         await algorand.send.assetTransfer({
             sender: circle.addr,
@@ -79,7 +82,7 @@ describe('Baanx', () => {
         });
 
         const deployment = await factory.send.create.deploy({
-            args: [baanx.addr.toString()],
+            args: [baanx.addr.toString(), omnibus.addr.toString()],
             extraProgramPages: 3,
             schema: {
                 globalInts: 32,
@@ -121,8 +124,8 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
-    test('Set early withdrawal public key', async () => {
-        const result = await appClient.send.setEarlyWithdrawalPubkey({
+    test('Set withdrawal public key', async () => {
+        const result = await appClient.send.setWithdrawalPubkey({
             args: { pubkey: withdrawalAcc.addr.publicKey },
             staticFee: AlgoAmount.MicroAlgos(1_000),
         });
@@ -130,16 +133,32 @@ describe('Baanx', () => {
         expect(result.confirmation.poolError).toBe('');
     });
 
-    test('Allowlist Add FakeUSDC', async () => {
-        const result = await appClient.send.assetAllowlistAdd({
-            args: {
-                asset: fakeUSDC,
-                settlementAddress: baanx.addr.toString(),
-            },
-            staticFee: AlgoAmount.MicroAlgos(2_000),
+    test('Omnibus address set at deploy', async () => {
+        const result = await appClient.send.getOmnibusAddress({
+            args: {},
+            staticFee: AlgoAmount.MicroAlgos(1_000),
         });
 
-        expect(result.confirmation.poolError).toBe('');
+        expect(result.return).toBe(omnibus.addr.toString());
+    });
+
+    test('Update and restore omnibus address', async () => {
+        const updated = await appClient.send.setOmnibusAddress({
+            args: { newOmnibusAddress: circle.addr.toString() },
+        });
+        expect(updated.confirmation.poolError).toBe('');
+
+        const afterUpdate = await appClient.send.getOmnibusAddress({
+            args: {},
+            staticFee: AlgoAmount.MicroAlgos(1_000),
+        });
+        expect(afterUpdate.return).toBe(circle.addr.toString());
+
+        // Restore so the debit flow settles into the opted-in omnibus account
+        const restored = await appClient.send.setOmnibusAddress({
+            args: { newOmnibusAddress: omnibus.addr.toString() },
+        });
+        expect(restored.confirmation.poolError).toBe('');
     });
 
     test('Recover Algo from Master', async () => {
@@ -155,28 +174,6 @@ describe('Baanx', () => {
             args: {
                 amount: 1_000_000,
                 asset: 0,
-                recipient: baanx.addr.toString(),
-            },
-            staticFee: AlgoAmount.MicroAlgos(2_000),
-        });
-
-        expect(recover.confirmation.poolError).toBe('');
-    });
-
-    test('Recover ASA from Master', async () => {
-        const { algorand } = fixture.context;
-
-        await algorand.send.assetTransfer({
-            sender: circle.addr,
-            receiver: appClient.appAddress,
-            assetId: fakeUSDC,
-            amount: 10_000_000_000n,
-        });
-
-        const recover = await appClient.send.recoverAsset({
-            args: {
-                amount: 10_000_000_000,
-                asset: fakeUSDC,
                 recipient: baanx.addr.toString(),
             },
             staticFee: AlgoAmount.MicroAlgos(2_000),
@@ -220,32 +217,6 @@ describe('Baanx', () => {
         expect(result.return).toBeDefined();
 
         newCardAddress = result.return!;
-    });
-
-    test('Disable FakeUSDC for card', async () => {
-        const result = await appClient.send.cardDisableAsset({
-            args: {
-                card: newCardAddress,
-                asset: fakeUSDC,
-            },
-            sender: user.addr,
-            staticFee: AlgoAmount.MicroAlgos(2_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
-    });
-
-    test('Enable FakeUSDC for card', async () => {
-        const result = await appClient.send.cardEnableAsset({
-            args: {
-                card: newCardAddress,
-                asset: fakeUSDC,
-            },
-            sender: baanx.addr,
-            staticFee: AlgoAmount.MicroAlgos(3_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Deposit FakeUSDC to card', async () => {
@@ -325,24 +296,6 @@ describe('Baanx', () => {
         expect(result.return).toBeDefined();
 
         withdrawalRequest = result.return!;
-    });
-
-    test('Settle debits', async () => {
-        const settlementNonce = await appClient.send.getNextSettlementNonce({
-            args: {},
-            staticFee: AlgoAmount.MicroAlgos(1_000),
-        });
-
-        const result = await appClient.send.settle({
-            args: {
-                asset: fakeUSDC,
-                amount: 5_000_000,
-                nonce: settlementNonce.return!,
-            },
-            staticFee: AlgoAmount.MicroAlgos(2_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
     });
 
     test('Complete withdrawal request', async () => {
@@ -708,24 +661,6 @@ describe('Baanx', () => {
         await ksClient.send.unpause({ args: [] });
     });
 
-    test('AutoDraw: settle debits', async () => {
-        const settlementNonce = await appClient.send.getNextSettlementNonce({
-            args: {},
-            staticFee: AlgoAmount.MicroAlgos(1_000),
-        });
-
-        const result = await appClient.send.settle({
-            args: {
-                asset: fakeUSDC,
-                amount: 5_000_000,
-                nonce: settlementNonce.return!,
-            },
-            staticFee: AlgoAmount.MicroAlgos(2_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
-    });
-
     test('AutoDraw: disable FakeUSDC for card', async () => {
         const result = await appClient.send.cardDisableAsset({
             args: {
@@ -743,15 +678,6 @@ describe('Baanx', () => {
         const result = await appClient.send.cardClose({
             args: { card: autoDrawCardAddress },
             staticFee: AlgoAmount.MicroAlgos(2_000),
-        });
-
-        expect(result.confirmation.poolError).toBe('');
-    });
-
-    test('Allowlist Remove FakeUSDC', async () => {
-        const result = await appClient.send.assetAllowlistRemove({
-            args: { asset: fakeUSDC },
-            staticFee: AlgoAmount.MicroAlgos(3_000),
         });
 
         expect(result.confirmation.poolError).toBe('');

@@ -4,7 +4,7 @@
 // @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
 main:
     intcblock 0 1
-    // src/Master.algo.ts:153
+    // src/Master.algo.ts:126
     // class ControlledAddress extends Contract {
     pushbytes 0x561d2fea // method "new()address"
     txna ApplicationArgs 0
@@ -12,7 +12,7 @@ main:
     err
 
 main_new_route@2:
-    // src/Master.algo.ts:158
+    // src/Master.algo.ts:131
     // @abimethod({ allowActions: ['DeleteApplication'], onCreate: 'require' })
     txn OnCompletion
     pushint 5 // DeleteApplication
@@ -26,26 +26,26 @@ main_new_route@2:
 
 // src/Master.algo.ts::ControlledAddress.new[routing]() -> void:
 new:
-    // src/Master.algo.ts:160-164
+    // src/Master.algo.ts:133-137
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
     //     rekeyTo: Global.callerApplicationAddress,
     // }).submit();
     itxn_begin
-    // src/Master.algo.ts:161
+    // src/Master.algo.ts:134
     // receiver: Global.currentApplicationAddress,
     global CurrentApplicationAddress
-    // src/Master.algo.ts:163
+    // src/Master.algo.ts:136
     // rekeyTo: Global.callerApplicationAddress,
     global CallerApplicationAddress
     itxn_field RekeyTo
-    // src/Master.algo.ts:162
+    // src/Master.algo.ts:135
     // amount: 0,
     intc_0 // 0
     itxn_field Amount
     itxn_field Receiver
-    // src/Master.algo.ts:160-164
+    // src/Master.algo.ts:133-137
     // itxn.payment({
     //     receiver: Global.currentApplicationAddress,
     //     amount: 0,
@@ -56,13 +56,13 @@ new:
     intc_0 // 0
     itxn_field Fee
     itxn_submit
-    // src/Master.algo.ts:158
+    // src/Master.algo.ts:131
     // @abimethod({ allowActions: ['DeleteApplication'], onCreate: 'require' })
     pushbytes 0x151f7c75
-    // src/Master.algo.ts:166
+    // src/Master.algo.ts:139
     // return Global.currentApplicationAddress;
     global CurrentApplicationAddress
-    // src/Master.algo.ts:158
+    // src/Master.algo.ts:131
     // @abimethod({ allowActions: ['DeleteApplication'], onCreate: 'require' })
     concat
     log
